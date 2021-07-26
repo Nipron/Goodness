@@ -1,21 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import AppLoading from 'expo-app-loading';
+import Navigator from './routes/homeStack5'
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import reducers from './redux/store';
+
+import {
+  useFonts,
+  Assistant_200ExtraLight,
+  Assistant_300Light,
+  Assistant_400Regular,
+  Assistant_500Medium,
+  Assistant_600SemiBold,
+  Assistant_700Bold,
+  Assistant_800ExtraBold,
+} from '@expo-google-fonts/assistant';
+
+const store = createStore(reducers)
 
 export default function App() {
+
+  let [fontsLoaded, error] = useFonts({
+    Assistant_200ExtraLight,
+    Assistant_300Light,
+    Assistant_400Regular,
+    Assistant_500Medium,
+    Assistant_600SemiBold,
+    Assistant_700Bold,
+    Assistant_800ExtraBold,
+  })
+
+  if (!fontsLoaded) {
+    return <AppLoading />
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <Navigator />
+    </Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
