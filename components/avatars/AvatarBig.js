@@ -5,13 +5,14 @@ import Bender from '../../Images/Bender.jpg'
 
 const AvatarBig = () => {
 
-    const avatar = useSelector(state => state.avatar)
+    const path = useSelector(state => state.all.avatar.path)
+    console.log(path)
 
     return (
         <View style={s.photoOuter}>
             <View style={s.photoInner}>
-                <ImageBackground source={avatar ? avatar : Bender}
-                    resizeMethod={'cover'} style={s.avatar} />
+                <ImageBackground source={path ? {uri: `http://52.48.233.122:3000/${path}`} : Bender}
+                    style={s.avatar} />
             </View>
         </View>
     )
@@ -43,7 +44,8 @@ const s = StyleSheet.create({
 
     avatar: {
         width: "100%",
-        height: "100%"
+        height: "100%",
+        resizeMode: 'cover'
     }
 });
 

@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Text } from 'react-native';
-import {g} from "../../styles/global"
+import { StyleSheet, View, TextInput, Text, KeyboardAvoidingView } from 'react-native';
+import { g } from "../../styles/global"
 import Person from '../../Images/Person.svg'
 
 const RegInputSmall = (props) => {
 
-  //  const [value, setValue] = useState(null)
+    //  const [value, setValue] = useState(null)
 
     return (
-        <View style={[props.style, s.outer]}>
-            <TextInput style={[s.input, g.text24_400_blue, 
-            {borderColor: props.borderColor ? props.borderColor : "rgba(255, 255, 255, 0.0)"}]}
+        <KeyboardAvoidingView style={[props.style, s.outer]} behavior="height">
+            <TextInput style={[s.input, g.text24_400_blue,
+            { borderColor: props.borderColor ? props.borderColor : "rgba(255, 255, 255, 0.0)" }]}
                 textAlign="right"
                 keyboardType={props.keyboardType ? props.keyboardType : "default"}
                 onChangeText={props.onChangeText}
-             //   value={props.value}
+                value={props.value}
                 placeholder={props.placeholder}
                 placeholderTextColor="#90949C"
             >
@@ -24,7 +24,7 @@ const RegInputSmall = (props) => {
                     {props.children}
                 </View>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 
@@ -34,11 +34,11 @@ const s = StyleSheet.create({
 
     outer: {
         position: 'relative',
-      //  backgroundColor: "red",
+        //  backgroundColor: "red",
         marginVertical: 5,
         height: 60,
         alignItems: 'flex-end',
-        justifyContent: "center",  
+        justifyContent: "center",
     },
 
     input: {
@@ -67,7 +67,7 @@ const s = StyleSheet.create({
         alignItems: 'center',
         justifyContent: "center",
         marginRight: 12,
-        transform: [{scaleX: 1.2}, {scaleY: 1.2}]
-    }, 
+        transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }]
+    },
 
 });

@@ -24,10 +24,10 @@ const Footer = () => {
                 <TouchableOpacity onPress={() => navigation.navigate('Messages')}>
                     <Bell style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                <TouchableOpacity onPress={() => navigation.navigate('Create')}>
                     <Search style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
                     <Cabinet style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
                 </TouchableOpacity>
             </View>

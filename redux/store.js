@@ -1,8 +1,13 @@
-import {combineReducers} from 'redux'
+import {combineReducers, applyMiddleware} from 'redux'
+import thunk from 'redux-thunk'
+import { categories } from './categoriesReducer'
+import { tempImage } from './tempImageRducer'
 
 const UPDATE_ALL = "UPDATE_ALL"
 
+
 let allInitialState = {}
+
 
 export const updateAll = data => {
     return ({ type: UPDATE_ALL, payload: data })
@@ -18,6 +23,6 @@ export const all = (state = allInitialState, action) => {
     }
 }
 
-const reducers = combineReducers({all})
+const reducers = combineReducers({all, categories, tempImage})
 
 export default reducers;

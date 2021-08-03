@@ -14,7 +14,7 @@ const RegInput = (props) => {
                 textAlign="right"
                 keyboardType={props.keyboardType ? props.keyboardType : "default"}
                 onChangeText={props.onChangeText}
-                // value={props.value}
+                value={props.value}
                 placeholder={props.placeholder}
                 placeholderTextColor="#90949C"
                 autoCapitalize={props.autoCapitalize}

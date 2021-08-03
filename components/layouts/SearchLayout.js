@@ -1,6 +1,5 @@
 import React from 'react';
-import { Dimensions, StyleSheet, Text, View, SafeAreaView, TextInput, Image, ScrollView, Pressable, Alert, Button, TouchableWithoutFeedback, ImageBackground, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native'
+import { StyleSheet, Text, View, TextInput, Image, Dimensions, SafeAreaView, TouchableOpacity, ScrollView, Pressable, Alert, Button, TouchableWithoutFeedback, ImageBackground, KeyboardAvoidingView, Keyboard } from 'react-native';
 
 import Footer from '../footer/Footer';
 import ArrowBack from '../../Images/ArrowBack.svg'
@@ -8,17 +7,20 @@ import Burger from '../../Images/Burger.svg'
 
 import { g } from '../../styles/global'
 
-export default function SmallLayout(props) {
+import { useNavigation } from '@react-navigation/native'
 
-    const navigation = useNavigation()
+import ButtonYellowSearch from '../../components/buttons/ButtonYellowSearch';
+
+export default function SearchLayout(props) {
 
     const scale = 1.5;
 
+    const navigation = useNavigation()
+
     return (
         <KeyboardAvoidingView style={s.containerMain} behavior="padding">
-            <View style={s.background}>
-                <ImageBackground source={require('../../Images/BackgroundSmall.png')}
-                    style={s.imageBack}>
+            <View style={s.containerBlu}>
+                <ImageBackground source={require('../../Images/Background.png')} resizeMode="cover" style={s.background}>
                     <SafeAreaView style={s.safeContainer}>
 
                         <TouchableOpacity style={s.arrowContainer} onPress={() => navigation.goBack()}>
@@ -32,21 +34,22 @@ export default function SmallLayout(props) {
 
                         <TouchableOpacity style={s.burgerContainer} onPress={() => navigation.navigate('Home')}>
                             <Burger style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
-                        </TouchableOpacity>
+                        </TouchableOpacity>                       
 
                     </SafeAreaView>
+                    
+                            {props.children}
+                        
                 </ImageBackground>
             </View>
 
-            <View style={s.childrenBlockOuter}>
-                {props.children}
-            </View>
-
+            <ButtonYellowSearch name="הרשמה" />
             <Footer />
-
         </KeyboardAvoidingView>
     );
 }
+
+
 
 const s = StyleSheet.create({
 
@@ -58,10 +61,17 @@ const s = StyleSheet.create({
         backgroundColor: "white"
     },
 
-    background: {
+    containerBlu: {
+        height: "88%",
         width: "100%",
-        // height: Dimensions.get('window').height * 0.3,
-        height: "32.5%",
+        alignItems: 'center',
+        justifyContent: 'flex-start'
+    },
+
+    background: {
+        flex: 1,
+        width: "100%",
+        justifyContent: "center",
         alignItems: 'center',
         justifyContent: 'flex-start',
         borderBottomLeftRadius: 50,
@@ -78,7 +88,7 @@ const s = StyleSheet.create({
     },
 
     safeContainer: {
-        height: "100%",
+        height: "15%",
         width: "100%",
         flexDirection: 'row',
         alignItems: "flex-start",
@@ -88,7 +98,7 @@ const s = StyleSheet.create({
     arrowContainer: {
         width: 60,
         height: 40,
-     //   backgroundColor: "maroon",
+        //   backgroundColor: "maroon",
         alignItems: "flex-end",
         justifyContent: 'flex-end',
 
@@ -97,7 +107,7 @@ const s = StyleSheet.create({
     burgerContainer: {
         width: 60,
         height: 40,
-    //    backgroundColor: "purple",
+        //    backgroundColor: "purple",
         alignItems: "flex-start",
         justifyContent: 'flex-end',
 
@@ -107,19 +117,19 @@ const s = StyleSheet.create({
         height: 80,
         alignItems: 'center',
         justifyContent: 'flex-end',
-    //    backgroundColor: 'green'
+        //    backgroundColor: 'green'
     },
 
     logo: {
         width: 50,
-        height: 50, 
+        height: 50,
     },
 
     childrenBlockOuter: {
         width: "88%",
-        height: Dimensions.get('window').height * 0.555 + 70,
+        height: Dimensions.get('window').height * 0.58 + 70,
         marginTop: -70,
-     //   backgroundColor: "magenta",
+        //   backgroundColor: "magenta",
         alignItems: "center",
         justifyContent: 'flex-start',
     },

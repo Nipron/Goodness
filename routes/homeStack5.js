@@ -6,6 +6,8 @@ import Registration from '../screens/registration';
 import Profile from '../screens/profile';
 import Terms from '../screens/terms';
 import Messages from '../screens/messages';
+import Create from '../screens/create';
+import EditProfile from '../screens/editProfile';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native'
@@ -38,7 +40,15 @@ export default function Navigate() {
             <Stack.Screen
                 name="Messages"
                 component={Messages}
-                option={{ title: 'Terms' }} />
+                option={{ title: 'Messages' }} />
+            <Stack.Screen
+                name="Create"
+                component={Create}
+                option={{ title: 'Create' }} />
+            <Stack.Screen
+                name="EditProfile"
+                component={EditProfile}
+                option={{ title: 'Edit Profile' }} />
         </Stack.Navigator>
     </NavigationContainer>
 }

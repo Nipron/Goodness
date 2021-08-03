@@ -1,25 +1,47 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 import { useSelector } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 
-import StatusBronze from '../../Images/TrashDue.png'
+import StatusBronze from '../../Images/StatusBronze.png'
+import StatusSilver from '../../Images/StatusSilver.png'
+import StatusGold from '../../Images/StatusGold.png'
+import StatusPlatinum from '../../Images/StatusPlatinum.png'
 import Phone from '../../Images/Phone.svg'
 import Stars from '../../Images/Stars.svg'
 import Edit from '../../Images/Edit.svg'
 import Heart from '../../Images/Heart.svg'
 
-
-
-
 import { g } from '../../styles/global'
 
 const PersonalInfo = () => {
 
+    const navigation = useNavigation()
     const info = useSelector(state => state.all)
     const scale = 1.4
     const scaleStars = 1.4
     const scaleEdit = 1.4
     const scaleHeart = 1.2
+
+    let statusSource;
+
+    switch (info.heartsStatus) {
+        case "bronze":
+            statusSource = StatusBronze
+            break;
+        case "silver":
+            statusSource = StatusSilver
+            break;
+        case "gold":
+            statusSource = StatusGold
+            break;
+        case "platimun":
+            statusSource = StatusPlatinum
+            break;
+        default:
+            statusSource = StatusBronze
+            break;
+    }
 
     console.log(info)
 
@@ -29,7 +51,7 @@ const PersonalInfo = () => {
         <View style={s.personalInfoBlock}>
 
             <View style={s.editAndHearts}>
-                <TouchableOpacity style={s.edit} onPress={pressAlert}>
+                <TouchableOpacity style={s.edit} onPress={() => navigation.navigate('EditProfile')} >
                     <Edit />
                 </TouchableOpacity>
                 <View style={s.hearts}>
@@ -54,12 +76,12 @@ const PersonalInfo = () => {
             </View>
 
             <View style={s.status}>
-                <ImageBackground source={StatusBronze}
+                <ImageBackground source={statusSource}
                     resizeMethod={'contain'} style={s.avatar} />
 
             </View>
 
-          
+
 
         </View>
     )
@@ -74,15 +96,15 @@ const s = StyleSheet.create({
         justifyContent: 'flex-start',
         width: "100%",
         height: 240,
-       // backgroundColor: "pink",
+        // backgroundColor: "pink",
         borderRadius: 20,
-         backgroundColor: "#FFFFFF",
+        backgroundColor: "#FFFFFF",
     },
 
     editAndHearts: {
         width: "90%",
         height: 50,
-       // backgroundColor: "lightblue",
+        // backgroundColor: "lightblue",
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -91,7 +113,7 @@ const s = StyleSheet.create({
     edit: {
         width: 50,
         height: 50,
-      //  backgroundColor: "azure",
+        //  backgroundColor: "azure",
         alignItems: 'center',
         justifyContent: 'flex-end',
     },
@@ -99,7 +121,7 @@ const s = StyleSheet.create({
     hearts: {
         width: 90,
         height: 50,
-     //   backgroundColor: "aquamarine",
+        //   backgroundColor: "aquamarine",
         flexDirection: "row",
         alignItems: 'flex-end',
         justifyContent: 'center',
@@ -112,7 +134,7 @@ const s = StyleSheet.create({
     rating: {
         width: "90%",
         height: 60,
-     //   backgroundColor: "maroon",
+        //   backgroundColor: "maroon",
         alignItems: 'center',
         justifyContent: 'flex-end',
         paddingBottom: 5
@@ -121,7 +143,7 @@ const s = StyleSheet.create({
     phone: {
         width: "90%",
         height: 50,
-     //   backgroundColor: "lightgreen",
+        //   backgroundColor: "lightgreen",
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
@@ -136,7 +158,7 @@ const s = StyleSheet.create({
         justifyContent: 'flex-start',
         width: "100%",
         height: 50,
-     //   backgroundColor: "magenta"
+        //   backgroundColor: "magenta"
     },
 
     avatar: {

@@ -1,65 +1,70 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TextInput, Text, TouchableOpacity } from 'react-native';
 
-import ArrowBlue from '../../Images/ArrowBlue.svg'
-import Hands from '../../Images/Hands.svg'
+import PinBlue from '../../Images/PinBlue.svg'
+import SearchBlue from '../../Images/SearchBlue.svg'
 import { g } from "../../styles/global"
 
 import { useNavigation } from '@react-navigation/native'
 
 
-const SearchInput = ({ code, setCode }) => {
+const SearchPlaceInput = ({ code, setCode }) => {
 
     const [search, setSearch] = useState('')
 
     const navigation = useNavigation()
 
     const scaleArrow = 1.3;
-    const scaleHands = 1.2;
+    const scaleSearchBlue = 0.9;
 
     const handleChange = value => {
         setSearch(value)
         console.log(value)
     }
 
+    const handleSearch = () => {
+        console.log("PRESSED HandeSearch from LocationMap")
+    }
+
     return (
         <View style={s.outer}>
             <TextInput style={[s.searchInput, g.text24_400_grey]} textAlign="right"
-                placeholder="חיפוש שירות" onChangeText={handleChange} />
+                placeholder="מיקום החיפוש" onChangeText={handleChange} />
 
-            <View style={s.icons} >
-                <TouchableOpacity onPress={() => navigation.navigate('Home')} style={s.arrow}>
-                    <ArrowBlue style={{ transform: [{ scaleX: scaleArrow }, { scaleY: scaleArrow }] }} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Create')} style={s.hands}>
-                    <Hands style={{ transform: [{ scaleX: scaleHands }, { scaleY: scaleHands }] }} />
+            <View style={s.icons} pointerEvents='box-none'>
+                <View style={s.pin}>
+                    <PinBlue style={{ transform: [{ scaleX: scaleArrow }, { scaleY: scaleArrow }] }} />
+                </View>
+                <TouchableOpacity onPress={handleSearch} style={s.search}>
+                    <SearchBlue style={{ transform: [{ scaleX: scaleSearchBlue }, { scaleY: scaleSearchBlue }] }} />
                 </TouchableOpacity>
             </View>
-
         </View>
     )
 }
 
-export default SearchInput
+export default SearchPlaceInput
 
 const s = StyleSheet.create({
 
     outer: {
         width: '100%',
-        height: 60,
+        height: 50,
         position: 'relative',
         alignItems: 'center',
         justifyContent: 'space-between',
-       // backgroundColor: "lightblue",
+        // backgroundColor: "lightblue",
     },
 
     searchInput: {
         backgroundColor: 'white',
-        borderRadius: 30,
+        borderRadius: 16,
         height: "100%",
         width: '100%',
         fontSize: 20,
-        paddingRight: 60
+        paddingRight: 60,
+        borderWidth: 1,
+        borderColor: "#243663"
     },
 
     icons: {
@@ -72,26 +77,26 @@ const s = StyleSheet.create({
         justifyContent: 'space-between',
     },
 
-    arrow: {
+    pin: {
         width: 42,
         height: 42,
         borderRadius: 21,
-        backgroundColor: "#FDC27A",
+        //   backgroundColor: "#FDC27A",
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: 9
+        marginLeft: 0
     },
 
-    hands: {
-        width: 42,
-        height: 42,
+    search: {
+        width: 30,
+        height: 30,
         borderRadius: 21,
-       // backgroundColor: "green",
+        // backgroundColor: "green",
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
         borderColor: "lightgrey",
-        marginRight: 9
+        marginRight: 10
     },
 
 

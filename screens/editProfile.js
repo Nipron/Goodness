@@ -2,23 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { StyleSheet, Text, View, TextInput, Image, Dimensions, Pressable, ScrollView, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 
-import {
-    useFonts,
-    Assistant_200ExtraLight,
-    Assistant_300Light,
-    Assistant_400Regular,
-    Assistant_500Medium,
-    Assistant_600SemiBold,
-    Assistant_700Bold,
-    Assistant_800ExtraBold,
-} from '@expo-google-fonts/assistant';
-
 import ButtonBlue from '../src/ButtonBlue';
 import { userAPI } from '../src/api/api';
 import RegAvatar from '../components/avatars/RegAvatar';
 
 import CloseIcon from '../Images/CloseIcon'
 import { g } from '../styles/global'
+import { updateAll } from '../redux/store';
 import AsteriskInput from '../components/inputs/AsteriskInput';
 
 import { Formik } from 'formik'
@@ -39,17 +29,16 @@ import SmallLayout from '../components/layouts/SmallLayout';
 
 import { useNavigation } from '@react-navigation/native'
 
-import { setTempImage } from '../redux/tempImageRducer';
-import { updateAll } from '../redux/store';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
-export default function Registration2() {
+export default function EditProfile() {
 
+    const info = useSelector(state => state.all)
     const dispatch = useDispatch()
-
-    const [modalOpen, setModalOpen] = useState(false)
-    const [modalWrongOpen, setModalWrongOpen] = useState(true)
-
     const navigation = useNavigation()
+
+    console.log("ZZZZZ")
+    console.log(info.address.apt)
 
     const [nameBorder, setNameBorder] = useState("")
     const [phoneBorder, setPhoneBorder] = useState("")
@@ -64,72 +53,6 @@ export default function Registration2() {
     const [referralBorder, setReferralBorder] = useState("#243663")
     const [regValues, setRegValues] = useState({})
     const [code, setCode] = useState('')
-
-    const [image, setImage] = useState(null);
-
-    /*  let [fontsLoaded, error] = useFonts({ Assistant_400Regular })
-  
-      if (!fontsLoaded) {
-          return <AppLoading />
-      }*/
-
-    const sendRegs = () => {
-        //  userAPI.getSMS(999999999999)
-        setModalOpen(true)
-        console.log(modalOpen)
-    }
-
-    const confirm = async () => {
-        setModalWrongOpen(false)
-
-        await userAPI.register(regValues, code)
-            .then((response) => {
-                console.log("REGISTRATION SUCCEEDED")
-                //   console.log(response)
-
-            })
-            .catch(function (error) {
-                console.log("CODE NO GOOD")
-                console.log(error);
-            })
-
-        await userAPI.login(regValues)
-            .then(response => userAPI.saveToken(response.data.access_token))
-            .catch(function (error) {
-                console.log("LOGIN NO GOOD")
-                //  console.log(error);
-                //  console.log(regValues)
-                Alert.alert('Something went wrong!', "Wrong email/password", [{ text: "Try again", onPress: () => console.log('alert wrong') }])
-            })
-
-        await userAPI.sendPic(image)
-            .then(res => {
-                console.log("SEND PIC")
-                console.log(res)
-            })
-
-        await userAPI.dashboard()
-            .then(data => {
-                console.log("DASHBOARD OK")
-                dispatch(updateAll(data))
-                navigation.navigate('Profile')
-            })
-
-        setModalOpen(false)
-        navigation.navigate('Profile')
-
-        /*  console.log("CODE CODE")
-          console.log(code)*/
-    }
-
-    const handlePhone = value => {
-        value => setPhone(value)
-        console.log(value)
-    }
-
-    const checkPassword = () => {
-        console.log("HHHHHHHH")
-    }
 
     const onFormikSubmit = values => {
         if (!values.name) { setNameBorder("red") } else setNameBorder("lightgreen")
@@ -147,54 +70,38 @@ export default function Registration2() {
         if (values.name && values.phone && values.phone.length === 12 && values.email && values.job /*&& values.city 
         && values.street && values.house && value.appt*/ && values.password
             && (values.password === values.confirmPassword)) {
-            userAPI.getSMS(values.phone)
-            dispatch(setTempImage(image))
-            setRegValues(values)
-            console.log(regValues)
-            console.log("OK")
-            setModalOpen(true)
+            userAPI.update(values)
+                .then(() => userAPI.dashboard()
+                    .then(data => {
+                        console.log(data)
+                        dispatch(updateAll(data))
+                        navigation.navigate('Profile')
+                    }))
         } else {
             console.log("Not OK")
         }
     }
 
-
-
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
             <SmallLayout text="הרשמה">
-                <Modal
-                    transparent={true}
-                    animationType="slide"
-                    visible={modalOpen}>
-                    <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
-                        <View style={mS.modalBlock}>
-                            <View style={mS.innerBlock}>
-                                <RegAvatar />
-                                <TouchableOpacity style={mS.closeIcon} onPress={() => setModalOpen(false)}>
-                                    <CloseIcon />
-                                </TouchableOpacity>
-                                <View style={mS.titleBlock}>
-                                    <Text style={g.text28_700_blue}>שלחנו לך קוד ב-סמס</Text>
-                                </View>
-                                {true &&
-                                    <View style={mS.infoBlock}>
-                                        <Text style={g.text24_400_grey}>נא הכנס קוד שקיבלת</Text>
-                                    </View>}
-                                <View style={mS.inputBlock}>
-                                    <AsteriskInput code={code} setCode={setCode} />
-                                </View>
-                            </View>
-                            <ButtonBlue name="כניסה" onPress={confirm} />
-                        </View>
-                    </TouchableWithoutFeedback>
-                </Modal>
 
                 <View style={s.registrationBlock}>
-                    <CameraAvatar image={image} setImage={setImage} />
+                    <CameraAvatar />
                     <View style={s.plug} />
                     <Formik
-                        initialValues={{ name: '', phone: '', email: '', job: '', city: '', street: '', house: '', apt: '', password: '', confirmPassword: '', referral: '' }}
+                        initialValues={{
+                            id: info.id,
+                            name: info.name,
+                            phone: info.phone,
+                            email: info.email,
+                            job: info.job,
+                            city: info.address.city,
+                            street: info.address.street,
+                            house: info.address.house,
+                            apt: info.address.apt,
+                            password: '', confirmPassword: ''
+                        }}
                         onSubmit={onFormikSubmit}>
                         {
                             (props) => (
@@ -212,15 +119,6 @@ export default function Registration2() {
                                                 borderColor={nameBorder}
                                             >
                                                 <PersonIcon />
-                                            </RegInput>
-                                            <RegInput
-                                                onChangeText={props.handleChange('phone')}
-                                                value={props.values.phone}
-                                                keyboardType="number-pad"
-                                                placeholder="טלפון"
-                                                borderColor={phoneBorder}
-                                            >
-                                                <PhoneIcon />
                                             </RegInput>
                                             <RegInput
                                                 onChangeText={props.handleChange('email')}
@@ -307,24 +205,7 @@ export default function Registration2() {
                                             >
                                                 <LockIcon />
                                             </RegInput>
-
-                                            <View style={s.lineOuter}>
-                                                <View style={s.line}>
-                                                </View>
-                                            </View>
-
-                                            <RegInput
-                                                onChangeText={props.handleChange('referral')}
-                                                value={props.values.referral}
-                                                keyboardType="number-pad"
-                                                placeholder="טלפון של המזמין לאפליקציה"
-                                                borderColor={referralBorder}
-                                            >
-                                                <ReferalIcon />
-                                            </RegInput>
                                         </View>
-
-
                                     </View>
                                     <ButtonBlue name="שמור" bottom={73} onPress={props.handleSubmit} />
                                 </ScrollView>

@@ -2,8 +2,9 @@ import React from 'react';
 import AppLoading from 'expo-app-loading';
 import Navigator from './routes/homeStack5'
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import reducers from './redux/store';
+import thunk from 'redux-thunk'
 
 import {
   useFonts,
@@ -16,7 +17,7 @@ import {
   Assistant_800ExtraBold,
 } from '@expo-google-fonts/assistant';
 
-const store = createStore(reducers)
+const store = createStore(reducers, applyMiddleware(thunk))
 
 export default function App() {
 

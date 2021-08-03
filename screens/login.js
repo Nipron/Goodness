@@ -29,10 +29,12 @@ export default function Login(props) {
 
     const onFormikSubmit = values => {
 
-      
+
         userAPI.login(values)
-            .then(response => userAPI.dashboard(response.data.access_token)
+            .then(response => userAPI.saveToken(response.data.access_token))
+            .then(() => userAPI.dashboard()
                 .then(data => {
+                    console.log(data)
                     dispatch(updateAll(data))
                     navigation.navigate('Profile')
                 }))

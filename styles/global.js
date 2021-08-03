@@ -56,11 +56,26 @@ export const g = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 20
     },  
+    text20_400_blue: {
+        fontFamily: "Assistant_400Regular",
+        color: '#104E5B',
+        fontSize: 20
+    }, 
+    text20_400_grey: {
+        fontFamily: "Assistant_400Regular",
+        color: '#888C94',
+        fontSize: 20
+    }, 
     text22_400_grey: {
         fontFamily: "Assistant_400Regular",
         color: '#104E5B',
         fontSize: 22
-    },    
+    }, 
+    text22_700_white: {
+        fontFamily: "Assistant_700Bold",
+        color: '#FFFFFF',
+        fontSize: 22
+    },   
     text24_700_white: {
         fontFamily: "Assistant_700Bold",
         color: '#FFFFFF',
@@ -70,12 +85,7 @@ export const g = StyleSheet.create({
         fontFamily: "Assistant_700Bold",
         color: '#243663',
         fontSize: 24
-    },
-    text24_700_blue: {
-        fontFamily: "Assistant_700Bold",
-        color: '#243663',
-        fontSize: 24
-    },
+    },   
     text24_400_grey: {
         fontFamily: "Assistant_400Regular",
         color: '#104E5B',

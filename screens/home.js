@@ -1,21 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import { StyleSheet, Text, View, TextInput, Image, Pressable, Alert, SafeAreaView, Button, ImageBackground, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import AppLoading from 'expo-app-loading';
 
 import LogoGroup from '../src/LogoGroup';
 import ButtonYellow from '../src/ButtonYellow'
-import { userAPI } from '../src/api/api';
+import { commonAPI, userAPI } from '../src/api/api';
 import HomeLayout from '../components/layouts/HomeLayout';
 
 import { useNavigation } from '@react-navigation/native'
 import SearchInput from '../components/inputs/SearchInput';
+import { setCategories, setCategoriesThunk } from '../redux/categoriesReducer';
 
 export default function Home(props) {
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setCategoriesThunk());
+  }, [])
+  
   const navigation = useNavigation()
 
   const pressHandler = () => {
-    navigation.navigate('Login')
+    navigation.navigate('Create')
 
     // Alert.alert('OOPS!', "Epta kukuha", [{text: "IN-NA", onPress: () => console.log('alet umer')}])
   }

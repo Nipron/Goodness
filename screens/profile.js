@@ -67,7 +67,7 @@ const s = StyleSheet.create({
      //   backgroundColor: "brown",
       //   backgroundColor: "#EEEEEE",
         paddingBottom: 26,
-        borderRadius: 20
+        borderRadius: 20,
     },
 
     regBlockContainer: {
