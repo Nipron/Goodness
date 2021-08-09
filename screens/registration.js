@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, View, TextInput, Image, Dimensions, Pressable, ScrollView, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, Alert, Dimensions, Pressable, ScrollView, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 
 import {
     useFonts,
@@ -124,7 +124,7 @@ export default function Registration2() {
 
     const handlePhone = value => {
         value => setPhone(value)
-        console.log(value)
+      //  console.log(value)
     }
 
     const checkPassword = () => {

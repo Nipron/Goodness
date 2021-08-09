@@ -43,7 +43,7 @@ const PersonalInfo = () => {
             break;
     }
 
-    console.log(info)
+   // console.log(info)
 
     const pressAlert = () => Alert.alert('EDIT PROFILE', "Redirect ot EditProfile", [{ text: "Ok"/*, onPress: () => console.log('alert wrong') */ }])
 
@@ -77,7 +77,7 @@ const PersonalInfo = () => {
 
             <View style={s.status}>
                 <ImageBackground source={statusSource}
-                    resizeMethod={'contain'} style={s.avatar} />
+                    resizeMethod={'auto'} style={s.avatar} />
 
             </View>
 

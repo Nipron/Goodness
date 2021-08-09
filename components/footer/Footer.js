@@ -40,7 +40,7 @@ const s = StyleSheet.create({
         width: "100%",
         height: "12%",
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
 
     footerInner: {

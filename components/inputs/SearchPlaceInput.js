@@ -8,19 +8,31 @@ import { g } from "../../styles/global"
 import { useNavigation } from '@react-navigation/native'
 
 
-const SearchPlaceInput = ({ code, setCode }) => {
+const SearchPlaceInput = (props) => {
 
     const [search, setSearch] = useState('')
 
     const navigation = useNavigation()
 
+    const [place, setPlace] = useState(null)
+
     const scaleArrow = 1.3;
     const scaleSearchBlue = 0.9;
 
-    const handleChange = value => {
-        setSearch(value)
-        console.log(value)
-    }
+    const apiKey = "BLTyOOeZHWve6hMMxyEXwkNx-vV4I7Blasgqvk62ZGJfj_dizexqUNWeadUxsB3ki9am0lsRwn8PctNN-NCQ1L8"
+
+    const handleChange = async value => {
+        setPlace(value);
+        const apiUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${apiKey}
+        &input=${place}&location=32,34.8&radius=5000`;
+        try {
+            const result = await fetch(apiUrl);
+            const json = await result.json()
+            console.log(json)
+        } catch (e) {
+            console.log(e)
+        }
+    }   
 
     const handleSearch = () => {
         console.log("PRESSED HandeSearch from LocationMap")
@@ -28,8 +40,8 @@ const SearchPlaceInput = ({ code, setCode }) => {
 
     return (
         <View style={s.outer}>
-            <TextInput style={[s.searchInput, g.text24_400_grey]} textAlign="right"
-                placeholder="מיקום החיפוש" onChangeText={handleChange} />
+          {/*  <TextInput style={[s.searchInput, g.text24_400_grey]} textAlign="right"
+                placeholder="מיקום החיפוש" onChangeText={value => handleChange(value)} />*/}
 
             <View style={s.icons} pointerEvents='box-none'>
                 <View style={s.pin}>

@@ -23,7 +23,7 @@ export const tempImage = (state = tempImageInitialState, action) => {
              //  let categories = action.payload
                console.log("PIC PIC")
             //  let dd = JSON.stringify(data)
-                console.log( action.payload )
+           //     console.log( action.payload )
                 state = action.payload
                 console.log("OKI PIC")
 

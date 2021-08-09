@@ -1,21 +1,30 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, Image, Dimensions, Pressable, ScrollView, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, SafeAreaView } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps'
+//import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import ArrowBack from '../../Images/ArrowBack.svg'
+import TargetGrey from '../../Images/TargetGrey.svg'
+import PlusGrey from '../../Images/PlusGrey.svg'
+import MinusGrey from '../../Images/MinusGrey.svg'
+import PPlug from '../../Images/PPlug.svg'
 
 import { g } from '../../styles/global'
-
 
 import { useNavigation } from '@react-navigation/native'
 
 import { useSelector, useDispatch } from 'react-redux'
 import SearchPlaceInput from '../inputs/SearchPlaceInput';
+import Footer from '../footer/Footer';
+import DistancePanel from '../panels/DistancePanel';
+import ButtonYellowSelect from '../buttons/ButtonYellowSelect';
 
 
 export default function LocationMap(props) {
 
     const scaleArrow = 1.2
+    const scaleTarget = 1.1
+    const scalePlusMinus = 1.1
 
     const [cats4, setCats4] = useState([
         { label: "Country", value: "country" },
@@ -25,7 +34,7 @@ export default function LocationMap(props) {
     ])
 
 
-    const [coordinate, setCoordinate] = useState({...props.coordinate})
+    const [coordinate, setCoordinate] = useState({ ...props.coordinate })
 
     useEffect(() => {
 
@@ -49,7 +58,7 @@ export default function LocationMap(props) {
         let coords = await e.nativeEvent
         setCoordinate({ ...coords.coordinate })
         console.log("Coor OK")
-        console.log({...coords.coordinate})
+        console.log({ ...coords.coordinate })
     }
 
 
@@ -69,9 +78,13 @@ export default function LocationMap(props) {
         });
     };
 
+    const onGeoLocation = () => {
+        console.log("PRESSED Geo Location")
+    }
+
     const handleBackArrowPress = () => {
         props.setShowMap(false)
-        props.setCoordinate({...coordinate})
+        props.setCoordinate({ ...coordinate })
     }
 
     return (
@@ -98,46 +111,41 @@ export default function LocationMap(props) {
                             }}
                             mapType="standard"
                         >
-                            <Marker coordinate={coordinate}
-                                title={'My Location'}
-                                style={s.pinContainer}>
-                                <Text style={g.text24_700_blue}>My Location</Text>
-                                <View style={s.point} />
-                            </Marker>
+                            <Marker key={1} coordinate={coordinate} title={"המיקום שלי"} />
+                            <Circle center={coordinate}
+                                radius={props.distance * 1000}
+                                fillColor={'#00Df3125'}
+                                strokeWidth={0} />
                         </MapView>
                         <View style={s.buttonsBlock} pointerEvents='box-none'>
-                            <View style={s.topButtons}>
+                            <View style={s.topButtons} pointerEvents='box-none'>
                                 <TouchableOpacity style={s.backButton} onPress={handleBackArrowPress}>
                                     <ArrowBack style={{ transform: [{ scaleX: scaleArrow }, { scaleY: scaleArrow }] }} />
                                 </TouchableOpacity>
-                                <View style={s.searchPlaceBlock}>
-                                    <SearchPlaceInput />
-                                </View>
+                                {/*  <View style={s.searchPlaceBlock}>
+                                    <SearchPlaceInput coordinate={coordinate}/>
+                        </View>*/}
                             </View>
-                            <View style={s.bottomButtons}>
-
+                            {/* <View style={s.google}>
+                                <GooglePlacesInput />
+                        </View>*/}
+                            <View style={s.bottomButtons} pointerEvents='box-none'>
+                                <TouchableOpacity style={s.geolocation} onPress={onGeoLocation}>
+                                    <TargetGrey style={{ transform: [{ scaleX: scaleTarget }, { scaleY: scaleTarget }] }} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={s.zoomIn} onPress={onZoomInPress}>
+                                    <PlusGrey style={{ transform: [{ scaleX: scalePlusMinus }, { scaleY: scalePlusMinus }] }} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={s.zoomOut} onPress={onZoomOutPress}>
+                                    <MinusGrey style={{ transform: [{ scaleX: scalePlusMinus }, { scaleY: scalePlusMinus }] }} />
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
-
-
-
-                    <View style={s.block1}>
-                        <View style={s.zoomInContainer}>
-                            <TouchableOpacity style={s.zoomIn} onPress={onZoomInPress}>
-                                <Text>+</Text>
-                            </TouchableOpacity>
-                        </View>
-
-
-                        <View style={s.zoomOutContainer}>
-                            <TouchableOpacity style={s.zoomOut} onPress={onZoomOutPress}>
-                                <Text>grgrrg</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                    </View>
-
+                    <Text style={s.description}>אנא בחר מרחק מרבי</Text>
+                    <DistancePanel distance={props.distance} setDistance={props.setDistance} />
+                    <ButtonYellowSelect name={"בחר"} onPress={handleBackArrowPress} />
+                    <Footer />
                 </View>
             </TouchableWithoutFeedback>
         </Modal >
@@ -149,13 +157,22 @@ export default function LocationMap(props) {
 
 const s = StyleSheet.create({
 
+    google: {
+        width: "95%",
+        height: 100,
+        backgroundColor: "red"
+    },
+
     outer: {
-        flex: 1
+        flex: 1,
+        backgroundColor: "white",
+        alignItems: "center",
+        justifyContent: "space-between"
     },
 
     mapBlock: {
         width: "100%",
-        height: "80%",
+        height: "68%",
         backgroundColor: "pink",
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
@@ -178,7 +195,7 @@ const s = StyleSheet.create({
     buttonsBlock: {
         width: "100%",
         height: "100%",
-        alignItems: "center",
+        alignItems: "flex-end",
         justifyContent: "space-between",
     },
 
@@ -192,10 +209,10 @@ const s = StyleSheet.create({
     },
 
     bottomButtons: {
-        width: "100%",
-        height: 100,
-        backgroundColor: "orange",
-        
+        //   width: "100%",
+        //   backgroundColor: "orange",
+        alignItems: "center",
+        justifyContent: "flex-end",
     },
 
     backButton: {
@@ -205,12 +222,51 @@ const s = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 10
-        
     },
 
     searchPlaceBlock: {
         width: "80%",
     },
+
+    geolocation: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: '#243663',
+        justifyContent: "center",
+        alignItems: "center",
+        marginHorizontal: 10,
+        marginBottom: 20,
+    },
+
+    zoomIn: {
+        width: 35,
+        height: 35,
+        backgroundColor: '#243663',
+        justifyContent: "center",
+        alignItems: "center",
+        marginHorizontal: 10,
+        marginBottom: 10,
+    },
+
+    zoomOut: {
+        width: 35,
+        height: 35,
+        backgroundColor: '#243663',
+        justifyContent: "center",
+        alignItems: "center",
+        marginHorizontal: 10,
+        marginBottom: 20,
+    },
+
+    description: {
+        color: "#B4B4B4"
+    },
+
+
+
+
+
 
 
 
@@ -263,25 +319,7 @@ const s = StyleSheet.create({
         alignItems: "center",
     },
 
-    zoomIn: {
-        width: 30,
-        height: 30,
-        backgroundColor: 'olive',
-        justifyContent: "center",
-        alignItems: "center",
-        margin: 5,
-    },
 
-    zoomOut: {
-        width: 30,
-        height: 30,
-        backgroundColor: 'red',
-        justifyContent: "center",
-        alignItems: "center",
-        margin: 5,
-        marginTop: 40,
-        position: 'relative'
-    },
 
 
     pinContainer: {

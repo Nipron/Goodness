@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TextInput, Text, TouchableOpacity } from 'react-native';
 
-const PeriodsPanel = ({ period, setPeriod }) => {
-
-    
+const PeriodsPanel = ({ period, setPeriod }) => {    
 
     const color1 = "green"
     const color2 = "lightgrey"
@@ -20,14 +18,7 @@ const PeriodsPanel = ({ period, setPeriod }) => {
                 onPress={() => setPeriod("lunch")}>
                 <Text style={{ fontWeight: period === "lunch" ? "bold" : "nornal", color: period === "lunch" ? color3 : color4 }}>12 - 16</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[s.periodContainer, { backgroundColor: period === "lunch" ? color1 : color2 }]}
-                onPress={() => setPeriod("lunch")}>
-                <Text style={{ fontWeight: period === "lunch" ? "bold" : "nornal", color: period === "lunch" ? color3 : color4 }}>16 - 22</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[s.periodContainer, { backgroundColor: period === "lunch" ? color1 : color2 }]}
-                onPress={() => setPeriod("lunch")}>
-                <Text style={{ fontWeight: period === "lunch" ? "bold" : "nornal", color: period === "lunch" ? color3 : color4 }}>Any time</Text>
-            </TouchableOpacity>
+            
         </View>
     )
 }
@@ -37,19 +28,23 @@ export default PeriodsPanel
 const s = StyleSheet.create({
 
     outer: {
-        width: '100%',
+        width: '90%',
         height: 60,
+        borderRadius: 15,
         backgroundColor: "ivory",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-around"
+        justifyContent: "space-around",
+        overflow: 'hidden'
     },
 
     periodContainer: {
-        width: "22%",
-        height: 30,
-        borderRadius: 15,
+        width: "25%",
+        height: "100%",
+        backgroundColor: "pink",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: "#243663"
     }
 });

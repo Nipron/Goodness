@@ -34,14 +34,12 @@ export default function Login(props) {
             .then(response => userAPI.saveToken(response.data.access_token))
             .then(() => userAPI.dashboard()
                 .then(data => {
-                    console.log(data)
                     dispatch(updateAll(data))
                     navigation.navigate('Profile')
                 }))
             .catch(function (error) {
                 console.log("LOGIN NO GOOD")
-                console.log(error);
-                console.log(values)
+              //  console.log(error);
                 Alert.alert('Something went wrong!', "Wrong email/password", [{ text: "Try again", onPress: () => console.log('alert wrong') }])
             })
     }

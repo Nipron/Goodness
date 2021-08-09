@@ -6,7 +6,7 @@ import Bender from '../../Images/Bender.jpg'
 const AvatarBig = () => {
 
     const path = useSelector(state => state.all.avatar.path)
-    console.log(path)
+  //  console.log(path)
 
     return (
         <View style={s.photoOuter}>

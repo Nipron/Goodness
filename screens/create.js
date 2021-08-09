@@ -6,7 +6,7 @@ import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 
 import ButtonBlue from '../src/ButtonBlue';
-import { userAPI } from '../src/api/api';
+import { serviceAPI, userAPI } from '../src/api/api';
 import RegAvatar from '../components/avatars/RegAvatar';
 
 import CloseIcon from '../Images/CloseIcon'
@@ -36,6 +36,7 @@ import DropDownSearch2 from '../components/dropdowns/DropDownSearch2';
 import LocationMap from '../components/maps/LocationMap';
 import DaysPanel from '../components/panels/DaysPanel';
 import PeriodsPanel from '../components/panels/PeriodsPanel';
+import SearchResultCard from '../components/cards/SearchResultCard';
 
 export default function Create() {
 
@@ -58,11 +59,15 @@ export default function Create() {
     const [cat2, setCat2] = useState('')
     const [cat3, setCat3] = useState('')
     const [cat4, setCat4] = useState('')
+    const [catForSearch, setCatForSearch] = useState(null)
 
-    const [coordinate, setCoordinate] = useState({
-        "latitude": 32,
-        "longitude": 34.8,
-    })
+    const [coordinate, setCoordinate] = useState(null
+        /*  {
+          "latitude": 32,
+          "longitude": 34.8,
+      }*/
+    )
+    const [distance, setDistance] = useState(1)
 
     useEffect(() => {
         console.log("Hello from UseState")
@@ -76,81 +81,80 @@ export default function Create() {
     const [cat3open, setCat3open] = useState(false)
     const [cat4open, setCat4open] = useState(false)
     const [readyToSearch, setReadyToSearch] = useState(false)
+    const [chosenId, setChosenId] = useState(null)
+    const [readyToConfirm, setReadyToConfirm] = useState(false)
     const [showCalendar, setShowCalendar] = useState(false)
     const [showMap, setShowMap] = useState(false)
 
     const [days, setDays] = useState([true, true, true, true, true, false, false])
 
     const [period, setPeriod] = useState("allday")
-    const [showPeriods, setShowPeriods] = useState(true)
+    const [showPeriods, setShowPeriods] = useState(false)
+
+    const [result, setResult] = useState([])
 
     const navigation = useNavigation()
     const data = useSelector(state => state.all)
 
     const catValueChange1 = cat => {
 
-        console.log("FFFFFF")
         setCat1(cat);
         setCat2('')
+        setCats2([])
         setCat3('')
         setCats3([])
+        setReadyToSearch(false)
+
         let i = cats.map(el => el.title).indexOf(cat)
-        let cats2 = cats[i].children.map(cat => ({ label: cat.title, value: cat.title }))
-        setCats2(cats2)
-        //  console.log(cat)*/
+        if (cats[i].children.length) {
+            let cats2 = cats[i].children.map(cat => ({ label: cat.title, value: cat.title }))
+            setCats2(cats2)
+        } else {
+            let id = cats[i].id
+            setCatForSearch(id)
+            console.log(`Cat for serach : ${id}`)
+        }
     }
 
     const catValueChange2 = cat => {
 
         setCat2(cat);
+        setCats3([])
         setCat3('')
+        setReadyToSearch(false)
 
-        u = cats.map(el => el.title).indexOf(cat1)
-        w = cats[u].children.map(el => el.title).indexOf(cat)
+        if (!!cat1 && !!cat2) {
+            let u = cats.map(el => el.title).indexOf(cat1) || 0
+            let w = cats[u].children.map(el => el.title).indexOf(cat) || 0
 
-        if (cat2 && cats[u].children[w].children.length > 0) {
-            let cats3 = cats[u].children[w].children.map(cat => ({ label: cat.title, value: cat.title }))
-            console.log(cats3)
-            setCats3(cats3)
-
-        } else {
-            setCats3([])
+            if (!!cat2 && cats[u].children[w].children.length) {
+                let cats3 = cats[u].children[w].children.map(cat => ({ label: cat.title, value: cat.title }))
+                setCats3(cats3)
+            } else {
+                let id = cats[u].children[w].id
+                setCatForSearch(id)
+                console.log(`Cat for serach : ${id}`)
+            }
         }
     }
 
     const catValueChange3 = cat => {
+
         setCat3(cat)
+        if (!!cat1 && !!cat2 && !!cat3) {
+            let x = cats.map(el => el.title).indexOf(cat1)
+            let y = cats[x].children.map(el => el.title).indexOf(cat2)
+            let z = cats[x].children[y].children.map(el => el.title).indexOf(cat)
+
+            let id = cats[x].children[y].children[z].id
+            setCatForSearch(id)
+            console.log(`Cat for serach : ${id}`)
+        }
     }
 
     const catValueChange4 = cat => {
         setCat4(cat)
     }
-
-    const handleSearch = values => {
-        console.log(values)
-    }
-
-    /* useEffect(() => {
-         let cat2OK = false
-         let cat3OK = false
- 
-         let i = cats.map(el => el.title).indexOf(cat1)
-         if (cats[i].children.length === 0) {
-             cat2OK = true
-             cat3OK = true
-         } else {
-             if ((cat2 === 0) || cat2) {
-                 cat2OK = true
-                 let j = cats[u].children.map(el => el.title).indexOf(cat)
-             }
-         }
- 
-         if ((cats[i].children.length === 0) || (cat2 === 0) || cat2) {
-              
-         }
- 
-         // if (cat1 && cat4)
-     }, [cats, cat1, cat2, cat3, cat4])*/
 
     const coordinatesPress = async e => {
         let coords = await e.nativeEvent
@@ -176,12 +180,77 @@ export default function Create() {
         });
     };
 
+    useEffect(() => {
+        setReadyToSearch(!!catForSearch && !!coordinate && days.reduce((acc, day) => acc || day, false))
+    }, [catForSearch, coordinate, days])
+
+    const handleCreate = () => {
+        console.log("CREATE")
+        serviceAPI.createService({
+            "categoryId": catForSearch,
+            "cost": 1,
+            "actionRadius": 1000,
+            "amount": 5,
+            "coordinate": coordinate,
+            "dayTime": "all day long",
+            "weekDays": [...days]
+        }).
+            then(res => {
+                console.log("ggg")
+                console.log(JSON.parse(res))
+            })
+    }
+
+    const handleSearch = () => {
+        console.log("SEARCH")
+        try {
+            serviceAPI.searchService({
+                "categoryId": catForSearch,
+                "coordinate": coordinate,
+                "range": distance,
+                "date": "2021-08-26"
+            }).
+                then(res => {
+                    console.log("ggg")
+                    console.log(JSON.parse(res))
+                    setResult(JSON.parse(res))
+                })
+
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
+
+    /*const [isButton, setIsButton] = useState(true)
+    const [buttonName, setButtonName] = useState('Search')
+    const [buttonAction, setButtonAction] = useState(handleSearch)*/
+
+    useEffect(() => {
+        setResult([])
+        /* if (createMode) {
+             setIsButton(readyToSearch);
+             setButtonAction(handleCreate);
+             setButtonName("Create")
+         } else {
+             setIsButton(true);
+             setButtonAction(handleSearch);
+             setButtonName("Search")
+         }*/
+    }, [createMode])
+
     //<TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
     //</TouchableWithoutFeedback>
     return (
         <View style={s.mainContainer}>
-            <LocationMap showMap={showMap} setShowMap={setShowMap} coordinate={coordinate} setCoordinate={setCoordinate} />
-            <SearchLayout>
+            <LocationMap
+                showMap={showMap}
+                setShowMap={setShowMap}
+                coordinate={coordinate}
+                setCoordinate={setCoordinate}
+                distance={distance}
+                setDistance={setDistance} />
+            <SearchLayout readyToConfirm={readyToConfirm} chosenId={chosenId}>
                 <View style={s.outer}>
                     <View style={s.textBlock}>
                         <Text style={[g.text22_700_white, s.headerText]}>{createMode ? "פרסום השירות" : "חיפוש שירות"}</Text>
@@ -189,122 +258,137 @@ export default function Create() {
                     <View style={s.switchBlock}>
                         <SearchSwitch createMode={createMode} setCreateMode={setCreateMode} />
                     </View>
-                    {/* <SSearch />*/}
-                    <View style={s.pickersBlock}>
-                        <View style={s.picker1}>
-                            <DropDownPicker
-                                onChangeValue={catValueChange1}
-                                style={s.picker}
-                                // containerStyle={s.container}
-                                textStyle={[g.text20_400_blue, s.text]}
-                                open={cat1open}
-                                value={cat1}
-                                items={cats1}
-                                setOpen={setCat1open}
-                                setValue={setCat1}
-                                setItems={setCats1}
-                            />
-                        </View>
-
-                        
-                            <View style={s.picker2}>
+                    <ScrollView style={s.scrollBlock}  contentContainerStyle={s.resultContainer}>
+                        <View style={s.pickersBlock}>
+                            <View style={s.picker1}>
                                 <DropDownPicker
                                     onChangeValue={catValueChange1}
                                     style={s.picker}
                                     // containerStyle={s.container}
                                     textStyle={[g.text20_400_blue, s.text]}
-                                    open={cat2open}
-                                    value={cat2}
-                                    items={cats2}
-                                    setOpen={setCat2open}
-                                    setValue={setCat2}
-                                    setItems={setCats2}
+                                    open={cat1open}
+                                    value={cat1}
+                                    items={cats1}
+                                    setOpen={setCat1open}
+                                    setValue={setCat1}
+                                    setItems={setCats1}
                                 />
                             </View>
 
-                        <View style={s.picker4}>
-                            <DropDownPicker
-                                onChangeValue={catValueChange4}
-                                style={s.picker}
-                                // containerStyle={s.container}
-                                textStyle={[g.text20_400_blue, s.text]}
-                                open={cat4open}
-                                value={cat4}
-                                items={cats4}
-                                setOpen={setCat4open}
-                                setValue={setCat4}
-                                setItems={setCats4}
-                            />
+                            {!!cats2.length &&
+                                <View style={s.picker2}>
+                                    <DropDownPicker
+                                        onChangeValue={catValueChange2}
+                                        style={s.picker}
+                                        // containerStyle={s.container}
+                                        textStyle={[g.text20_400_blue, s.text]}
+                                        open={cat2open}
+                                        value={cat2}
+                                        items={cats2}
+                                        setOpen={setCat2open}
+                                        setValue={setCat2}
+                                        setItems={setCats2}
+                                    />
+                                </View>
+                            }
+
+                            {!!cats3.length &&
+                                <View style={s.picker3}>
+                                    <DropDownPicker
+                                        onChangeValue={catValueChange3}
+                                        style={s.picker}
+                                        // containerStyle={s.container}
+                                        textStyle={[g.text20_400_blue, s.text]}
+                                        open={cat3open}
+                                        value={cat3}
+                                        items={cats3}
+                                        setOpen={setCat3open}
+                                        setValue={setCat3}
+                                        setItems={setCats3}
+                                    />
+                                </View>
+                            }
+
+
                         </View>
-                    </View>
-                    <DaysPanel days={days} setDays={setDays} />
-                    {showPeriods && <PeriodsPanel period={period} setPeriod={setPeriod} />}
 
-                    <View style={s.showMapBlock}>
-                        <TouchableOpacity style={s.showMapButton} onPress={() => setShowMap(true)}>
-                            <Text style={g.text24_700_white}>Set Coordinates</Text>
-                        </TouchableOpacity>
-                    </View>
+                        {createMode && <DaysPanel days={days} setDays={setDays} />}
+                        {showPeriods && <PeriodsPanel period={period} setPeriod={setPeriod} />}
 
-                    {readyToSearch &&
-                        <View style={s.searchButtonBlock}>
-                            <Text style={g.text20_400_white}>Search</Text>
+                        <View style={s.showMapBlock}>
+                            <TouchableOpacity style={s.showMapButton} onPress={() => setShowMap(true)}>
+                                <Text style={g.text24_700_blue}>המיקום שלי</Text>
+                            </TouchableOpacity>
                         </View>
-                    }
-                    {showCalendar &&
-                        <View style={s.calendar}>
 
-                            <Calendar
-                                // Initially visible month. Default = Date()
-                                current={'2021-07-29'}
-                                // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-                                minDate={'2021-07-10'}
-                                // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-                                maxDate={'2021-09-30'}
-                                // Handler which gets executed on day press. Default = undefined
-                                onDayPress={(day) => { console.log('selected day', day) }}
-                                // Handler which gets executed on day long press. Default = undefined
-                                onDayLongPress={(day) => { console.log('selected day', day) }}
-                                // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-                                monthFormat={'yyyy MM'}
-                                // Handler which gets executed when visible month changes in calendar. Default = undefined
-                                onMonthChange={(month) => { console.log('month changed', month) }}
-                                // Hide month navigation arrows. Default = false
-                                //    hideArrows={true}
-                                // Replace default arrows with custom ones (direction can be 'left' or 'right')
-                                //    renderArrow={(direction) => (<Arrow />)}
-                                // Do not show days of other months in month page. Default = false
-                                //    hideExtraDays={true}
-                                // If hideArrows = false and hideExtraDays = false do not switch month when tapping on greyed out
-                                // day from another month that is visible in calendar page. Default = false
-                                //   disableMonthChange={true}
-                                // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday
-                                firstDay={1}
-                                // Hide day names. Default = false
-                                //   hideDayNames={true}
-                                // Show week numbers to the left. Default = false
-                                //    showWeekNumbers={true}
-                                // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-                                onPressArrowLeft={subtractMonth => subtractMonth()}
-                                // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-                                onPressArrowRight={addMonth => addMonth()}
-                            // Disable left arrow. Default = false
-                            //   disableArrowLeft={true}
-                            // Disable right arrow. Default = false
-                            //   disableArrowRight={true}
-                            // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
-                            //    disableAllTouchEventsForDisabledDays={true}
-                            // Replace default month and year title with custom one. the function receive a date as parameter
-                            //   renderHeader={(date) => {/*Return JSX*/ }}
-                            // Enable the option to swipe between months. Default = false
-                            //  enableSwipeMonths={true}
-                            />
+                        {createMode && readyToSearch &&
+                            <TouchableOpacity style={s.createButtonBlock} onPress={handleCreate}>
+                                <Text style={g.text24_700_white}>לִיצוֹר</Text>
+                            </TouchableOpacity >
+                        }
+                        {!createMode && readyToSearch &&
+                            <TouchableOpacity style={s.searchButtonBlock} onPress={handleSearch}>
+                                <Text style={g.text24_700_white}>לחפש</Text>
+                            </TouchableOpacity >
+                        }
+                        {showCalendar &&
+                            <View style={s.calendar}>
 
-                        </View>}
+                                <Calendar
+                                    // Initially visible month. Default = Date()
+                                    current={'2021-07-29'}
+                                    // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
+                                    minDate={'2021-07-10'}
+                                    // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
+                                    maxDate={'2021-09-30'}
+                                    // Handler which gets executed on day press. Default = undefined
+                                    onDayPress={(day) => { console.log('selected day', day) }}
+                                    // Handler which gets executed on day long press. Default = undefined
+                                    onDayLongPress={(day) => { console.log('selected day', day) }}
+                                    // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
+                                    monthFormat={'yyyy MM'}
+                                    // Handler which gets executed when visible month changes in calendar. Default = undefined
+                                    onMonthChange={(month) => { console.log('month changed', month) }}
+                                    // Hide month navigation arrows. Default = false
+                                    //    hideArrows={true}
+                                    // Replace default arrows with custom ones (direction can be 'left' or 'right')
+                                    //    renderArrow={(direction) => (<Arrow />)}
+                                    // Do not show days of other months in month page. Default = false
+                                    //    hideExtraDays={true}
+                                    // If hideArrows = false and hideExtraDays = false do not switch month when tapping on greyed out
+                                    // day from another month that is visible in calendar page. Default = false
+                                    //   disableMonthChange={true}
+                                    // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday
+                                    firstDay={1}
+                                    // Hide day names. Default = false
+                                    //   hideDayNames={true}
+                                    // Show week numbers to the left. Default = false
+                                    //    showWeekNumbers={true}
+                                    // Handler which gets executed when press arrow icon left. It receive a callback can go back month
+                                    onPressArrowLeft={subtractMonth => subtractMonth()}
+                                    // Handler which gets executed when press arrow icon right. It receive a callback can go next month
+                                    onPressArrowRight={addMonth => addMonth()}
+                                // Disable left arrow. Default = false
+                                //   disableArrowLeft={true}
+                                // Disable right arrow. Default = false
+                                //   disableArrowRight={true}
+                                // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
+                                //    disableAllTouchEventsForDisabledDays={true}
+                                // Replace default month and year title with custom one. the function receive a date as parameter
+                                //   renderHeader={(date) => {/*Return JSX*/ }}
+                                // Enable the option to swipe between months. Default = false
+                                //  enableSwipeMonths={true}
+                                />
 
-                    <ScrollView style={s.resultBlock} contentContainerStyle={s.resultContainer}>
-                        <View style={s.plug}>
+                            </View>}
 
+                        <View style={s.resultBlock}>
+                            <View style={s.plug}>
+                                {!!result.length && result.map(offer => <SearchResultCard
+                                    data={offer}
+                                    chosenId={chosenId}
+                                    setChosenId={setChosenId} />)}
+                            </View>
                         </View>
                     </ScrollView>
                 </View>
@@ -315,23 +399,52 @@ export default function Create() {
 
 const s = StyleSheet.create({
 
+    scrollBlock: {
+        backgroundColor: "olive",
+        width: "100%"
+    },
+
+    createButtonBlock: {
+        width: "90%",
+        height: "10%",
+        backgroundColor: "#3993D6",
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 5,
+        height: 60,
+        borderRadius: 15
+    },
+
+    searchButtonBlock: {
+        width: "100%",
+        height: "10%",
+        backgroundColor: "#3993D6",
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 5,
+        height: 60,
+        borderRadius: 15
+    },
+
+
     mainContainer: {
-        flex: 1
+        flex: 1,
     },
 
     showMapBlock: {
         width: "100%",
         height: 60,
-        backgroundColor: 'red',
+        //     backgroundColor: 'red',
         justifyContent: "center",
         alignItems: "center",
     },
 
     showMapButton: {
         width: "100%",
-        height: 50,
-        borderRadius: 25,
-        backgroundColor: 'navy',
+        height: 60,
+        borderRadius: 15,
+        margin: 5,
+        backgroundColor: 'white',
         justifyContent: "center",
         alignItems: "center",
     },
@@ -355,7 +468,7 @@ const s = StyleSheet.create({
     zoomIn: {
         width: 30,
         height: 30,
-        backgroundColor: 'olive',
+        //    backgroundColor: 'olive',
         justifyContent: "center",
         alignItems: "center",
         margin: 5,
@@ -364,7 +477,7 @@ const s = StyleSheet.create({
     zoomOut: {
         width: 30,
         height: 30,
-        backgroundColor: 'red',
+        //    backgroundColor: 'red',
         justifyContent: "center",
         alignItems: "center",
         margin: 5,
@@ -382,13 +495,13 @@ const s = StyleSheet.create({
         width: 10,
         height: 10,
         borderRadius: 5,
-        backgroundColor: "purple"
+        //   backgroundColor: "purple"
     },
 
     mapcont: {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
-        backgroundColor: "pink",
+        //    backgroundColor: "pink",
         justifyContent: "center",
         alignItems: "center"
     },
@@ -396,7 +509,7 @@ const s = StyleSheet.create({
     mapview: {
         width: "100%",
         height: "100%",
-        backgroundColor: "olive",
+        //   backgroundColor: "olive",
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         position: 'relative'
@@ -433,7 +546,7 @@ const s = StyleSheet.create({
     pickersBlock: {
         width: "100%",
         // height: "10%",
-        backgroundColor: "olive",
+        //   backgroundColor: "olive",
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 10
@@ -451,7 +564,7 @@ const s = StyleSheet.create({
     },
 
     picker1: {
-        width: "90%",
+        width: "100%",
         height: 60,
         backgroundColor: "navy",
         zIndex: 10,
@@ -459,57 +572,51 @@ const s = StyleSheet.create({
     },
 
     picker2: {
-        width: "90%",
+        width: "100%",
         height: 60,
-        backgroundColor: "lime",
+        //   backgroundColor: "lime",
         zIndex: 9,
         margin: 5
     },
 
     picker3: {
-        width: "90%",
+        width: "100%",
         height: 60,
-        backgroundColor: "peachpuff",
+        //   backgroundColor: "peachpuff",
         zIndex: 8,
         margin: 5
     },
 
     picker4: {
-        width: "90%",
+        width: "100%",
         height: 60,
-        backgroundColor: "maroon",
+        //    backgroundColor: "maroon",
         zIndex: 7,
         margin: 5
     },
 
     calendar: {
-        width: "90%",
+        width: "100%",
         height: 400,
-        backgroundColor: "plum"
+        //  backgroundColor: "plum"
     },
 
-    searchButtonBlock: {
-        width: "90%",
-        height: "10%",
-        backgroundColor: "yellow",
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+
 
     resultBlock: {
-        width: "90%",
+        width: "100%",
         height: "30%",
-        backgroundColor: "dodgerblue",
+           backgroundColor: "pink",
     },
 
     resultContainer: {
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
     },
 
     plug: {
-        width: "90%",
+        width: "100%",
         height: 600,
-        backgroundColor: "goldenrod"
+           backgroundColor: "goldenrod"
     }
 })

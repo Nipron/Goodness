@@ -30,9 +30,7 @@ import ButtonRed from '../components/buttons/ButtonRed';
 export default function Profile() {
 
     const navigation = useNavigation()
-    const data = useSelector(state => state.all)
-
-    console.log(data)
+    const data = useSelector(state => state.all)   
 
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
@@ -42,9 +40,9 @@ export default function Profile() {
                 <ScrollView style={s.regBlock} contentContainerStyle={s.regBlockContainer}>
                 
                     <View style={s.folders} >                       
-                        <DropDownBlue name={"שירותים מוזמנים על ידי משתמשים אחרים"}/>
+                        <DropDownBlue name={"שירותים מוזמנים על ידי משתמשים אחרים"} list={data.ordersTo}/>
                         <View style={s.line}/>
-                        <DropDownBlue name={"שירותים מוזמנים על ידי המשתמש"}/>
+                        <DropDownBlue name={"שירותים מוזמנים על ידי המשתמש"} list={data.jobsTo}/>
                         <View style={s.line}/>
                         <DropDownBlue name={"היסטוריית מסירת השירות"}/>
                         <View style={s.line}/>

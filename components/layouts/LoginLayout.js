@@ -13,7 +13,7 @@ export default function LoginLayout(props) {
         <KeyboardAvoidingView style={s.containerMain} behavior="padding">
             <View style={s.containerBlu}>
                 <ImageBackground source={require('../../Images/Background.png')}
-                    resizeMethod={'cover'} style={s.background}>
+                    resizeMethod={'auto'} style={s.background}>
                     {props.children}
                 </ImageBackground>
             </View>

@@ -53,7 +53,7 @@ export default DaysPanel
 const s = StyleSheet.create({
 
     outer: {
-        width: '100%',
+        width: '90%',
         height: 60,
         borderRadius: 16,
         overflow: "hidden",

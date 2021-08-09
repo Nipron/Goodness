@@ -1,8 +1,6 @@
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 let FormData = require('form-data');
-//let fs = require('fs');
-//const RNFS = require('react-native-fs');
 import { Linking } from "react-native";
 
 
@@ -16,8 +14,8 @@ const instance = axios.create({
 
 export const commonAPI = {
   getCategories: () => {
-    console.log("Hello")
-    // return instance.get('serviceCategory/?l=he')
+    console.log("Hello!!!")
+    //  return instance.get('serviceCategory/?l=he')
     return instance.get('serviceCategory')
   }
 }
@@ -27,8 +25,6 @@ export const userAPI = {
     "phone": `${phone}`
   }))
     .then(function (response) {
-      console.log("RESPONSE FROM ")
-      console.log(JSON.stringify(response.data));
     })
     .catch(function (error) {
       console.log(error);
@@ -59,11 +55,12 @@ export const userAPI = {
     try {
       await AsyncStorage.setItem('token', token)
       console.log("TOKEN OK")
-      // console.log(token)
     } catch (e) {
       console.log(e)
     }
   },
+
+  firebaseAuth: {},
 
   dashboard: async () => {
     try {
@@ -93,16 +90,13 @@ export const userAPI = {
 
     try {
       let token = await AsyncStorage.getItem('token')
-      var data = new FormData();
-      //  data.append('name', 'Image Upload');
-      console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
-      console.log(image)
-
+      let data = new FormData();
+    
       const file = {
         'uri': image.uri,
         'name': "avatar.jpg",
         'type': "image/jpg",
-       
+
       }
 
       data.append('file', file
@@ -139,8 +133,6 @@ export const userAPI = {
     try {
       let token = await AsyncStorage.getItem('token')
 
-      console.log(values)
-
       let data = JSON.stringify({
 
         //  "city": `${values.city}`,
@@ -168,8 +160,7 @@ export const userAPI = {
 
       axios(config)
         .then(function (response) {
-          console.log("Update Ok")
-          console.log(JSON.stringify(response.data));
+          console.log("Update Ok")     
         })
         .catch(function (error) {
           console.log(error);
@@ -179,6 +170,120 @@ export const userAPI = {
     }
   }
 }
+
+export const serviceAPI = {
+
+  orderService: async id => {
+
+    try {
+
+      let token = await AsyncStorage.getItem('token')
+      let data = JSON.stringify({
+        "serviceId": id,
+        "dayTime": "zzzz zzz zzzz zz"
+      });
+
+      let config = {
+        method: 'post',
+        url: 'http://52.48.233.122:3000/jobs/withUser',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        data
+      };
+
+      axios(config)
+        .then(function (response) {
+   
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+    } catch (e) {
+      console.log(e)
+    }
+  },
+
+  createService: async values => {
+    try {
+      let token = await AsyncStorage.getItem('token')
+
+      const mas = [...values.weekDays]
+      let temp = []
+
+      for (let i = 0; i < mas.length; i++) {
+        if (mas[i]) { temp.push(i+1) }
+      }
+
+      let data = JSON.stringify({
+        "categoryId": values.categoryId,
+        "cost": values.cost,
+        "actionRadius": values.actionRadius,
+        "amount": values.amount,
+        "coordinate": values.coordinate,
+        "dayTime": values.dayTime,
+        "weekDays": [...temp]
+      });
+
+      let config = {
+        method: 'post',
+        url: 'http://52.48.233.122:3000/service/withUser',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        data
+      }
+
+      try {
+        console.log("SERVICE WITH USER OK")
+        const response = await axios(config)
+        return JSON.stringify(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  },
+
+  searchService: async values => {
+    try {
+      let token = await AsyncStorage.getItem('token')
+
+      let data = JSON.stringify({
+        "categoryId": values.categoryId,
+        "range": values.range,
+        "coordinate": values.coordinate,
+        "date": values.date,
+      });
+
+      let config = {
+        method: 'post',
+        url: 'http://52.48.233.122:3000/service/search',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        data
+      }
+
+      try {
+        console.log("SEARCH OK")
+        const response = await axios(config)
+        return JSON.stringify(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (e) {
+      console.log(e)
+    }
+
+  }
+}
+
 
 
 

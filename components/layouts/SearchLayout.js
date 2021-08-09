@@ -34,16 +34,16 @@ export default function SearchLayout(props) {
 
                         <TouchableOpacity style={s.burgerContainer} onPress={() => navigation.navigate('Home')}>
                             <Burger style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
-                        </TouchableOpacity>                       
+                        </TouchableOpacity>
 
                     </SafeAreaView>
-                    
-                            {props.children}
-                        
+
+                    {props.children}
+
                 </ImageBackground>
             </View>
-
-            <ButtonYellowSearch name="הרשמה" />
+            {!!props.chosenId &&
+                <ButtonYellowSearch name={"להזמין"} chosenId={props.chosenId} />}
             <Footer />
         </KeyboardAvoidingView>
     );
@@ -65,7 +65,7 @@ const s = StyleSheet.create({
         height: "88%",
         width: "100%",
         alignItems: 'center',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
     },
 
     background: {
