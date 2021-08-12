@@ -10,7 +10,8 @@ import HomeLayout from '../components/layouts/HomeLayout';
 
 import { useNavigation } from '@react-navigation/native'
 import SearchInput from '../components/inputs/SearchInput';
-import { setCategories, setCategoriesThunk } from '../redux/categoriesReducer';
+import { setCategoriesThunk } from '../redux/categoriesReducer';
+import { setCategoriesFlatThunk } from '../redux/categoriesFlatReducer';
 
 export default function Home(props) {
 
@@ -18,6 +19,7 @@ export default function Home(props) {
 
   useEffect(() => {
     dispatch(setCategoriesThunk());
+    dispatch(setCategoriesFlatThunk());
   }, [])
   
   const navigation = useNavigation()

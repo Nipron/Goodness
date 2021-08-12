@@ -1,17 +1,13 @@
 import React from 'react';
 import { StyleSheet, View, ImageBackground } from 'react-native';
-import { useSelector } from 'react-redux'
 import Bender from '../../Images/Bender.jpg'
 
-const AvatarBig = () => {
-
-    const path = useSelector(state => state.all.avatar.path)
-  //  console.log(path)
+const AvatarBig = ({path}) => {  
 
     return (
         <View style={s.photoOuter}>
             <View style={s.photoInner}>
-                <ImageBackground source={path ? {uri: `http://52.48.233.122:3000/${path}`} : Bender}
+                <ImageBackground source={!!path ? {uri: `http://52.48.233.122:3000/${path}`} : Bender}
                     style={s.avatar} />
             </View>
         </View>

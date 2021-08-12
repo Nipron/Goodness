@@ -4,6 +4,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DropDownPicker2 from 'react-native-dropdown-picker';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
+import moment from 'moment'
 
 import ButtonBlue from '../src/ButtonBlue';
 import { serviceAPI, userAPI } from '../src/api/api';
@@ -37,6 +38,8 @@ import LocationMap from '../components/maps/LocationMap';
 import DaysPanel from '../components/panels/DaysPanel';
 import PeriodsPanel from '../components/panels/PeriodsPanel';
 import SearchResultCard from '../components/cards/SearchResultCard';
+import DropDownCalendar from '../components/dropdowns/DropDownCalendar';
+import AmountPanel from '../components/panels/AmountPanel';
 
 export default function Create() {
 
@@ -61,13 +64,8 @@ export default function Create() {
     const [cat4, setCat4] = useState('')
     const [catForSearch, setCatForSearch] = useState(null)
 
-    const [coordinate, setCoordinate] = useState(null
-        /*  {
-          "latitude": 32,
-          "longitude": 34.8,
-      }*/
-    )
-    const [distance, setDistance] = useState(1)
+
+
 
     useEffect(() => {
         console.log("Hello from UseState")
@@ -86,10 +84,22 @@ export default function Create() {
     const [showCalendar, setShowCalendar] = useState(false)
     const [showMap, setShowMap] = useState(false)
 
+    const [distance, setDistance] = useState(1)
+
+    const [coordinate, setCoordinate] = useState(null
+        /*  {
+          "latitude": 32,
+          "longitude": 34.8,
+      }*/
+    )
+
+    const [date, setDate] = useState(null)
+
     const [days, setDays] = useState([true, true, true, true, true, false, false])
 
-    const [period, setPeriod] = useState("allday")
-    const [showPeriods, setShowPeriods] = useState(false)
+    const [period, setPeriod] = useState("כל היום")
+    const [amount, setAmount] = useState(5)
+    const [showPeriods, setShowPeriods] = useState(true)
 
     const [result, setResult] = useState([])
 
@@ -189,10 +199,10 @@ export default function Create() {
         serviceAPI.createService({
             "categoryId": catForSearch,
             "cost": 1,
-            "actionRadius": 1000,
+            "actionRadius": distance,
             "amount": 5,
             "coordinate": coordinate,
-            "dayTime": "all day long",
+            "dayTime": period,
             "weekDays": [...days]
         }).
             then(res => {
@@ -208,7 +218,7 @@ export default function Create() {
                 "categoryId": catForSearch,
                 "coordinate": coordinate,
                 "range": distance,
-                "date": "2021-08-26"
+                "date": date.dateString
             }).
                 then(res => {
                     console.log("ggg")
@@ -258,12 +268,13 @@ export default function Create() {
                     <View style={s.switchBlock}>
                         <SearchSwitch createMode={createMode} setCreateMode={setCreateMode} />
                     </View>
-                    <ScrollView style={s.scrollBlock}  contentContainerStyle={s.resultContainer}>
+                    <ScrollView style={s.scrollBlock} contentContainerStyle={s.resultContainer}>
                         <View style={s.pickersBlock}>
                             <View style={s.picker1}>
                                 <DropDownPicker
                                     onChangeValue={catValueChange1}
                                     style={s.picker}
+                                    placeholder="אנא בחר קטגוריה"
                                     // containerStyle={s.container}
                                     textStyle={[g.text20_400_blue, s.text]}
                                     open={cat1open}
@@ -280,6 +291,7 @@ export default function Create() {
                                     <DropDownPicker
                                         onChangeValue={catValueChange2}
                                         style={s.picker}
+                                        placeholder="אנא בחר קטגוריה"
                                         // containerStyle={s.container}
                                         textStyle={[g.text20_400_blue, s.text]}
                                         open={cat2open}
@@ -297,6 +309,7 @@ export default function Create() {
                                     <DropDownPicker
                                         onChangeValue={catValueChange3}
                                         style={s.picker}
+                                        placeholder="אנא בחר קטגוריה"
                                         // containerStyle={s.container}
                                         textStyle={[g.text20_400_blue, s.text]}
                                         open={cat3open}
@@ -312,75 +325,31 @@ export default function Create() {
 
                         </View>
 
-                        {createMode && <DaysPanel days={days} setDays={setDays} />}
-                        {showPeriods && <PeriodsPanel period={period} setPeriod={setPeriod} />}
-
                         <View style={s.showMapBlock}>
+
+                            {createMode && <AmountPanel amount={amount} setAmount={setAmount} />}
+                            {!createMode && <PeriodsPanel period={period} setPeriod={setPeriod} />}
+
                             <TouchableOpacity style={s.showMapButton} onPress={() => setShowMap(true)}>
                                 <Text style={g.text24_700_blue}>המיקום שלי</Text>
                             </TouchableOpacity>
+
                         </View>
+
+                        {createMode && <DaysPanel days={days} setDays={setDays} />}
+                        {!createMode && <DropDownCalendar date={date} setDate={setDate} />}
 
                         {createMode && readyToSearch &&
                             <TouchableOpacity style={s.createButtonBlock} onPress={handleCreate}>
                                 <Text style={g.text24_700_white}>לִיצוֹר</Text>
                             </TouchableOpacity >
                         }
-                        {!createMode && readyToSearch &&
+                        {!createMode && readyToSearch && date &&
                             <TouchableOpacity style={s.searchButtonBlock} onPress={handleSearch}>
                                 <Text style={g.text24_700_white}>לחפש</Text>
                             </TouchableOpacity >
                         }
-                        {showCalendar &&
-                            <View style={s.calendar}>
 
-                                <Calendar
-                                    // Initially visible month. Default = Date()
-                                    current={'2021-07-29'}
-                                    // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-                                    minDate={'2021-07-10'}
-                                    // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-                                    maxDate={'2021-09-30'}
-                                    // Handler which gets executed on day press. Default = undefined
-                                    onDayPress={(day) => { console.log('selected day', day) }}
-                                    // Handler which gets executed on day long press. Default = undefined
-                                    onDayLongPress={(day) => { console.log('selected day', day) }}
-                                    // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-                                    monthFormat={'yyyy MM'}
-                                    // Handler which gets executed when visible month changes in calendar. Default = undefined
-                                    onMonthChange={(month) => { console.log('month changed', month) }}
-                                    // Hide month navigation arrows. Default = false
-                                    //    hideArrows={true}
-                                    // Replace default arrows with custom ones (direction can be 'left' or 'right')
-                                    //    renderArrow={(direction) => (<Arrow />)}
-                                    // Do not show days of other months in month page. Default = false
-                                    //    hideExtraDays={true}
-                                    // If hideArrows = false and hideExtraDays = false do not switch month when tapping on greyed out
-                                    // day from another month that is visible in calendar page. Default = false
-                                    //   disableMonthChange={true}
-                                    // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday
-                                    firstDay={1}
-                                    // Hide day names. Default = false
-                                    //   hideDayNames={true}
-                                    // Show week numbers to the left. Default = false
-                                    //    showWeekNumbers={true}
-                                    // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-                                    onPressArrowLeft={subtractMonth => subtractMonth()}
-                                    // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-                                    onPressArrowRight={addMonth => addMonth()}
-                                // Disable left arrow. Default = false
-                                //   disableArrowLeft={true}
-                                // Disable right arrow. Default = false
-                                //   disableArrowRight={true}
-                                // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
-                                //    disableAllTouchEventsForDisabledDays={true}
-                                // Replace default month and year title with custom one. the function receive a date as parameter
-                                //   renderHeader={(date) => {/*Return JSX*/ }}
-                                // Enable the option to swipe between months. Default = false
-                                //  enableSwipeMonths={true}
-                                />
-
-                            </View>}
 
                         <View style={s.resultBlock}>
                             <View style={s.plug}>
@@ -400,7 +369,7 @@ export default function Create() {
 const s = StyleSheet.create({
 
     scrollBlock: {
-        backgroundColor: "olive",
+        //   backgroundColor: "olive",
         width: "100%"
     },
 
@@ -411,8 +380,8 @@ const s = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         margin: 5,
-        height: 60,
-        borderRadius: 15
+        height: 50,
+        borderRadius: 25
     },
 
     searchButtonBlock: {
@@ -433,17 +402,18 @@ const s = StyleSheet.create({
 
     showMapBlock: {
         width: "100%",
-        height: 60,
+        height: 50,
         //     backgroundColor: 'red',
-        justifyContent: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
         alignItems: "center",
     },
 
     showMapButton: {
-        width: "100%",
-        height: 60,
-        borderRadius: 15,
-        margin: 5,
+        width: "49%",
+        height: 50,
+        borderRadius: 25,
+        marginVertical: 5,
         backgroundColor: 'white',
         justifyContent: "center",
         alignItems: "center",
@@ -529,6 +499,7 @@ const s = StyleSheet.create({
         //   backgroundColor: "maroon",
         alignItems: 'center',
         justifyContent: 'flex-start',
+        margin: 3
     },
 
     headerText: {
@@ -555,8 +526,8 @@ const s = StyleSheet.create({
     picker: {
         backgroundColor: "#FFFFFF",
         width: "100%",
-        height: 60,
-        borderRadius: 15
+        height: 50,
+        borderRadius: 25
     },
 
     pickerText: {
@@ -565,34 +536,35 @@ const s = StyleSheet.create({
 
     picker1: {
         width: "100%",
-        height: 60,
-        backgroundColor: "navy",
+        height: 50,
+        //   backgroundColor: "navy",
         zIndex: 10,
-        margin: 5
+        marginTop: 5,
+        marginBottom: 5
     },
 
     picker2: {
         width: "100%",
-        height: 60,
+        height: 50,
         //   backgroundColor: "lime",
         zIndex: 9,
-        margin: 5
+        marginBottom: 5
     },
 
     picker3: {
         width: "100%",
-        height: 60,
+        height: 50,
         //   backgroundColor: "peachpuff",
         zIndex: 8,
-        margin: 5
+        marginBottom: 5
     },
 
     picker4: {
         width: "100%",
-        height: 60,
+        height: 50,
         //    backgroundColor: "maroon",
         zIndex: 7,
-        margin: 5
+        marginBottom: 5
     },
 
     calendar: {
@@ -606,7 +578,7 @@ const s = StyleSheet.create({
     resultBlock: {
         width: "100%",
         height: "30%",
-           backgroundColor: "pink",
+        //      backgroundColor: "pink",
     },
 
     resultContainer: {
@@ -617,6 +589,6 @@ const s = StyleSheet.create({
     plug: {
         width: "100%",
         height: 600,
-           backgroundColor: "goldenrod"
+        //      backgroundColor: "goldenrod"
     }
 })

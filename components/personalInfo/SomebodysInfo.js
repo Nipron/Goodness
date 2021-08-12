@@ -9,23 +9,25 @@ import StatusGold from '../../Images/StatusGold.png'
 import StatusPlatinum from '../../Images/StatusPlatinum.png'
 import Phone from '../../Images/Phone.svg'
 import Stars from '../../Images/Stars.svg'
-import Edit from '../../Images/Edit.svg'
-import Heart from '../../Images/Heart.svg'
 
 import { g } from '../../styles/global'
+import { commonAPI } from '../../src/api/api';
 
-const PersonalInfo = () => {
+const SomebodysInfo = ({ id }) => {
 
-    const navigation = useNavigation()
-    const info = useSelector(state => state.all)
+
+    const user = useSelector(state => state.tempUser)
+
     const scale = 1.4
     const scaleStars = 1.4
     const scaleEdit = 1.4
-    const scaleHeart = 1.2
+    const scaleT = 1.2
+
+    console.log(user)
 
     let statusSource;
 
-    switch (info.heartsStatus) {
+    switch (user.heartsStatus) {
         case "bronze":
             statusSource = StatusBronze
             break;
@@ -43,26 +45,11 @@ const PersonalInfo = () => {
             break;
     }
 
-   // console.log(info)
-
-    const pressAlert = () => Alert.alert('EDIT PROFILE', "Redirect ot EditProfile", [{ text: "Ok"/*, onPress: () => console.log('alert wrong') */ }])
-
     return (
+        !!user.address ?
         <View style={s.personalInfoBlock}>
 
-            <View style={s.editAndHearts}>
-                <TouchableOpacity style={s.edit} onPress={() => navigation.navigate('EditProfile')} >
-                    <Edit />
-                </TouchableOpacity>
-                <View style={s.hearts}>
-                    <Heart style={{ transform: [{ scaleX: scaleHeart }, { scaleY: scaleHeart }] }} />
-                    <Text style={[s.balance, g.text28_700_blue]}>
-                        {info.balance}
-                    </Text>
-                </View>
-
-
-            </View>
+           
 
             <View style={s.rating}>
                 <Stars style={{ transform: [{ scaleX: scaleStars }, { scaleY: scaleStars }] }} />
@@ -70,24 +57,28 @@ const PersonalInfo = () => {
 
             <View style={s.phone}>
                 <Text style={[s.phoneNumber, g.text18_600_blue]}>
-                    {info.phone}
+                    {user.phone}
                 </Text>
                 <Phone style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
             </View>
 
-            <View style={s.status}>
-                <ImageBackground source={statusSource}
-                    resizeMethod={'auto'} style={s.avatar} />
-
+            <View style={s.professionBlock}>
+                <Text style={g.text18_400_grey}>{`${user.address.city} `}</Text>
+                <Text style={g.text18_600_blue}> תחום עיסוק: </Text>
+            </View>
+            <View style={s.addressBlock}>
+                <Text style={g.text18_400_grey}>{`${user.job} `}</Text>
+                <Text style={g.text18_600_blue}> כתובת: </Text>
             </View>
 
-
-
-        </View>
+            <View style={s.status}>
+                <ImageBackground source={statusSource} style={s.avatar} />
+            </View> 
+        </View> : <View/>
     )
 }
 
-export default PersonalInfo
+export default SomebodysInfo
 
 const s = StyleSheet.create({
 
@@ -96,61 +87,51 @@ const s = StyleSheet.create({
         justifyContent: 'flex-start',
         width: "100%",
         height: 240,
-        // backgroundColor: "pink",
+      //  backgroundColor: "pink",
         borderRadius: 20,
         backgroundColor: "#FFFFFF",
-    },
-
-    editAndHearts: {
-        width: "90%",
-        height: 50,
-        // backgroundColor: "lightblue",
-        flexDirection: "row",
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-
-    edit: {
-        width: 50,
-        height: 50,
-        //  backgroundColor: "azure",
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-    },
-
-    hearts: {
-        width: 90,
-        height: 50,
-        //   backgroundColor: "aquamarine",
-        flexDirection: "row",
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-    },
-
-    balance: {
-        marginLeft: 8
     },
 
     rating: {
         width: "90%",
         height: 60,
-        //   backgroundColor: "maroon",
+      //  backgroundColor: "maroon",
         alignItems: 'center',
         justifyContent: 'flex-end',
-        paddingBottom: 5
+        paddingBottom: 5,
+        marginTop: 50
     },
 
     phone: {
         width: "90%",
-        height: 50,
-        //   backgroundColor: "lightgreen",
+        height: 24,
+     //   backgroundColor: "lightgreen",
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 10
     },
 
     phoneNumber: {
         marginRight: 10
+    },
+
+    professionBlock: {
+        width: "100%",
+        height: 24,
+     //   backgroundColor: "olive",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: 'center'
+    },
+
+    addressBlock: {
+        width: "100%",
+        height: 24,
+     //   backgroundColor: "peru",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: 'center'
     },
 
     status: {
@@ -158,12 +139,14 @@ const s = StyleSheet.create({
         justifyContent: 'flex-start',
         width: "100%",
         height: 50,
-        //   backgroundColor: "magenta"
+        marginTop: 20
+      //  backgroundColor: "magenta",
     },
 
     avatar: {
         width: "100%",
         height: 45,
+        resizeMode: 'contain'
     }
 
 

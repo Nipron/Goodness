@@ -1,7 +1,9 @@
 import {combineReducers, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import { categories } from './categoriesReducer'
+import { categoriesFlat } from './categoriesFlatReducer'
 import { tempImage } from './tempImageRducer'
+import { tempUser } from './tempUserReducer'
 
 const UPDATE_ALL = "UPDATE_ALL"
 
@@ -23,6 +25,6 @@ export const all = (state = allInitialState, action) => {
     }
 }
 
-const reducers = combineReducers({all, categories, tempImage})
+const reducers = combineReducers({all, categories, categoriesFlat, tempImage, tempUser})
 
 export default reducers;

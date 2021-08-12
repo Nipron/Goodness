@@ -11,23 +11,14 @@ export const setCategories = data => ({ type: SET_CATEGORIES, payload: data })
 export const setCategoriesThunk = () => (dispatch) => {    
     commonAPI.getCategories()
     .then(res => {
-      console.log("THUNK")
       dispatch(setCategories(res.data))
     })
 }
 
-
 export const categories = (state = categoriesInitialState, action) => {
     switch (action.type) {
-        case SET_CATEGORIES:
-               let categories = action.payload
-               console.log("DATA DATA3")
-            //  let dd = JSON.stringify(data)
-              //  console.log( categories )
+        case SET_CATEGORIES:               
                 state = action.payload
-                console.log("OKI")
-
-            // console.log(data)
             return state;
         default:
             return state;

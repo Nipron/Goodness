@@ -21,48 +21,32 @@ import SmallLayout from '../components/layouts/SmallLayout';
 import { useNavigation } from '@react-navigation/native'
 
 import { useSelector, useDispatch } from 'react-redux'
-import PersonalInfo from '../components/personalInfo/PersonalInfo';
+import SomebodysInfo from '../components/personalInfo/SomebodysInfo';
 
 import TestCard from '../components/cards/TestCard'
 import DropDownBlue from '../components/dropdowns/DropDownBlue';
 import ButtonRed from '../components/buttons/ButtonRed';
+import Bender from '../Images/Bender.jpg'
 
-export default function Profile() {
+export default function UserInfo() {
+    
+    const data = useSelector(state => state.tempUser)
 
-    const navigation = useNavigation()
-    const data = useSelector(state => state.all)   
+    const path = !!data.avatar ? data.avatar.path : null
 
-  //  console.log(Object.keys(data))
-
-    console.log("Balance = ", data.balance)
-  //  console.log(data.jobsToHistory)f
-
+    console.log(data)
 
     return (
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
-            <SmallLayout text={` שלום, ${data.name}`}>
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>           
+            <SmallLayout text={data.name}>
+                <AvatarBig path={path}/>
+                 <SomebodysInfo />
+               {/*<ScrollView style={s.regBlock} contentContainerStyle={s.regBlockContainer}>
 
-
-
-
-                
-                <AvatarBig path={data.avatar.path}/>
-                <PersonalInfo/>
-                <ScrollView style={s.regBlock} contentContainerStyle={s.regBlockContainer}>
-                
-                    <View style={s.folders} >                       
-                        <DropDownBlue name={"שירותים מוזמנים על ידי משתמשים אחרים"} list={data.ordersFrom} toMe={true} type={1}/>
-                        <View style={s.line}/>
-                        <DropDownBlue name={"שירותים מוזמנים על ידי המשתמש"} list={data.jobsTo} toMe={false} type={2}/>
-                        <View style={s.line}/>
-                        <DropDownBlue name={"היסטוריית מסירת השירות"} list={data.ordersFromHistory} toMe={true} type={3}/>
-                        <View style={s.line}/>
-                        <DropDownBlue name={"היסטוריית קבלת השירות"} list={data.jobsToHistory} toMe={false} type={3}/>
-                    </View>
-
-                    <ButtonRed name="לצאת מהחשבון שלי" onPress={() => {}}/>
-                    
-                </ScrollView>
+                     <View style={s.folders} >
+                        <DropDownBlue name={"שירותים מוזמנים על ידי המשתמש"} list={data.jobsTo} />
+    </View>
+    </ScrollView>*/}
             </SmallLayout>
         </TouchableWithoutFeedback>
     );
@@ -70,11 +54,11 @@ export default function Profile() {
 
 const s = StyleSheet.create({
 
-    regBlock: {        
+    regBlock: {
         width: "100%",
         height: "100%",
-     //   backgroundColor: "brown",
-      //   backgroundColor: "#EEEEEE",
+        //   backgroundColor: "brown",
+        //   backgroundColor: "#EEEEEE",
         paddingBottom: 26,
         borderRadius: 20,
     },

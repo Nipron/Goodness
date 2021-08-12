@@ -13,11 +13,16 @@ const instance = axios.create({
 })
 
 export const commonAPI = {
-  getCategories: () => {
-    console.log("Hello!!!")
-    //  return instance.get('serviceCategory/?l=he')
-    return instance.get('serviceCategory')
-  }
+  getCategories: () => {    
+      return instance.get('serviceCategory/?l=he')
+  //  return instance.get('serviceCategory')
+  },
+
+  getCategoriesFlat: () => {
+    return instance.get('serviceCategory/flat/?l=he')
+  },
+
+  getUserInfo: id => instance.get(`users/${id}`)
 }
 
 export const userAPI = {
@@ -91,7 +96,7 @@ export const userAPI = {
     try {
       let token = await AsyncStorage.getItem('token')
       let data = new FormData();
-    
+
       const file = {
         'uri': image.uri,
         'name': "avatar.jpg",
@@ -160,7 +165,7 @@ export const userAPI = {
 
       axios(config)
         .then(function (response) {
-          console.log("Update Ok")     
+          console.log("Update Ok")
         })
         .catch(function (error) {
           console.log(error);
@@ -172,6 +177,59 @@ export const userAPI = {
 }
 
 export const serviceAPI = {
+
+  doneService: async id => {
+    try {
+      let token = await AsyncStorage.getItem('token')
+      let data = ''
+      let config = {
+        method: 'post',
+        url: `http://52.48.233.122:3000/jobs/jobDone/${id}`,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        data
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } catch (e) {
+      console.log(e)
+    }
+  },
+
+
+  approveService: async id => {
+    try {
+      let token = await AsyncStorage.getItem('token')
+      let data = ''
+      let config = {
+        method: 'post',
+        url: `http://52.48.233.122:3000/jobs/jobApprove/${id}`,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        data
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } catch (e) {
+      console.log(e)
+    }
+  },
 
   orderService: async id => {
 
@@ -195,7 +253,7 @@ export const serviceAPI = {
 
       axios(config)
         .then(function (response) {
-   
+
         })
         .catch(function (error) {
           console.log(error);
@@ -214,7 +272,7 @@ export const serviceAPI = {
       let temp = []
 
       for (let i = 0; i < mas.length; i++) {
-        if (mas[i]) { temp.push(i+1) }
+        if (mas[i]) { temp.push(i) }
       }
 
       let data = JSON.stringify({
@@ -259,6 +317,8 @@ export const serviceAPI = {
         "coordinate": values.coordinate,
         "date": values.date,
       });
+
+      console.log(data)
 
       let config = {
         method: 'post',

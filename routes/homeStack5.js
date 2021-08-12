@@ -8,6 +8,7 @@ import Terms from '../screens/terms';
 import Messages from '../screens/messages';
 import Create from '../screens/create';
 import EditProfile from '../screens/editProfile';
+import UserInfo from '../screens/userInfo';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native'
@@ -49,6 +50,10 @@ export default function Navigate() {
                 name="EditProfile"
                 component={EditProfile}
                 option={{ title: 'Edit Profile' }} />
+            <Stack.Screen
+                name="UserInfo"
+                component={UserInfo}
+                option={{ title: 'User Info' }} />
         </Stack.Navigator>
     </NavigationContainer>
 }

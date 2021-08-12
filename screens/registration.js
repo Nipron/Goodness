@@ -162,7 +162,7 @@ export default function Registration2() {
 
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
-            <SmallLayout text="הרשמה">
+            <SmallLayout text="הרשמה" hide={true}>
                 <Modal
                     transparent={true}
                     animationType="slide"

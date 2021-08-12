@@ -7,8 +7,9 @@ import TestCard from '../cards/TestCard';
 
 import Date from '../../Images/Date.svg'
 import Arrow from '../../Images/Arrow.svg'
+import OrdersToMeCard from '../cards/OrdersToMeCard';
 
-const DropDownBlue = ({ name, list }) => {
+const DropDownBlue = ({ name, list, toMe, type }) => {
 
   const scaleDate = 1.8
   const scaleArrow = 1.4
@@ -31,10 +32,15 @@ const DropDownBlue = ({ name, list }) => {
         </View>
       </TouchableOpacity>
 
+
       {open &&
         <View style={s.cards}>
+                    
           {
-            !!list && list.map(item => <TestCard item={item} />)
+            !!list && (type === 1) && list.map(item => <OrdersToMeCard item={item} key={item.id} toMe={toMe}/>)
+          }
+          {
+            !!list && (type === 2) && list.map(item => <TestCard item={item} key={item.id} toMe={toMe}/>)
           }
         </View>
       }

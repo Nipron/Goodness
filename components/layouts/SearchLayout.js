@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, Image, Dimensions, SafeAreaView, TouchableOpacity, ScrollView, Pressable, Alert, Button, TouchableWithoutFeedback, ImageBackground, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { useSelector } from 'react-redux'
 
 import Footer from '../footer/Footer';
 import ArrowBack from '../../Images/ArrowBack.svg'
@@ -16,6 +17,9 @@ export default function SearchLayout(props) {
     const scale = 1.5;
 
     const navigation = useNavigation()
+    const data = useSelector(state => state.all)
+    const path = data.avatar.path
+
 
     return (
         <KeyboardAvoidingView style={s.containerMain} behavior="padding">
@@ -27,16 +31,19 @@ export default function SearchLayout(props) {
                             <ArrowBack style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
                         </TouchableOpacity>
 
-                        <View style={s.logoBlock}>
-                            <Image style={s.logo} source={require('../../Images/Logo1.png')} />
-                            <Text style={g.text24_700_white}>{props.text}</Text>
-                        </View>
-
-                        <TouchableOpacity style={s.burgerContainer} onPress={() => navigation.navigate('Home')}>
-                            <Burger style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
+                        <TouchableOpacity style={s.photoOuter} onPress={() => navigation.navigate('Profile')}>
+                            <View style={s.photoInner}>
+                                <ImageBackground source={!!path ? { uri: `http://52.48.233.122:3000/${path}` } : Bender}
+                                    style={s.avatar} />
+                            </View>
                         </TouchableOpacity>
 
                     </SafeAreaView>
+
+                    <View style={s.logoBlock}>
+                        <Image style={s.logo} source={require('../../Images/Logo1.png')} />
+                        <Text style={g.text24_700_white}>{props.text}</Text>
+                    </View>
 
                     {props.children}
 
@@ -114,10 +121,11 @@ const s = StyleSheet.create({
     },
 
     logoBlock: {
+        marginTop: -75,
         height: 80,
         alignItems: 'center',
         justifyContent: 'flex-end',
-        //    backgroundColor: 'green'
+       //       backgroundColor: 'green'
     },
 
     logo: {
@@ -133,5 +141,31 @@ const s = StyleSheet.create({
         alignItems: "center",
         justifyContent: 'flex-start',
     },
+
+    photoOuter: {
+        zIndex: 2,
+        width: 60,
+        height: 60,
+        borderRadius: 40,
+        backgroundColor: "#FDC27A",
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12
+    },
+    photoInner: {
+        width: 54,
+        height: 54,
+        borderRadius: 27,
+        backgroundColor: "#034794",
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden'
+    },
+
+    avatar: {
+        width: "100%",
+        height: "100%",
+        resizeMode: 'cover'
+    }
 
 });

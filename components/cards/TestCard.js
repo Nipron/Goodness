@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, ImageBackground, TouchableOpacity, Alert } from 'react-native';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import moment from 'moment'
 
 import Bender from '../../Images/Bender.jpg'
 import Stars from '../../Images/Stars.svg'
@@ -11,17 +12,29 @@ import Date from '../../Images/Date.svg'
 import Time from '../../Images/Time.svg'
 
 import { g } from '../../styles/global'
+import { serviceAPI, userAPI } from '../../src/api/api';
 
-const TestCard = ({item}) => {
-    
-    const avaPath = item.createdBy.avatar.path
-    const name = item.createdBy.name
-    const jobTitle = item.service.category.title
-    const date = item.service.createdAt
-    const time = "10:00"
+import { updateAll } from '../../redux/store';
 
-    console.log("ITEM")
-    console.log(item.id)
+import { useNavigation } from '@react-navigation/native'
+
+import { setTempUserThunk } from '../../redux/tempUserReducer';
+
+const TestCard = ({ item, toMe }) => {
+
+    const navigation = useNavigation()
+    const dispatch = useDispatch()
+    const catsFlat = useSelector(state => state.categoriesFlat)
+
+    const catId = item.service.category.id
+    const cat = catsFlat.find(cat => cat.id === catId).title
+    const partner = toMe ? item.orderFrom : item.jobTo
+
+    const name = partner.name
+    const userId = partner.id
+    const avaPath = partner.avatar.path
+    const date = moment(item.service.createdAt).format('L')
+    const time = item.service.dayTime
 
     const scaleRedX = 1.6
     const scaleThumb = 1.6
@@ -30,29 +43,60 @@ const TestCard = ({item}) => {
     const scaleStars = 0.4
     const scaleRepair = 1.2
 
+    const handelCancel = () => {
+        serviceAPI.approveService(item.id)
+    }
+
+    const handelDone = async () => {
+        console.log("DONE PRESSED")
+        await serviceAPI.doneService(item.id)
+        await userAPI.dashboard()
+            .then(data => {
+                console.log("Approve OK")
+                console.log(data)
+                dispatch(updateAll(data))
+                // navigation.navigate('UserInfo')
+            })
+    }
+
+    const handelApprove = async () => {
+        await serviceAPI.approveService(item.id)
+        await userAPI.dashboard()
+            .then(data => {
+                console.log("Approve OK")
+                console.log(data)
+                dispatch(updateAll(data))
+                //   navigation.navigate('Profile')
+            })
+    }
+
+    const goToPersonalInfo = () => {
+        console.log(userId)
+        dispatch(setTempUserThunk(userId));
+        navigation.navigate('UserInfo')
+    }
+
     return (
-        <View style={s.testCard} key={item.id}>
+        <View style={s.testCard}>
             <View style={s.buttons}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handelDone}>
                     <RedX style={{ transform: [{ scaleX: scaleRedX }, { scaleY: scaleRedX }] }} />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handelApprove}>
                     <Thumb style={{ transform: [{ scaleX: scaleThumb }, { scaleY: scaleThumb }] }} />
                 </TouchableOpacity>
             </View>
             <View style={s.jobInfo}>
                 <View style={s.jobTitle}>
-                    <Text style={g.text14_600_blue}>{jobTitle}</Text>
+                    <Text style={g.text14_600_blue}>{cat}</Text>
                 </View>
-                <View style={s.dateTime}>
-                    <View style={s.time}>
-                        <Text style={[g.text13_400_blue, s.dateStyle]}>{time}</Text>
-                        <Time style={{ transform: [{ scaleX: scaleTime }, { scaleY: scaleTime }] }} />
-                    </View>
-                    <View style={s.date}>
-                        <Text style={[g.text13_400_blue, s.dateStyle]}>{date}</Text>
-                        <Date style={{ transform: [{ scaleX: scaleDate }, { scaleY: scaleDate }] }} />
-                    </View>
+                <View style={s.date}>
+                    <Text style={[g.text13_400_blue, s.dateStyle]}>{date}</Text>
+                    <Date style={{ transform: [{ scaleX: scaleDate }, { scaleY: scaleDate }] }} />
+                </View>
+                <View style={s.time}>
+                    <Text style={[g.text13_400_blue, s.dateStyle]}>{time}</Text>
+                    <Time style={{ transform: [{ scaleX: scaleTime }, { scaleY: scaleTime }] }} />
                 </View>
             </View>
             <View style={s.jobIcon}>
@@ -64,10 +108,10 @@ const TestCard = ({item}) => {
                     <Stars style={{ transform: [{ scaleX: scaleStars }, { scaleY: scaleStars }] }} />
                 </View>
             </View>
-            <View style={s.avatarBlock}>
-                <ImageBackground source={avaPath ? {uri: `http://52.48.233.122:3000/${avaPath}`} : Bender}
+            <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
+                <ImageBackground source={avaPath ? { uri: `http://52.48.233.122:3000/${avaPath}` } : Bender}
                     resizeMethod={'auto'} style={s.avatar} />
-            </View>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -82,17 +126,17 @@ const s = StyleSheet.create({
         justifyContent: 'space-between',
         width: "100%",
         height: 80,
-      //  backgroundColor: "ivory",
+        //  backgroundColor: "ivory",
         borderRadius: 20,
         marginVertical: 5,
         overflow: 'hidden',
-           backgroundColor: "#FFFFFF",
+        backgroundColor: "#FFFFFF",
     },
 
     buttons: {
         height: "100%",
         width: "12%",
-    //    backgroundColor: "plum",
+        //    backgroundColor: "plum",
         paddingVertical: 12,
         paddingHorizontal: 8,
         alignItems: 'flex-end',
@@ -102,7 +146,7 @@ const s = StyleSheet.create({
     jobInfo: {
         height: "100%",
         width: "38%",
-     //   backgroundColor: "peachpuff",
+        //     backgroundColor: "peachpuff",
         padding: 5,
         alignItems: 'flex-end',
         justifyContent: 'space-evenly',
@@ -111,38 +155,37 @@ const s = StyleSheet.create({
     jobTitle: {
         height: "30%",
         width: "100%",
-     //   backgroundColor: "peru",
+        //     backgroundColor: "peru",
         alignItems: 'flex-end',
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
     },
 
     dateTime: {
         height: "30%",
         width: "100%",
-     //   backgroundColor: "navy",
+        //    backgroundColor: "navy",
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-end',
         justifyContent: 'flex-end',
     },
 
     time: {
-        height: "90%",
+        height: "30%",
         // width: "40%",
-    //    backgroundColor: "olive",
+        //  backgroundColor: "olive",
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
         paddingRight: 4,
-        marginRight: 4
     },
 
     date: {
-        height: "90%",
+        height: "30%",
         // width: "40%",
-     //   backgroundColor: "gray",
+        //   backgroundColor: "gray",
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
         paddingRight: 4,
     },
 
@@ -154,29 +197,29 @@ const s = StyleSheet.create({
         height: "100%",
         width: "14%",
         padding: 5,
-     //   backgroundColor: "lime",
+        //   backgroundColor: "lime",
         alignItems: 'center',
         justifyContent: 'center',
     },
 
     personalInfoBlock: {
         height: "100%",
-      //  maxWidth: "22%",
+        //  maxWidth: "22%",
         width: "20%",
-      //  backgroundColor: "magenta",
+        //  backgroundColor: "magenta",
         alignItems: 'center',
         justifyContent: 'center',
         padding: 5,
     },
 
     nameStyle: {
-     //   backgroundColor: "yellow",
+        //   backgroundColor: "yellow",
         textAlign: 'right'
     },
 
     rating: {
         width: "90%",
-     //   backgroundColor: "turquoise",
+        //   backgroundColor: "turquoise",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -184,7 +227,7 @@ const s = StyleSheet.create({
     avatarBlock: {
         height: "100%",
         width: "14%",
-     //   backgroundColor: "pink",
+        //   backgroundColor: "pink",
         alignItems: 'center',
         justifyContent: 'center',
         padding: 5,
@@ -193,7 +236,7 @@ const s = StyleSheet.create({
     avatar: {
         height: 40,
         width: 40,
-     //   backgroundColor: "azure",
+        //   backgroundColor: "azure",
         borderRadius: 20,
         overflow: 'hidden'
     },
