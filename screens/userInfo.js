@@ -23,7 +23,6 @@ import { useNavigation } from '@react-navigation/native'
 import { useSelector, useDispatch } from 'react-redux'
 import SomebodysInfo from '../components/personalInfo/SomebodysInfo';
 
-import TestCard from '../components/cards/TestCard'
 import DropDownBlue from '../components/dropdowns/DropDownBlue';
 import ButtonRed from '../components/buttons/ButtonRed';
 import Bender from '../Images/Bender.jpg'
@@ -34,7 +33,7 @@ export default function UserInfo() {
 
     const path = !!data.avatar ? data.avatar.path : null
 
-    console.log(data)
+    console.log("DATA DATA DATA", data)
 
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>           

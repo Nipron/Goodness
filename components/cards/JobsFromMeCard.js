@@ -1,24 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, ImageBackground, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, Text, Image, ImageBackground, TouchableOpacity, Alert, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
 
 import Bender from '../../Images/Bender.jpg'
 import Stars from '../../Images/Stars.svg'
 import Repair from '../../Images/Repair.svg'
-import CheckGrey from '../../Images/CheckGrey.svg'
-import CheckGreen from '../../Images/CheckGreen.svg'
+import RedX from '../../Images/RedX.svg'
+import Thumb from '../../Images/Thumb.svg'
 import Date from '../../Images/Date.svg'
 import Time from '../../Images/Time.svg'
+import CloseIcon from '../../Images/CloseIcon'
+import CheckGreen from '../../Images/CheckGreen'
 
 import { g } from '../../styles/global'
 import { serviceAPI, userAPI } from '../../src/api/api';
+
 import { updateAll } from '../../redux/store';
+
+import { useNavigation } from '@react-navigation/native'
+
 import { setTempUserThunk } from '../../redux/tempUserReducer';
+
+import ButtonBlue from '../../src/ButtonBlue';
+import RatingPanel from '../panels/RatingPanel';
 import RatingForCardPanel from '../panels/RatingForCardPanel';
 
-const OrdersToMeCard = ({ item, toMe }) => {
+const JobsFromMeCard = ({ item, toMe }) => {
 
     const navigation = useNavigation()
     const dispatch = useDispatch()
@@ -35,19 +43,41 @@ const OrdersToMeCard = ({ item, toMe }) => {
     const date = moment(item.service.createdAt).format('L')
     const time = item.service.dayTime
 
-    const scaleCheck = 2
+    const [newRating, setNewRating] = useState(3)
+
+    const scaleRedX = 1.6
+    const scaleCheckGreen = 1.6
+    const scaleThumb = 1.6
     const scaleDate = 1.4
     const scaleTime = 1.4
     const scaleRating = 0.23
     const scaleRepair = 1.2
 
-    const handelDone = async () => {
-        await serviceAPI.doneService(item.id)
+    const [modalOpen, setModalOpen] = useState(false)
+
+    const handleCancel = async () => {
+        await serviceAPI.cancelService(item.id)
         await userAPI.dashboard()
-            .then(data => {              
+            .then(data => {
                 dispatch(updateAll(data))
-               // navigation.navigate('Profile')
+                navigation.navigate('Profile')
             })
+    }
+
+    const handleCheck = () => Alert.alert('JOB IS DONE!', `${name} has finished the job, please confirm`, [{ text: "Ok"/*, onPress: () => console.log('alert wrong') */ }])
+
+    console.log("ratin ", newRating)
+    console.log("idi ", item.status)
+
+    const handleRate = async () => {
+        await serviceAPI.approveService(item.id)
+        await serviceAPI.rateService(item.id, newRating)
+        await userAPI.dashboard()
+            .then(data => {
+                dispatch(updateAll(data))
+                navigation.navigate('Profile')
+            })
+        setModalOpen(false)
     }
 
     const goToPersonalInfo = () => {
@@ -56,14 +86,39 @@ const OrdersToMeCard = ({ item, toMe }) => {
     }
 
     return (
-        <View style={[s.testCard, { backgroundColor: (item.status === "done") ? "palegreen" : "white" }]}>
+        <View style={s.testCard}>
+
+            <Modal
+                transparent={true}
+                animationType="slide"
+                visible={modalOpen}>
+                <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+                    <View style={mS.modalBlock}>
+                        <View style={mS.innerBlock}>
+                            <TouchableOpacity style={mS.closeIcon} onPress={() => setModalOpen(false)}>
+                                <CloseIcon />
+                            </TouchableOpacity>
+                            <Text style={[mS.header, g.text24_700_blue]}>דרג בבקשה</Text>
+                            <Text style={g.text24_700_blue}>{name}</Text>
+                            <RatingPanel rating={newRating} setRating={setNewRating} />
+                        </View>
+                        <ButtonBlue name="לדרג" onPress={handleRate} />
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
+
+
+
             <View style={s.buttons}>
-                {(item.status !== "done") && <TouchableOpacity onPress={() => handelDone()}>
-                    <CheckGrey style={{ transform: [{ scaleX: scaleCheck }, { scaleY: scaleCheck }] }} />
+                {(item.status === "in_process") && <TouchableOpacity onPress={handleCancel}>
+                    <RedX style={{ transform: [{ scaleX: scaleRedX }, { scaleY: scaleRedX }] }} />
                 </TouchableOpacity>}
-                {(item.status === "done") && <View>
-                    <CheckGreen style={{ transform: [{ scaleX: scaleCheck }, { scaleY: scaleCheck }] }} />
-                </View>}
+                {(item.status === "done") && <TouchableOpacity onPress={handleCheck}>
+                    <CheckGreen style={{ transform: [{ scaleX: scaleCheckGreen }, { scaleY: scaleCheckGreen }] }} />
+                </TouchableOpacity>}
+                <TouchableOpacity onPress={() => setModalOpen(true)}>
+                    <Thumb style={{ transform: [{ scaleX: scaleThumb }, { scaleY: scaleThumb }] }} />
+                </TouchableOpacity>
             </View>
             <View style={s.jobInfo}>
                 <View style={s.jobTitle}>
@@ -95,7 +150,7 @@ const OrdersToMeCard = ({ item, toMe }) => {
     )
 }
 
-export default OrdersToMeCard
+export default JobsFromMeCard
 
 const s = StyleSheet.create({
 
@@ -115,17 +170,17 @@ const s = StyleSheet.create({
     buttons: {
         height: "100%",
         width: "12%",
-        //      backgroundColor: "plum",
+        //    backgroundColor: "plum",
         paddingVertical: 12,
         paddingHorizontal: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'flex-end',
+        justifyContent: 'space-between',
     },
 
     jobInfo: {
         height: "100%",
         width: "38%",
-        //       backgroundColor: "peachpuff",
+        //     backgroundColor: "peachpuff",
         padding: 5,
         alignItems: 'flex-end',
         justifyContent: 'space-evenly',
@@ -142,7 +197,7 @@ const s = StyleSheet.create({
     dateTime: {
         height: "30%",
         width: "100%",
-        backgroundColor: "navy",
+        //    backgroundColor: "navy",
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
@@ -221,5 +276,39 @@ const s = StyleSheet.create({
         borderRadius: 20,
         overflow: 'hidden'
     },
+
+})
+
+const mS = StyleSheet.create({
+
+    modalBlock: {
+        flex: 1,
+        width: "100%",
+        backgroundColor: 'rgba(36, 54, 99, 0.88)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    innerBlock: {
+        width: "90%",
+        height: 200,
+        borderRadius: 20,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        position: 'relative'
+    },
+
+    header: {
+        //   backgroundColor: "lime",
+        marginTop: 20
+    },
+
+    closeIcon: {
+        position: 'absolute',
+        top: 10,
+        left: 10
+    },
+
 
 })

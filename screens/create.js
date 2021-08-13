@@ -28,7 +28,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useSelector, useDispatch } from 'react-redux'
 import PersonalInfo from '../components/personalInfo/PersonalInfo';
 
-import TestCard from '../components/cards/TestCard'
+
 import DropDownBlue from '../components/dropdowns/DropDownBlue';
 import ButtonYellowSearch from '../components/buttons/ButtonYellowSearch';
 import SearchSwitch from '../components/switches/SearchSwitch';
@@ -191,8 +191,9 @@ export default function Create() {
     };
 
     useEffect(() => {
-        setReadyToSearch(!!catForSearch && !!coordinate && days.reduce((acc, day) => acc || day, false))
-    }, [catForSearch, coordinate, days])
+        setResult([])
+        setReadyToSearch(!!catForSearch && !!coordinate && days.reduce((acc, day) => acc || day, false))        
+    }, [catForSearch, coordinate, days, date])
 
     const handleCreate = () => {
         console.log("CREATE")
@@ -200,7 +201,7 @@ export default function Create() {
             "categoryId": catForSearch,
             "cost": 1,
             "actionRadius": distance,
-            "amount": 5,
+            "amount": amount,
             "coordinate": coordinate,
             "dayTime": period,
             "weekDays": [...days]

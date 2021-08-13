@@ -13,6 +13,8 @@ import Stars from '../../Images/Stars.svg'
 import { g } from '../../styles/global'
 import { commonAPI } from '../../src/api/api';
 
+import RatingForCardPanel from '../panels/RatingForCardPanel';
+
 const SomebodysInfo = ({ id }) => {
 
 
@@ -47,34 +49,35 @@ const SomebodysInfo = ({ id }) => {
 
     return (
         !!user.address ?
-        <View style={s.personalInfoBlock}>
+            <View style={s.personalInfoBlock}>
 
-           
 
-            <View style={s.rating}>
-                <Stars style={{ transform: [{ scaleX: scaleStars }, { scaleY: scaleStars }] }} />
-            </View>
 
-            <View style={s.phone}>
-                <Text style={[s.phoneNumber, g.text18_600_blue]}>
-                    {user.phone}
-                </Text>
-                <Phone style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
-            </View>
 
-            <View style={s.professionBlock}>
-                <Text style={g.text18_400_grey}>{`${user.address.city} `}</Text>
-                <Text style={g.text18_600_blue}> תחום עיסוק: </Text>
-            </View>
-            <View style={s.addressBlock}>
-                <Text style={g.text18_400_grey}>{`${user.job} `}</Text>
-                <Text style={g.text18_600_blue}> כתובת: </Text>
-            </View>
+                <View style={s.rating}>
+                    <RatingForCardPanel rating={user.feedbackResult} scale={0.6} />
+                </View>
 
-            <View style={s.status}>
-                <ImageBackground source={statusSource} style={s.avatar} />
-            </View> 
-        </View> : <View/>
+                <View style={s.phone}>
+                    <Text style={[s.phoneNumber, g.text18_600_blue]}>
+                        {user.phone}
+                    </Text>
+                    <Phone style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
+                </View>
+
+                <View style={s.professionBlock}>
+                    <Text style={g.text18_400_grey}>{`${user.address.city} `}</Text>
+                    <Text style={g.text18_600_blue}> תחום עיסוק: </Text>
+                </View>
+                <View style={s.addressBlock}>
+                    <Text style={g.text18_400_grey}>{`${user.job} `}</Text>
+                    <Text style={g.text18_600_blue}> כתובת: </Text>
+                </View>
+
+                <View style={s.status}>
+                    <ImageBackground source={statusSource} style={s.avatar} />
+                </View>
+            </View> : <View />
     )
 }
 
@@ -87,25 +90,24 @@ const s = StyleSheet.create({
         justifyContent: 'flex-start',
         width: "100%",
         height: 240,
-      //  backgroundColor: "pink",
+        //  backgroundColor: "pink",
         borderRadius: 20,
         backgroundColor: "#FFFFFF",
     },
 
     rating: {
         width: "90%",
-        height: 60,
-      //  backgroundColor: "maroon",
+        marginTop: 72,
+         //  backgroundColor: "maroon",
         alignItems: 'center',
         justifyContent: 'flex-end',
-        paddingBottom: 5,
-        marginTop: 50
+        paddingBottom: 5
     },
 
     phone: {
         width: "90%",
         height: 24,
-     //   backgroundColor: "lightgreen",
+        //   backgroundColor: "lightgreen",
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
@@ -119,7 +121,7 @@ const s = StyleSheet.create({
     professionBlock: {
         width: "100%",
         height: 24,
-     //   backgroundColor: "olive",
+        //   backgroundColor: "olive",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: 'center'
@@ -128,7 +130,7 @@ const s = StyleSheet.create({
     addressBlock: {
         width: "100%",
         height: 24,
-     //   backgroundColor: "peru",
+        //   backgroundColor: "peru",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: 'center'
@@ -140,7 +142,7 @@ const s = StyleSheet.create({
         width: "100%",
         height: 50,
         marginTop: 20
-      //  backgroundColor: "magenta",
+        //  backgroundColor: "magenta",
     },
 
     avatar: {

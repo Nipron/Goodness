@@ -178,6 +178,60 @@ export const userAPI = {
 
 export const serviceAPI = {
 
+  cancelService: async id => {
+    try {
+      let token = await AsyncStorage.getItem('token')    
+      let config = {
+        method: 'post',
+        url: `http://52.48.233.122:3000/jobs/jobCancel/${id}`,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=utf-8'
+        }
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } catch (e) {
+      console.log(e)
+    }
+  },
+
+  rateService: async (id, rating) => {
+    try {
+      let token = await AsyncStorage.getItem('token')
+      let data = JSON.stringify({
+        "rating": rating
+      });
+      
+
+      let config = {
+        method: 'post',
+        url: `http://52.48.233.122:3000/feedback/forJob/${id}`,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        data
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } catch (e) {
+      console.log(e)
+    }
+  },
+
   doneService: async id => {
     try {
       let token = await AsyncStorage.getItem('token')
@@ -203,7 +257,6 @@ export const serviceAPI = {
       console.log(e)
     }
   },
-
 
   approveService: async id => {
     try {

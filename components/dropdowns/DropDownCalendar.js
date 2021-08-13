@@ -3,7 +3,6 @@ import { Animated, Easing, StyleSheet, View, Text, Image, ImageBackground, Touch
 import { useSelector } from 'react-redux'
 
 import { g } from '../../styles/global'
-import TestCard from '../cards/TestCard';
 
 import Date from '../../Images/Date.svg'
 import Arrow from '../../Images/Arrow.svg'
@@ -26,7 +25,10 @@ const DropDownCalendar = ({ date, setDate }) => {
     const handlePickDate = day => {
         setOpen(false)
         setDate(day)
+        console.log(day)
     }
+
+    
 
     return (
         <View style={s.outer}>

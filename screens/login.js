@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native'
 import RegInput from '../components/inputs/RegInput';
 import PhoneIcon from '../Images/Phone.svg'
 import LockIcon from '../Images/LockSm.svg'
+import ArrowBack from '../Images/ArrowBack.svg'
 
 import { g } from '../styles/global'
 import { updateAll } from '../redux/store';
@@ -26,6 +27,8 @@ export default function Login(props) {
 
     const [phoneBorder, setPhoneBorder] = useState("")
     const [passwordBorder, setPasswordBorder] = useState("")
+
+    const scale = 1.5;
 
     const onFormikSubmit = values => {
 
@@ -39,7 +42,7 @@ export default function Login(props) {
                 }))
             .catch(function (error) {
                 console.log("LOGIN NO GOOD")
-              //  console.log(error);
+                //  console.log(error);
                 Alert.alert('Something went wrong!', "Wrong email/password", [{ text: "Try again", onPress: () => console.log('alert wrong') }])
             })
     }
@@ -53,6 +56,10 @@ export default function Login(props) {
                     (props) => (
                         <LoginLayout >
                             <SafeAreaView style={s.goodnessBlock}>
+
+                                <TouchableOpacity style={s.arrowContainer} onPress={() => navigation.goBack()}>
+                                    <ArrowBack style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
+                                </TouchableOpacity>
 
                                 <View style={s.logoBlock}>
                                     <LogoGroup />
@@ -101,6 +108,18 @@ export default function Login(props) {
 
 const s = StyleSheet.create({
 
+    arrowContainer: {
+        width: "100%",
+        height: 40,
+        // backgroundColor: "maroon",
+        alignItems: "flex-start",
+        justifyContent: 'flex-start',
+        position: 'absolute',
+        top: 52,
+        left: 28
+
+    },
+
     goodnessBlock: {
         width: "100%",
         // backgroundColor: "darkgreen",
@@ -129,6 +148,7 @@ const s = StyleSheet.create({
 
     forgotPasswordBlock: {
         marginTop: 20,
+        marginBottom: 40,
         alignItems: 'center',
         justifyContent: 'center',
         //  backgroundColor: 'lightblue'

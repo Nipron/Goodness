@@ -13,14 +13,13 @@ import Edit from '../../Images/Edit.svg'
 import Heart from '../../Images/Heart.svg'
 
 import { g } from '../../styles/global'
+import RatingForCardPanel from '../panels/RatingForCardPanel';
 
 const PersonalInfo = () => {
 
     const navigation = useNavigation()
     const info = useSelector(state => state.all)
     const scale = 1.4
-    const scaleStars = 1.4
-    const scaleEdit = 1.4
     const scaleHeart = 1.2
 
     let statusSource;
@@ -43,8 +42,6 @@ const PersonalInfo = () => {
             break;
     }
 
-   // console.log(info)
-
     const pressAlert = () => Alert.alert('EDIT PROFILE', "Redirect ot EditProfile", [{ text: "Ok"/*, onPress: () => console.log('alert wrong') */ }])
 
     return (
@@ -60,12 +57,10 @@ const PersonalInfo = () => {
                         {info.balance}
                     </Text>
                 </View>
-
-
             </View>
 
             <View style={s.rating}>
-                <Stars style={{ transform: [{ scaleX: scaleStars }, { scaleY: scaleStars }] }} />
+                <RatingForCardPanel rating={info.feedbackResult} scale={0.6}/>
             </View>
 
             <View style={s.phone}>
@@ -133,7 +128,7 @@ const s = StyleSheet.create({
 
     rating: {
         width: "90%",
-        height: 60,
+        marginTop: 20,
         //   backgroundColor: "maroon",
         alignItems: 'center',
         justifyContent: 'flex-end',

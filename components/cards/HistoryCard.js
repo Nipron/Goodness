@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Text, Image, ImageBackground, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, Image, ImageBackground, TouchableOpacity, Alert, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import moment from 'moment'
 
@@ -10,6 +10,7 @@ import RedX from '../../Images/RedX.svg'
 import Thumb from '../../Images/Thumb.svg'
 import Date from '../../Images/Date.svg'
 import Time from '../../Images/Time.svg'
+import CloseIcon from '../../Images/CloseIcon'
 
 import { g } from '../../styles/global'
 import { serviceAPI, userAPI } from '../../src/api/api';
@@ -20,7 +21,11 @@ import { useNavigation } from '@react-navigation/native'
 
 import { setTempUserThunk } from '../../redux/tempUserReducer';
 
-const TestCard = ({ item, toMe }) => {
+import ButtonBlue from '../../src/ButtonBlue';
+import RatingPanel from '../panels/RatingPanel';
+import RatingForCardPanel from '../panels/RatingForCardPanel';
+
+const HistoryCard = ({ item, toMe }) => {
 
     const navigation = useNavigation()
     const dispatch = useDispatch()
@@ -33,59 +38,51 @@ const TestCard = ({ item, toMe }) => {
     const name = partner.name
     const userId = partner.id
     const avaPath = partner.avatar.path
+    const rating = partner.feedbackResult
     const date = moment(item.service.createdAt).format('L')
     const time = item.service.dayTime
+
+    const [newRating, setNewRating] = useState(3)
 
     const scaleRedX = 1.6
     const scaleThumb = 1.6
     const scaleDate = 1.4
     const scaleTime = 1.4
-    const scaleStars = 0.4
+    const scaleRating = 0.23
     const scaleRepair = 1.2
 
-    const handelCancel = () => {
-        serviceAPI.approveService(item.id)
-    }
+    const [modalOpen, setModalOpen] = useState(false)
 
-    const handelDone = async () => {
-        console.log("DONE PRESSED")
-        await serviceAPI.doneService(item.id)
+    const handelCancel = async () => {
+        await serviceAPI.cancelService(item.id)
         await userAPI.dashboard()
             .then(data => {
-                console.log("Approve OK")
-                console.log(data)
                 dispatch(updateAll(data))
-                // navigation.navigate('UserInfo')
+                navigation.navigate('Profile')
             })
     }
 
-    const handelApprove = async () => {
+    const handleRate = async () => {
+        console.log(newRating)
+        console.log(item.id)
         await serviceAPI.approveService(item.id)
+        await serviceAPI.rateService(item.id, newRating)
         await userAPI.dashboard()
             .then(data => {
-                console.log("Approve OK")
-                console.log(data)
                 dispatch(updateAll(data))
-                //   navigation.navigate('Profile')
+                navigation.navigate('Profile')
             })
+        setModalOpen(false)
     }
 
     const goToPersonalInfo = () => {
-        console.log(userId)
         dispatch(setTempUserThunk(userId));
         navigation.navigate('UserInfo')
     }
 
     return (
-        <View style={s.testCard}>
-            <View style={s.buttons}>
-                <TouchableOpacity onPress={handelDone}>
-                    <RedX style={{ transform: [{ scaleX: scaleRedX }, { scaleY: scaleRedX }] }} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handelApprove}>
-                    <Thumb style={{ transform: [{ scaleX: scaleThumb }, { scaleY: scaleThumb }] }} />
-                </TouchableOpacity>
-            </View>
+        <View style={s.testCard}>         
+
             <View style={s.jobInfo}>
                 <View style={s.jobTitle}>
                     <Text style={g.text14_600_blue}>{cat}</Text>
@@ -105,7 +102,7 @@ const TestCard = ({ item, toMe }) => {
             <View style={s.personalInfoBlock}>
                 <Text style={[g.text16_600_blue, s.nameStyle]}>{name}</Text>
                 <View style={s.rating}>
-                    <Stars style={{ transform: [{ scaleX: scaleStars }, { scaleY: scaleStars }] }} />
+                    <RatingForCardPanel rating={rating} scale={scaleRating} />
                 </View>
             </View>
             <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
@@ -116,7 +113,7 @@ const TestCard = ({ item, toMe }) => {
     )
 }
 
-export default TestCard
+export default HistoryCard
 
 const s = StyleSheet.create({
 
@@ -207,13 +204,15 @@ const s = StyleSheet.create({
         //  maxWidth: "22%",
         width: "20%",
         //  backgroundColor: "magenta",
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
         padding: 5,
     },
 
     nameStyle: {
         //   backgroundColor: "yellow",
+        marginTop: 6,
+        marginBottom: -6,
         textAlign: 'right'
     },
 
@@ -240,5 +239,39 @@ const s = StyleSheet.create({
         borderRadius: 20,
         overflow: 'hidden'
     },
+
+})
+
+const mS = StyleSheet.create({
+
+    modalBlock: {
+        flex: 1,
+        width: "100%",
+        backgroundColor: 'rgba(36, 54, 99, 0.88)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    innerBlock: {
+        width: "90%",
+        height: 200,
+        borderRadius: 20,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        position: 'relative'
+    },
+
+    header: {
+        //   backgroundColor: "lime",
+        marginTop: 20
+    },
+
+    closeIcon: {
+        position: 'absolute',
+        top: 10,
+        left: 10
+    },
+
 
 })
