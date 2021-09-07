@@ -13,19 +13,19 @@ const DistancePanel = ({ distance, setDistance }) => {
         <View style={s.outer}>
             <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 1 ? color1 : color2 }]}
                 onPress={() => setDistance(1)}>
-                <Text style={{ fontWeight: distance === 1 ? "bold" : "nornal", color: distance === 1 ? color3 : color4, fontSize }}>1 ק"מ</Text>
+                <Text style={{ fontWeight: distance === 1 ? "bold" : "normal", color: distance === 1 ? color3 : color4, fontSize }}>1 ק"מ</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 5 ? color1 : color2 }]}
                 onPress={() => setDistance(5)}>
-                <Text style={{ fontWeight: distance === 5 ? "bold" : "nornal", color: distance === 5 ? color3 : color4, fontSize }}>5 ק"מ</Text>
+                <Text style={{ fontWeight: distance === 5 ? "bold" : "normal", color: distance === 5 ? color3 : color4, fontSize }}>5 ק"מ</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 10 ? color1 : color2 }]}
                 onPress={() => setDistance(10)}>
-                <Text style={{ fontWeight: distance === 10 ? "bold" : "nornal", color: distance === 10 ? color3 : color4, fontSize }}>10 ק"מ</Text>
+                <Text style={{ fontWeight: distance === 10 ? "bold" : "normal", color: distance === 10 ? color3 : color4, fontSize }}>10 ק"מ</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 20 ? color1 : color2 }]}
                 onPress={() => setDistance(20)}>
-                <Text style={{ fontWeight: distance === 20 ? "bold" : "nornal", color: distance === 20 ? color3 : color4, fontSize }}>עִיר</Text>
+                <Text style={{ fontWeight: distance === 20 ? "bold" : "normal", color: distance === 20 ? color3 : color4, fontSize }}>עִיר</Text>
             </TouchableOpacity>
         </View>
     )

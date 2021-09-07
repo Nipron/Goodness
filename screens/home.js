@@ -1,39 +1,53 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, View, TextInput, Image, Pressable, Alert, SafeAreaView, Button, ImageBackground, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import AppLoading from 'expo-app-loading';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  Pressable,
+  Alert,
+  SafeAreaView,
+  Button,
+  ImageBackground,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native'
+import AppLoading from 'expo-app-loading'
 
-import LogoGroup from '../src/LogoGroup';
+import LogoGroup from '../src/LogoGroup'
 import ButtonYellow from '../src/ButtonYellow'
-import { commonAPI, userAPI } from '../src/api/api';
-import HomeLayout from '../components/layouts/HomeLayout';
+import { commonAPI, userAPI } from '../src/api/api'
+import HomeLayout from '../components/layouts/HomeLayout'
 
-import { useNavigation } from '@react-navigation/native'
-import SearchInput from '../components/inputs/SearchInput';
-import { setCategoriesThunk } from '../redux/categoriesReducer';
-import { setCategoriesFlatThunk } from '../redux/categoriesFlatReducer';
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import SearchInput from '../components/inputs/SearchInput'
+import { setCategoriesThunk } from '../redux/categoriesReducer'
+import { setCategoriesFlatThunk } from '../redux/categoriesFlatReducer'
+import { updateAll } from '../redux/store'
+import { setMessagesThunk } from '../redux/messagesReducer'
 
-export default function Home(props) {
+export default function Home (props) {
+  const dispatch = useDispatch()
+ // dispatch(updateAll(JSON.stringify({})))
 
-  const dispatch = useDispatch();
+  useFocusEffect(() => {
+    dispatch(setCategoriesThunk())
+    dispatch(setCategoriesFlatThunk())
+    dispatch(updateAll(JSON.stringify({})))
+  })
 
-  useEffect(() => {
-    dispatch(setCategoriesThunk());
-    dispatch(setCategoriesFlatThunk());
-  }, [])
-  
   const navigation = useNavigation()
 
   const pressHandler = () => {
     navigation.navigate('Create')
-
     // Alert.alert('OOPS!', "Epta kukuha", [{text: "IN-NA", onPress: () => console.log('alet umer')}])
   }
 
   const goRegistration = () => {
     navigation.navigate('Registration')
-
-
 
     // Alert.alert('OOPS!', "Epta kukuha", [{text: "IN-NA", onPress: () => console.log('alet umer')}])
   }
@@ -47,10 +61,13 @@ export default function Home(props) {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
-      <HomeLayout >
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss()
+      }}
+    >
+      <HomeLayout>
         <SafeAreaView style={s.goodnessBlock}>
-
           <View style={s.searchBlock}>
             <SearchInput />
           </View>
@@ -64,58 +81,52 @@ export default function Home(props) {
             <Text style={s.text}>בזמנם הפנוי ובתמורה לקבל מעשה טוב</Text>
             <Text style={s.text}>של אדם אחר.</Text>
           </View>
+
+          <View style={s.yellowButtonBlock}>
+            <ButtonYellow
+              name='כניסה'
+              onPress={() => navigation.navigate('Login')}
+            />
+          </View>
         </SafeAreaView>
-
-        <View style={s.yellowButtonBlock}>
-          <ButtonYellow name="כניסה" onPress={() => navigation.navigate('Login')} />
-        </View>
-
       </HomeLayout>
     </TouchableWithoutFeedback>
-
-  );
+  )
 }
 
 const s = StyleSheet.create({
-
   goodnessBlock: {
-    width: "100%",
-    // backgroundColor: "pink",
+    width: '100%',
+    flex: 1,
+   // backgroundColor: "azure",
     alignItems: 'center',
-    justifyContent: 'flex-start',
-
+    justifyContent: 'space-between'
   },
 
   searchBlock: {
-    marginTop: 0,
-    height: 70,
+    marginTop: 5,
+    height: "15%",
     paddingHorizontal: 15,
-    // backgroundColor: "yellow",
+   //  backgroundColor: "yellow",
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  searchInput: {
-    backgroundColor: 'white',
-    borderRadius: 50,
-    height: 50,
-    width: '90%',
-    borderStyle: 'solid',
-    borderWidth: 2,
-    borderColor: '#3949ab'
-  },
+    justifyContent: 'center'
+  },  
 
   logoBlock: {
-    marginTop: 80
+    height: "45%",
+   // backgroundColor: 'peru',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
 
   descriptionBlock: {
-    height: 120,
-    width: "90%",
+    height: "15%",
+    width: '90%',
+    paddingBottom: 26,
     alignItems: 'center',
     justifyContent: 'center',
-    //   backgroundColor: "pink"
+//    backgroundColor: 'pink'
   },
 
   text: {
@@ -124,11 +135,10 @@ const s = StyleSheet.create({
   },
 
   yellowButtonBlock: {
-    width: "100%",
-    height: "26%",
-    // backgroundColor: "green",
+    width: '90%',
+    height: '25%',   
     alignItems: 'center',
     justifyContent: 'flex-start',
-  },
-
-});
+    //  backgroundColor: "green",
+  }
+})

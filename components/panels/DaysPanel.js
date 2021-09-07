@@ -61,7 +61,7 @@ const s = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-around",
-        marginVertical: 5,
+        marginVertical: 12,
     },
 
     dayContainer: {

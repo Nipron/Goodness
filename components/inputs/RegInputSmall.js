@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TextInput, Text, KeyboardAvoidingView } from 'react-native';
 import { g } from "../../styles/global"
-import Person from '../../Images/Person.svg'
 
-const RegInputSmall = (props) => {
-
-    //  const [value, setValue] = useState(null)
+const RegInputSmall = (props) => {    
 
     return (
-        <KeyboardAvoidingView style={[props.style, s.outer]} behavior="height">
+        <View style={[props.style, s.outer]} behavior="height">
             <TextInput style={[s.input, g.text24_400_blue,
             { borderColor: props.borderColor ? props.borderColor : "rgba(255, 255, 255, 0.0)" }]}
                 textAlign="right"
                 keyboardType={props.keyboardType ? props.keyboardType : "default"}
                 onChangeText={props.onChangeText}
-                value={props.value}
+                value={props.value.toString()}
                 placeholder={props.placeholder}
                 placeholderTextColor="#90949C"
             >
@@ -24,7 +21,7 @@ const RegInputSmall = (props) => {
                     {props.children}
                 </View>
             </View>
-        </KeyboardAvoidingView>
+        </View>
     )
 }
 

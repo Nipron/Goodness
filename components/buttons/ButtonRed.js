@@ -12,7 +12,8 @@ const ButtonRed = props => {
 
 const s = StyleSheet.create({
     button: {
-        marginTop: -26,
+        marginTop: 10,
+        marginBottom: 120,
         height: 52,
         width: "70%",
         borderRadius: 26,
@@ -22,6 +23,13 @@ const s = StyleSheet.create({
         borderColor: "#FFFFFF",
         borderWidth: 2,
         zIndex: 10,
+        shadowOffset:{
+            width: 3,
+            height: 3
+        },
+        shadowOpacity: 0.3,
+       // shadowColor: "blue",
+        shadowRadius: 4
     },
 
     text: {

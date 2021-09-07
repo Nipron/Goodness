@@ -19,24 +19,27 @@ const SearchInput = ({ code, setCode }) => {
 
     const handleChange = value => {
         setSearch(value)
-        console.log(value)
+      //  console.log(value)
     }
+    
 
     return (
+        <TouchableOpacity style={s.outer} onPress={() => navigation.navigate('Create')} >
         <View style={s.outer}>
             <TextInput style={[s.searchInput, g.text24_400_grey]} textAlign="right"
                 placeholder="חיפוש שירות" onChangeText={handleChange} />
 
             <View style={s.icons} >
-                <TouchableOpacity onPress={() => navigation.navigate('Home')} style={s.arrow}>
+                <TouchableOpacity  style={s.arrow}>
                     <ArrowBlue style={{ transform: [{ scaleX: scaleArrow }, { scaleY: scaleArrow }] }} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Create')} style={s.hands}>
+                <TouchableOpacity  style={s.hands}>
                     <Hands style={{ transform: [{ scaleX: scaleHands }, { scaleY: scaleHands }] }} />
                 </TouchableOpacity>
             </View>
 
         </View>
+        </TouchableOpacity>
     )
 }
 

@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TextInput, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import { g } from '../../styles/global'
 
 import SearchWhite from '../../Images/SearchWhite.svg'
 import SearchGrey from '../../Images/SearchGrey.svg'
 import Hands from '../../Images/Hands.svg'
 
-const SearchSwitch = ({ createMode, setCreateMode }) => {
+import { useNavigation, useScrollToTop } from '@react-navigation/native'
+
+const SearchSwitch = ({ createMode, setCreateMode, logged }) => {
+
+     const navigation = useNavigation()
 
     const scaleSearch = 1.5;
     const scaleHands = 1.5;
@@ -19,7 +23,10 @@ const SearchSwitch = ({ createMode, setCreateMode }) => {
                     <Text style={[g.text20_400_white, s.switchText]}>חיפוש שירות</Text>
                     <SearchWhite style={[{ transform: [{ scaleX: scaleSearch }, { scaleY: scaleSearch }] }, s.searchIcon]} />
                 </View>
-                <TouchableOpacity style={s.createPress} onPress={() => setCreateMode(!createMode)}>
+                <TouchableOpacity style={s.createPress} onPress={() => {
+                    logged ? setCreateMode(!createMode) : 
+                    Alert.alert('PLEASE REGISTER', "Redirect to Register", [{ text: "Ok", onPress: () => navigation.navigate("Registration")  }])
+                    }}>
                     <Text style={[g.text20_400_grey, s.switchText]}>הצעת שירות</Text>
                     <Hands style={[{ transform: [{ scaleX: scaleHandsGrey }, { scaleY: scaleHandsGrey }] }, s.searchIcon]} />
                 </TouchableOpacity >

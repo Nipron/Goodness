@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
 
-import Bender from '../../Images/Bender.jpg'
+import AvatarPlain from '../../Images/AvatarPlain.jpg'
 import Stars from '../../Images/Stars.svg'
 import Repair from '../../Images/Repair.svg'
 import CheckGrey from '../../Images/CheckGrey.svg'
@@ -19,14 +19,14 @@ import { setTempUserThunk } from '../../redux/tempUserReducer';
 import RatingForCardPanel from '../panels/RatingForCardPanel';
 
 const OrdersToMeCard = ({ item, toMe }) => {
-
+   
     const navigation = useNavigation()
     const dispatch = useDispatch()
     const catsFlat = useSelector(state => state.categoriesFlat)
 
     const catId = item.service.category.id
     const cat = catsFlat.find(cat => cat.id === catId).title
-    const partner = toMe ? item.orderFrom : item.jobTo
+    const partner = toMe ? item.client : item.worker
 
     const name = partner.name
     const userId = partner.id
@@ -88,7 +88,7 @@ const OrdersToMeCard = ({ item, toMe }) => {
                 </View>
             </View>
             <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
-                <ImageBackground source={avaPath ? { uri: `http://52.48.233.122:3000/${avaPath}` } : Bender}
+                <ImageBackground source={avaPath ? { uri: `http://52.48.233.122:3001/${avaPath}` } : AvatarPlain}
                     resizeMethod={'auto'} style={s.avatar} />
             </TouchableOpacity>
         </View>

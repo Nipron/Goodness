@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, Image, Dimensions, Pressable, ScrollView, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { LogBox, StyleSheet, Text, View, TextInput, Image, Alert, Dimensions, Pressable, ScrollView, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DropDownPicker2 from 'react-native-dropdown-picker';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
@@ -23,7 +23,7 @@ import AvatarBig from '../components/avatars/AvatarBig';
 
 import SearchLayout from '../components/layouts/SearchLayout';
 
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useScrollToTop } from '@react-navigation/native'
 
 import { useSelector, useDispatch } from 'react-redux'
 import PersonalInfo from '../components/personalInfo/PersonalInfo';
@@ -40,11 +40,16 @@ import PeriodsPanel from '../components/panels/PeriodsPanel';
 import SearchResultCard from '../components/cards/SearchResultCard';
 import DropDownCalendar from '../components/dropdowns/DropDownCalendar';
 import AmountPanel from '../components/panels/AmountPanel';
+import CalendarModal from '../components/modals/CalendarModal';
+import CalendarButton from '../components/buttons/CalendarButton';
 
 export default function Create() {
 
-    // console.log("ZZZZZZ ZZZZZ ZZZZZ ZZZZZ ZZZZZ ZZZZZ ZZZZZ")
-    const cats = useSelector(state => state.categories[0].children/*[2].title/*[1].children[0].title/*[0]*/)
+    useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+}, [])
+    
+    const cats = useSelector(state => state.categories.categories)
 
     //Categories lists
     const [cats1, setCats1] = useState(cats.map(cat => ({ label: cat.title, value: cat.title })))
@@ -64,12 +69,14 @@ export default function Create() {
     const [cat4, setCat4] = useState('')
     const [catForSearch, setCatForSearch] = useState(null)
 
+    const [allowScroll, setAllowScroll] = useState(false)
+
 
 
 
     useEffect(() => {
-        console.log("Hello from UseState")
-        console.log(coordinate)
+        //  console.log("Hello from UseState")
+        //   console.log(coordinate)
     }, [coordinate])
 
     //DropDow open
@@ -86,12 +93,16 @@ export default function Create() {
 
     const [distance, setDistance] = useState(1)
 
-    const [coordinate, setCoordinate] = useState(null
-        /*  {
-          "latitude": 32,
-          "longitude": 34.8,
-      }*/
+    const [coordinate, setCoordinate] = useState(
+          {
+            "latitude": 32,
+            "longitude": 34.8,
+        }
     )
+
+    const refScroll = React.useRef(null);
+
+    const [calendarModalOpen, setCalendarModalOpen] = useState(false)
 
     const [date, setDate] = useState(null)
 
@@ -106,7 +117,16 @@ export default function Create() {
     const navigation = useNavigation()
     const data = useSelector(state => state.all)
 
+    const [logged, setLogged] = useState(false)
+
+    useEffect(() => {
+        setLogged(!!data.id)
+    }, [])    
+
+    console.log("Logged + ", logged)
+
     const catValueChange1 = cat => {
+        setScrollTop(true)
 
         setCat1(cat);
         setCat2('')
@@ -122,11 +142,12 @@ export default function Create() {
         } else {
             let id = cats[i].id
             setCatForSearch(id)
-            console.log(`Cat for serach : ${id}`)
+            //  console.log(`Cat for serach : ${id}`)
         }
     }
 
     const catValueChange2 = cat => {
+        setScrollTop(true)
 
         setCat2(cat);
         setCats3([])
@@ -143,12 +164,13 @@ export default function Create() {
             } else {
                 let id = cats[u].children[w].id
                 setCatForSearch(id)
-                console.log(`Cat for serach : ${id}`)
+                //   console.log(`Cat for serach : ${id}`)
             }
         }
     }
 
     const catValueChange3 = cat => {
+        setScrollTop(true)
 
         setCat3(cat)
         if (!!cat1 && !!cat2 && !!cat3) {
@@ -158,7 +180,7 @@ export default function Create() {
 
             let id = cats[x].children[y].children[z].id
             setCatForSearch(id)
-            console.log(`Cat for serach : ${id}`)
+            //    console.log(`Cat for serach : ${id}`)
         }
     }
 
@@ -169,8 +191,8 @@ export default function Create() {
     const coordinatesPress = async e => {
         let coords = await e.nativeEvent
         setCoordinates({ ...coords.coordinate })
-        console.log("Coor OK")
-        console.log(coordinates)
+        //  console.log("Coor OK")
+        //   console.log(coordinates)
     }
 
 
@@ -183,6 +205,15 @@ export default function Create() {
         });
     };
 
+    const [scrollTop, setScrollTop] = useState(true)
+
+
+    //    useScrollToTop(refScroll);
+
+
+
+
+
     const onZoomOutPress = () => {
         map.current.getCamera().then((cam) => {
             cam.zoom -= 1;
@@ -192,12 +223,16 @@ export default function Create() {
 
     useEffect(() => {
         setResult([])
-        setReadyToSearch(!!catForSearch && !!coordinate && days.reduce((acc, day) => acc || day, false))        
+        setReadyToSearch(!!catForSearch && !!coordinate && days.reduce((acc, day) => acc || day, false))
     }, [catForSearch, coordinate, days, date])
 
-    const handleCreate = () => {
-        console.log("CREATE")
-        serviceAPI.createService({
+    /*  useEffect(() => {
+          setAllowScroll(readyToSearch)
+      }, [readyToSearch])*/
+
+    const handleCreate = async () => {
+        //    console.log("CREATE")
+        await serviceAPI.createService({
             "categoryId": catForSearch,
             "cost": 1,
             "actionRadius": distance,
@@ -207,30 +242,51 @@ export default function Create() {
             "weekDays": [...days]
         }).
             then(res => {
-                console.log("ggg")
-                console.log(JSON.parse(res))
+                //         console.log("ggg")
+                //         console.log(JSON.parse(res))
+                Alert.alert('מזל טוב !!! ', "יצרת בהצלחה שירות חדש!", [{ text: "בסדר"/*, onPress: () => console.log('alert wrong') */ }])
+                navigation.navigate('Profile')
             })
+
     }
 
     const handleSearch = () => {
         console.log("SEARCH")
-        try {
+        if (logged) {
+            try {
             serviceAPI.searchService({
                 "categoryId": catForSearch,
                 "coordinate": coordinate,
-                "range": distance,
+                //  "range": distance,
                 "date": date.dateString
             }).
                 then(res => {
-                    console.log("ggg")
-                    console.log(JSON.parse(res))
+                    //         console.log("ggg")
+                    //        console.log(JSON.parse(res))
                     setResult(JSON.parse(res))
                 })
 
         } catch (e) {
             console.log(e)
         }
+        }  else {
+            try {
+            serviceAPI.searchServicePublic({
+                "categoryId": catForSearch,
+                "coordinate": coordinate,
+                //  "range": distance,
+                "date": date.dateString
+            }).
+                then(res => {
+                    //         console.log("ggg")
+                    //        console.log(JSON.parse(res))
+                    setResult(JSON.parse(res))
+                })
 
+        } catch (e) {
+            console.log(e)
+        }
+        }     
     }
 
     /*const [isButton, setIsButton] = useState(true)
@@ -250,6 +306,11 @@ export default function Create() {
          }*/
     }, [createMode])
 
+    useEffect(() => {
+        console.log("GGG")
+        console.log(result)
+    }, [result])
+
     //<TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
     //</TouchableWithoutFeedback>
     return (
@@ -261,15 +322,18 @@ export default function Create() {
                 setCoordinate={setCoordinate}
                 distance={distance}
                 setDistance={setDistance} />
-            <SearchLayout readyToConfirm={readyToConfirm} chosenId={chosenId}>
+
+            <CalendarModal modalOpen={calendarModalOpen} setModalOpen={setCalendarModalOpen} date={date} setDate={setDate} />
+
+            <SearchLayout readyToConfirm={readyToConfirm} chosenId={chosenId} date={date} logged={logged}>
                 <View style={s.outer}>
                     <View style={s.textBlock}>
                         <Text style={[g.text22_700_white, s.headerText]}>{createMode ? "פרסום השירות" : "חיפוש שירות"}</Text>
                     </View>
                     <View style={s.switchBlock}>
-                        <SearchSwitch createMode={createMode} setCreateMode={setCreateMode} />
+                        <SearchSwitch createMode={createMode} setCreateMode={setCreateMode} logged={logged}/>
                     </View>
-                    <ScrollView style={s.scrollBlock} contentContainerStyle={s.resultContainer}>
+                    <ScrollView scrollsToTop={scrollTop} scrollEnabled={!!result.length} style={s.scrollBlock} contentContainerStyle={s.resultContainer}>
                         <View style={s.pickersBlock}>
                             <View style={s.picker1}>
                                 <DropDownPicker
@@ -338,7 +402,8 @@ export default function Create() {
                         </View>
 
                         {createMode && <DaysPanel days={days} setDays={setDays} />}
-                        {!createMode && <DropDownCalendar date={date} setDate={setDate} />}
+                        {/*!createMode && <DropDownCalendar date={date} setDate={setDate} />*/}
+                        {!createMode && <CalendarButton date={date} onPress={() => setCalendarModalOpen(true)} />}
 
                         {createMode && readyToSearch &&
                             <TouchableOpacity style={s.createButtonBlock} onPress={handleCreate}>
@@ -355,7 +420,9 @@ export default function Create() {
                         <View style={s.resultBlock}>
                             <View style={s.plug}>
                                 {!!result.length && result.map(offer => <SearchResultCard
+                                key={offer.id}
                                     data={offer}
+                                    date={date}
                                     chosenId={chosenId}
                                     setChosenId={setChosenId} />)}
                             </View>
@@ -370,7 +437,7 @@ export default function Create() {
 const s = StyleSheet.create({
 
     scrollBlock: {
-        //   backgroundColor: "olive",
+        //    backgroundColor: "olive",
         width: "100%"
     },
 
@@ -382,7 +449,7 @@ const s = StyleSheet.create({
         justifyContent: 'center',
         margin: 5,
         height: 50,
-        borderRadius: 25
+        borderRadius: 25,
     },
 
     searchButtonBlock: {
@@ -540,8 +607,8 @@ const s = StyleSheet.create({
         height: 50,
         //   backgroundColor: "navy",
         zIndex: 10,
-        marginTop: 5,
-        marginBottom: 5
+        marginTop: 12,
+        marginBottom: 12
     },
 
     picker2: {
@@ -549,7 +616,7 @@ const s = StyleSheet.create({
         height: 50,
         //   backgroundColor: "lime",
         zIndex: 9,
-        marginBottom: 5
+        marginBottom: 12
     },
 
     picker3: {
@@ -557,7 +624,7 @@ const s = StyleSheet.create({
         height: 50,
         //   backgroundColor: "peachpuff",
         zIndex: 8,
-        marginBottom: 5
+        marginBottom: 12
     },
 
     picker4: {

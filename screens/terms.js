@@ -10,7 +10,7 @@ export default function Terms({ navigation }) {
 
   return (
     <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
-      <SmallLayout text="תנאי שימוש">
+      <SmallLayout text="תנאי שימוש" hide={true}>
         <View style={s.termsBlock}>
           <Text style={{textAlign: 'right'}}>
           מה מכוסה במונחים אלה

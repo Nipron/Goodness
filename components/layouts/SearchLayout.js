@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import Footer from '../footer/Footer';
 import ArrowBack from '../../Images/ArrowBack.svg'
 import Burger from '../../Images/Burger.svg'
+import AvatarPlain from '../../Images/AvatarPlain.jpg'
 
 import { g } from '../../styles/global'
 
@@ -15,11 +16,12 @@ import ButtonYellowSearch from '../../components/buttons/ButtonYellowSearch';
 export default function SearchLayout(props) {
 
     const scale = 1.5;
-
     const navigation = useNavigation()
     const data = useSelector(state => state.all)
-    const path = data.avatar.path
-
+    let path;
+    if (data.avatar) {
+        path = data.avatar.path
+        }
 
     return (
         <KeyboardAvoidingView style={s.containerMain} behavior="padding">
@@ -31,9 +33,16 @@ export default function SearchLayout(props) {
                             <ArrowBack style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={s.photoOuter} onPress={() => navigation.navigate('Profile')}>
+                        <TouchableOpacity style={s.photoOuter} onPress={() => {
+
+                            props.logged ? 
+                            navigation.navigate('Profile')
+                            : 
+                            Alert.alert('PLEASE REGISTER', "Redirect to Register", [{ text: "Ok", onPress: () => navigation.navigate("Registration")  }])
+
+                        }}>
                             <View style={s.photoInner}>
-                                <ImageBackground source={!!path ? { uri: `http://52.48.233.122:3000/${path}` } : Bender}
+                                <ImageBackground source={!!path ? { uri: `http://52.48.233.122:3001/${path}` } : AvatarPlain}
                                     style={s.avatar} />
                             </View>
                         </TouchableOpacity>
@@ -50,7 +59,7 @@ export default function SearchLayout(props) {
                 </ImageBackground>
             </View>
             {!!props.chosenId &&
-                <ButtonYellowSearch name={"להזמין"} chosenId={props.chosenId} />}
+                <ButtonYellowSearch name={"להזמין"} chosenId={props.chosenId} date={props.date} logged={props.logged}/>}
             <Footer />
         </KeyboardAvoidingView>
     );

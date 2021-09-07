@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "react-native-demo",
-    "slug": "react-native-demo",
+    "name": "goodness",
+    "slug": "goodness",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./Images/goodness.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -20,13 +20,17 @@
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyAEQ-0S8BUpm2pMLsXa4RDxa5LDnqQllWI"
-      }
+      },
+      "bundleIdentifier": "goodness.test",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.yourcompany.yourappname",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

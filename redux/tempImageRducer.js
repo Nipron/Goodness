@@ -11,7 +11,7 @@ export const setTempImage = data => ({ type: SET_TEMP_IMAGE, payload: data })
 export const setCategoriesThunk = () => (dispatch) => {    
     commonAPI.getCategories()
     .then(res => {
-      console.log("THUNK")
+     // console.log("THUNK")
       dispatch(setCategories(res.data))
     })
 }*/
@@ -25,7 +25,7 @@ export const tempImage = (state = tempImageInitialState, action) => {
             //  let dd = JSON.stringify(data)
            //     console.log( action.payload )
                 state = action.payload
-                console.log("OKI PIC")
+          //      console.log("OKI PIC")
 
             // console.log(data)
             return state;

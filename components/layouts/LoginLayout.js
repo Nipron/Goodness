@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Pressable, Alert, Button, TouchableWithoutFeedback, ImageBackground, KeyboardAvoidingView, Keyboard } from 'react-native';
 import ButtonBlue from '../../src/ButtonBlue';
-import FooterLogin from '../footer/FooterLogin';
+import FooterHome from '../footer/FooterHome';
 
 import { useNavigation } from '@react-navigation/native'
 
@@ -18,7 +18,7 @@ export default function LoginLayout(props) {
                 </ImageBackground>
             </View>
             <ButtonBlue name="הרשמה" bottom={0} onPress={() => navigation.navigate('Registration')} />
-            <FooterLogin />
+            <FooterHome />
         </KeyboardAvoidingView>
     );
 }

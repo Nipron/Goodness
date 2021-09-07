@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, Pressable } from 'react-native';
+import { StyleSheet, Text, Pressable, Alert } from 'react-native';
 import { g } from '../../styles/global';
 import { serviceAPI, userAPI } from '../../src/api/api';
 
@@ -13,15 +13,21 @@ const ButtonYellowSearch = props => {
     const dispatch = useDispatch()
 
     const onPress = async () => {
-        console.log("Ordered ID# ", props.chosenId)
-        await serviceAPI.orderService(props.chosenId)
+        if (props.logged) {
+             //  console.log("Ordered ID# ", props.chosenId)
+        await serviceAPI.orderService(props.chosenId, props.date)
         await userAPI.dashboard()
             .then(data => {
                 console.log("UPDATE OK")
-                console.log(data)
+             //   console.log(data)
                 dispatch(updateAll(data))
                 navigation.navigate('Profile')
             })
+
+        } else {
+Alert.alert('PLEASE REGISTER', "Redirect to Register", [{ text: "Ok", onPress: () => navigation.navigate("Registration")  }])
+        }
+     
     }
 
     return (

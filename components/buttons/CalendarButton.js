@@ -1,69 +1,34 @@
 import React, { useState } from 'react';
 import { Animated, Easing, StyleSheet, View, Text, Image, ImageBackground, TouchableOpacity, Alert } from 'react-native';
-import { useSelector } from 'react-redux'
 
 import { g } from '../../styles/global'
 
 import Date from '../../Images/Date.svg'
 import Arrow from '../../Images/Arrow.svg'
 
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-
 import moment from 'moment'
 
-const DropDownCalendar = ({ date, setDate }) => {
+const CalendarButton = ({ date, onPress }) => {
 
     const scaleDate = 1.8
-    const scaleArrow = 1.4
-
-    const [open, setOpen] = useState(false)
-
-    const handlePress = () => {
-        setOpen(!open)
-    }
-
-    const handlePickDate = day => {
-        setOpen(false)
-        setDate(day)
-     //   console.log(day)
-    }
-
-    
+    const scaleArrow = 1.4 
 
     return (
         <View style={s.outer}>
-            <TouchableOpacity style={s.header} onPress={handlePress}>
+            <TouchableOpacity style={s.header} onPress={onPress}>
                 <View style={s.arrow}>
-                    <Arrow style={{ transform: [{ scaleX: scaleArrow }, { scaleY: scaleArrow }, { rotate: open ? "90deg" : "0deg" }] }} />
+                    <Arrow style={{ transform: [{ scaleX: scaleArrow }, { scaleY: scaleArrow }/*, { rotate: open ? "90deg" : "0deg" }*/] }} />
                 </View>
                 <View style={s.name}>
                     <Text style={[g.text24_700_blue, s.text]}>{!!date ? moment(date.dateString).format('L') : "תבחר תאריך"}</Text>
                     <Date style={{ transform: [{ scaleX: scaleDate }, { scaleY: scaleDate }] }} />
                 </View>
-            </TouchableOpacity>
-
-            {open &&
-                <View style={s.cards}>
-                    <View style={s.calendar}>
-                        <Calendar
-                            minDate={new Date()}
-                            maxDate={moment().add(31, 'days').format('YYYY-MM-DD')}
-                            onDayPress={day => { handlePickDate(day) }}
-                            monthFormat={'yyyy MM'}
-                            onMonthChange={(month) => { console.log('month changed', month) }}
-                            firstDay={1}
-                            onPressArrowLeft={subtractMonth => subtractMonth()}
-                            onPressArrowRight={addMonth => addMonth()}
-
-                        />
-                    </View>
-                </View>
-            }
+            </TouchableOpacity>            
         </View>
     )
 }
 
-export default DropDownCalendar
+export default CalendarButton
 
 const s = StyleSheet.create({
 
@@ -75,7 +40,7 @@ const s = StyleSheet.create({
         //  borderRadius: 20,
         backgroundColor: "#EEEEEE",
         borderRadius: 25,
-        marginVertical: 5
+        marginVertical: 12
     },
 
     header: {

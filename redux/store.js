@@ -4,6 +4,7 @@ import { categories } from './categoriesReducer'
 import { categoriesFlat } from './categoriesFlatReducer'
 import { tempImage } from './tempImageRducer'
 import { tempUser } from './tempUserReducer'
+import { messages } from './messagesReducer'
 
 const UPDATE_ALL = "UPDATE_ALL"
 
@@ -25,6 +26,6 @@ export const all = (state = allInitialState, action) => {
     }
 }
 
-const reducers = combineReducers({all, categories, categoriesFlat, tempImage, tempUser})
+const reducers = combineReducers({all, categories, categoriesFlat, tempImage, tempUser, messages})
 
 export default reducers;

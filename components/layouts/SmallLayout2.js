@@ -5,6 +5,7 @@ import {
   Text,
   View,
   SafeAreaView,
+  Keyboard,
   TextInput,
   Image,
   ScrollView,
@@ -25,7 +26,7 @@ import ArrowBack from '../../Images/ArrowBack.svg'
 
 import { g } from '../../styles/global'
 
-export default function SmallLayout (props) {
+export default function SmallLayout2 (props) {
   const navigation = useNavigation()
 
   const data = useSelector(state => state.all)
@@ -33,14 +34,19 @@ export default function SmallLayout (props) {
   const scale = 1.5
 
   return (
-    <KeyboardAvoidingView style={s.containerMain} behavior='padding'>
-      <View style={s.background}>
-        <ImageBackground
-          source={require('../../Images/BackgroundSmall.png')}
-          style={s.imageBack}
-        >
-          <SafeAreaView style={s.safeContainer}>
-            <View style={s.arrowCont}>
+    <TouchableWithoutFeedback
+      style={{ flex: 1 }}
+      onPress={() => {
+        Keyboard.dismiss()
+      }}
+    >
+      <View style={s.containerMain}>
+        <View style={s.background}>
+          <ImageBackground
+            source={require('../../Images/BackgroundSmall.png')}
+            style={s.imageBack}
+          >
+            <SafeAreaView style={s.safeContainer}>
               <TouchableOpacity
                 style={s.arrowContainer}
                 onPress={() => navigation.goBack()}
@@ -68,24 +74,28 @@ export default function SmallLayout (props) {
                     />
                   </View>
                 </TouchableOpacity>
-              )}
-            </View>
+              )}              
+
+            </SafeAreaView>
+
 
             <View style={s.logoBlock}>
-              <Image
-                style={s.logo}
-                source={require('../../Images/Logo1.png')}
-              />
-              <Text style={g.text24_700_white}>{props.text}</Text>
-            </View>
-          </SafeAreaView>
-        </ImageBackground>
+                <Image
+                  style={s.logo}
+                  source={require('../../Images/Logo1.png')}
+                />
+                <Text style={g.text24_700_white}>{props.text}</Text>
+              </View>
+
+
+          </ImageBackground>
+        </View>
+
+        <View style={s.childrenBlockOuter}>{props.children}</View>
+
+        <Footer hide={props.hide} />
       </View>
-
-      <View style={s.childrenBlockOuter}>{props.children}</View>
-
-      <Footer hide={props.hide} />
-    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -118,20 +128,12 @@ const s = StyleSheet.create({
   },
 
   safeContainer: {
-    height: '100%',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  //  backgroundColor: 'red'
-  },
-
-  arrowCont: {
-    height: 60,
+    height: '18%',
     width: '100%',
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-  //  backgroundColor: 'pink'
+  //     backgroundColor: "red"
   },
 
   arrowContainer: {
@@ -143,11 +145,11 @@ const s = StyleSheet.create({
   },
 
   logoBlock: {
-    top: -60,
+    marginTop: -20,
     height: 80,
     alignItems: 'center',
-    justifyContent: 'flex-end',
-   // backgroundColor: 'green'
+    justifyContent: 'flex-end'
+    //      backgroundColor: 'green'
   },
 
   logo: {
@@ -158,8 +160,8 @@ const s = StyleSheet.create({
   childrenBlockOuter: {
     width: '88%',
     height: Dimensions.get('window').height * 0.555 + 70,
-    marginTop: -60,
-    //     backgroundColor: "green",
+    marginTop: -70,
+    //   backgroundColor: "magenta",
     alignItems: 'center',
     justifyContent: 'flex-start'
   },

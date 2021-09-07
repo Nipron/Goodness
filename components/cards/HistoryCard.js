@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image, ImageBackground, TouchableOpacity, Alert
 import { useSelector, useDispatch } from 'react-redux'
 import moment from 'moment'
 
-import Bender from '../../Images/Bender.jpg'
+import AvatarPlain from '../../Images/AvatarPlain.jpg'
 import Stars from '../../Images/Stars.svg'
 import Repair from '../../Images/Repair.svg'
 import RedX from '../../Images/RedX.svg'
@@ -33,7 +33,7 @@ const HistoryCard = ({ item, toMe }) => {
 
     const catId = item.service.category.id
     const cat = catsFlat.find(cat => cat.id === catId).title
-    const partner = toMe ? item.orderFrom : item.jobTo
+    const partner = toMe ? item.client : item.worker
 
     const name = partner.name
     const userId = partner.id
@@ -63,8 +63,8 @@ const HistoryCard = ({ item, toMe }) => {
     }
 
     const handleRate = async () => {
-        console.log(newRating)
-        console.log(item.id)
+     //   console.log(newRating)
+     //   console.log(item.id)
         await serviceAPI.approveService(item.id)
         await serviceAPI.rateService(item.id, newRating)
         await userAPI.dashboard()
@@ -106,7 +106,7 @@ const HistoryCard = ({ item, toMe }) => {
                 </View>
             </View>
             <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
-                <ImageBackground source={avaPath ? { uri: `http://52.48.233.122:3000/${avaPath}` } : Bender}
+                <ImageBackground source={avaPath ? { uri: `http://52.48.233.122:3001/${avaPath}` } : AvatarPlain}
                     resizeMethod={'auto'} style={s.avatar} />
             </TouchableOpacity>
         </View>

@@ -25,7 +25,7 @@ const SomebodysInfo = ({ id }) => {
     const scaleEdit = 1.4
     const scaleT = 1.2
 
-    console.log(user)
+  //  console.log(user)
 
     let statusSource;
 

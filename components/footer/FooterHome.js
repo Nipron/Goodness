@@ -12,7 +12,7 @@ const FooterHome = (props) => {
     return (
         <View style={s.footer}>
             <View style={s.footerInner}>
-                <TouchableOpacity style={s.termsBlock} onPress={() => navigation.navigate('Terms')}>
+                <TouchableOpacity style={s.termsBlock} /*onPress={() => navigation.navigate('Terms')}*/>
                     <Text style={[g.text22_400_grey, s.terms]}>תנאי שימוש  </Text>
                     <Checked />
                 </TouchableOpacity>

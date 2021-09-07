@@ -34,10 +34,11 @@ export default function LocationMap(props) {
     ])
 
 
-    const [coordinate, setCoordinate] = useState({ ...props.coordinate })
+    const [coordinate, setCoordinate] = useState({ latitude: 32,
+        longitude: 34.8, })
 
     useEffect(() => {
-
+        setCoordinate({ ...props.coordinate })
     }, [])
 
     //DropDow open
@@ -49,7 +50,7 @@ export default function LocationMap(props) {
 
 
     const handleSearch = values => {
-        console.log(values)
+     //   console.log(values)
     }
 
 
@@ -57,8 +58,8 @@ export default function LocationMap(props) {
     const coordinatePress = async e => {
         let coords = await e.nativeEvent
         setCoordinate({ ...coords.coordinate })
-        console.log("Coor OK")
-        console.log({ ...coords.coordinate })
+     //   console.log("Coor OK")
+     //   console.log({ ...coords.coordinate })
     }
 
 

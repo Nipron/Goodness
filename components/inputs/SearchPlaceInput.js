@@ -28,7 +28,7 @@ const SearchPlaceInput = (props) => {
         try {
             const result = await fetch(apiUrl);
             const json = await result.json()
-            console.log(json)
+         //   console.log(json)
         } catch (e) {
             console.log(e)
         }

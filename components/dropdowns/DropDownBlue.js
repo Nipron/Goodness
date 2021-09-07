@@ -64,7 +64,7 @@ const s = StyleSheet.create({
 
   header: {
     width: "100%",
-    height: 60,
+    height: 52,
     //  backgroundColor: "tan",
     flexDirection: "row",
     alignItems: 'center',

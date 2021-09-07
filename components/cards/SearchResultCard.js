@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, Image, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 
-import Bender from '../../Images/Bender.jpg'
+import AvatarPlain from '../../Images/AvatarPlain.jpg'
 import Stars from '../../Images/Stars.svg'
 import Repair from '../../Images/Repair.svg'
 import Date from '../../Images/Date.svg'
@@ -19,12 +19,18 @@ const SearchResultCard = (props) => {
 
     const navigation = useNavigation()
     const dispatch = useDispatch()   
+    const catsFlat = useSelector(state => state.categoriesFlat)
 
-    const name = props.data.createdBy.name
-    const avaPath = props.data.createdBy.avatar.path
-    const jobTitle = props.data.category.title
+    const name = props.data.author.name
+    const avaPath = props.data.author.avatar.path
+
+    
+    const catId = props.data.category.id
+    const jobTitle = catsFlat.find(cat => cat.id === catId).title
+
+
     const id = props.data.id
-    const userId = props.data.createdBy.id
+    const userId = props.data.author.id
 
     const avatar = null
     //const name = "בנדר רודריגס"
@@ -47,7 +53,7 @@ const SearchResultCard = (props) => {
     }
 
     const goToPersonalInfo = () => {
-        console.log(userId)
+      //  console.log(userId)
         dispatch(setTempUserThunk(userId));
         navigation.navigate('UserInfo')
     }
@@ -80,7 +86,7 @@ const SearchResultCard = (props) => {
                 </View>
             </View>
             <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
-                <ImageBackground source={avaPath ? {uri: `http://52.48.233.122:3000/${avaPath}`} : Bender}
+                <ImageBackground source={avaPath ? {uri: `http://52.48.233.122:3001/${avaPath}`} : AvatarPlain}
                     resizeMethod={'auto'} style={s.avatar} />
             </TouchableOpacity>
         </TouchableOpacity>

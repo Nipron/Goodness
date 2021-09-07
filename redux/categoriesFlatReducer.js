@@ -11,8 +11,9 @@ const setCategoriesFlat = data => ({ type: SET_CATEGORIES_FLAT, payload: data })
 export const setCategoriesFlatThunk = () => (dispatch) => {    
     commonAPI.getCategoriesFlat()
     .then(res => {
-      console.log("THUNK CAT FLAT")
-      dispatch(setCategoriesFlat(res.data))
+    //  console.log("THUNK CAT FLAT")
+    //  console.log(res.data.categories)
+      dispatch(setCategoriesFlat(res.data.categories))
     })
 }
 

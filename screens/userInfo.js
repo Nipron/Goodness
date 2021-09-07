@@ -25,15 +25,13 @@ import SomebodysInfo from '../components/personalInfo/SomebodysInfo';
 
 import DropDownBlue from '../components/dropdowns/DropDownBlue';
 import ButtonRed from '../components/buttons/ButtonRed';
-import Bender from '../Images/Bender.jpg'
+import AvatarPlain from '../Images/AvatarPlain.jpg'
 
 export default function UserInfo() {
     
     const data = useSelector(state => state.tempUser)
-
+    console.log(data)
     const path = !!data.avatar ? data.avatar.path : null
-
-    console.log("DATA DATA DATA", data)
 
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>           

@@ -26,6 +26,7 @@ const s = StyleSheet.create({
         borderColor: "#FFFFFF",
         borderWidth: 2,
         zIndex: 10,
+      //  marginBottom: 350
     },
     text: {
         marginTop: 6,
