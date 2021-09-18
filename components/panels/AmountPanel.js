@@ -25,7 +25,7 @@ const AmountPanel = ({ amount, setAmount }) => {
                 onPress={increase}>
                 <Text style={[g.text28_700_blue, s.signs]}>+</Text>
             </TouchableOpacity>
-            <Text style={g.text28_700_blue}>{amount}</Text>
+            <Text style={g.text28_400_blue}>{amount}</Text>
             <TouchableOpacity style={s.signContainer}
                 onPress={decrease}>
                 <Text style={[g.text28_700_blue, s.signs]}>-</Text>
@@ -40,8 +40,8 @@ const s = StyleSheet.create({
 
     outer: {
         width: '49%',
-        height: 50,
-        borderRadius: 25,
+        height: 60,
+        borderRadius: 1000,
         backgroundColor: "white",
         flexDirection: "row",
         alignItems: "center",

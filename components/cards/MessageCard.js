@@ -11,6 +11,7 @@ import {
 import { useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
+import 'moment/locale/he'
 
 import AvatarPlain from '../../Images/AvatarPlain.jpg'
 import LetterClosed from '../../Images/LetterClosed.svg'
@@ -35,32 +36,34 @@ const MessageCard = ({ m }) => {
   const [user, setUser] = useState(m.from)
 
   const scaleEnvelope = 0.8
-  const scaleDate = 1.4
-  const scaleTime = 1.4
+  const scaleDate = 1.1
+  const scaleTime = 1.1
   const scaleArrow = 1.4
 
   const date = moment(m.createdAt).format('L')
   const time = moment(m.createdAt).format('LT')
 
-  const [header, setHeader] = useState('No name')
+  const [header, setHeader] = useState('הודעת מערכת')
 
   const scaleRedX = 2.4
 
   console.log(m.type)
   console.log(m.message.status)
 
+  console.log(m)
+
   useEffect(() => {
     switch (m.type) {
       case 'contract_created':
         switch (m.message.status) {
           case 'approved':
-            setHeader('You recieved new task')
+            setHeader('הזמנתכם אושרה')
             break
           case 'in_process':
-            setHeader('You recieved new task')
+            setHeader('התקבלה הזמנה חדשה')
             break
           case 'canceled':
-            setHeader('Task was canceled')
+            setHeader('הזמנת משימה בוטלה')
             break
           default:
             break
@@ -70,13 +73,13 @@ const MessageCard = ({ m }) => {
       case 'contract_changed':
         switch (m.message.status) {
           case 'approved':
-            setHeader('Your work was appoved')
+            setHeader('הזמנתכם אושרה')
             break
           case 'done':
-            setHeader('Your task was done')
+            setHeader('משימתכם בוצעה בהצלחה')
             break
           case 'canceled':
-            setHeader('Your task was canceled')
+            setHeader('הזמנת משימה בוטלה')
             break
           default:
             break
@@ -84,11 +87,11 @@ const MessageCard = ({ m }) => {
         break
 
       case 'referral':
-        setHeader('points as a referral')
+        setHeader('קיבלת לב אחד בעבור הפניה')
         break
 
       case 'feedback':
-        setHeader('You recieved a feedback')
+        setHeader('קיבלת משוב')
         break
 
       default:
@@ -122,12 +125,68 @@ const MessageCard = ({ m }) => {
 
   return (
     <View>
-      <TouchableOpacity
-        style={[s.outer, { height: open ? 100 : 50 }]}
-        onPress={handleOpen}
-      >
-        <View style={s.header}>
-          <View style={s.arrow}>
+      <TouchableOpacity style={s.outer} onPress={handleOpen}>
+        <View style={s.info}>
+          <View style={s.header}>
+            <View style={s.timeInfo}>
+              <View style={s.time}>
+                <Text
+                  style={[g.text10_400_blue, s.dateStyle, { marginRight: 4 }]}
+                >
+                  {time}
+                </Text>
+                <Time
+                  style={{
+                    transform: [{ scaleX: scaleTime }, { scaleY: scaleTime }]
+                  }}
+                />
+              </View>
+              <View style={s.date}>
+                <Text
+                  style={[g.text10_400_blue, s.dateStyle, { marginRight: 4 }]}
+                >
+                  {date}
+                </Text>
+                <Date
+                  style={{
+                    transform: [{ scaleX: scaleDate }, { scaleY: scaleDate }]
+                  }}
+                />
+              </View>
+            </View>
+            <View style={s.from}>
+              <Text style={g.text13_400_blue}>{user.name}</Text>
+            </View>
+          </View>
+          <View style={s.body}>
+            <Text style={g.text20_400_blue}>{header}</Text>
+          </View>
+        </View>
+        <View style={s.icon}>
+          <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
+            <ImageBackground
+              source={
+                user.avatar.path
+                  ? { uri: `http://52.48.233.122:3001/${user.avatar.path}` }
+                  : AvatarPlain
+              }
+              resizeMethod={'auto'}
+              style={s.avatar}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={s.point}>
+          <View
+            style={{
+              width: 10,
+              height: 10,
+              backgroundColor: m.isRead ? '#E5E5E5' : '#3993D6',
+              borderRadius: 5
+            }}
+          ></View>
+        </View>
+
+        {/*<View style={s.arrow}>
             <Arrow
               style={{
                 transform: [
@@ -137,8 +196,8 @@ const MessageCard = ({ m }) => {
                 ]
               }}
             />
-          </View>
-          <View style={s.user}>
+            </View>*/}
+        {/*<View style={s.user}>
             <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
               <ImageBackground
                 source={
@@ -182,9 +241,9 @@ const MessageCard = ({ m }) => {
             <View style={s.messHeaderContainer}>
               <Text style={g.text16_600_blue}>{header}</Text>
             </View>
-          </View>
+          </View>*/}
 
-          {!m.isRead && (
+        {/*!m.isRead && (
             <View style={s.envIcon}>
               <LetterClosed
                 style={{
@@ -207,9 +266,9 @@ const MessageCard = ({ m }) => {
                 }}
               />
             </View>
-          )}
-        </View>
-        {open && Object.keys(user).length > 0 && (
+          )*/}
+
+        {/*open && Object.keys(user).length > 0 && (
           <View style={s.messBody}>
             <TouchableOpacity onPress={handleDelete}>
               <RedX
@@ -219,7 +278,7 @@ const MessageCard = ({ m }) => {
               />
             </TouchableOpacity>
           </View>
-        )}
+              )*/}
       </TouchableOpacity>
       <View style={s.line} />
     </View>
@@ -229,6 +288,67 @@ const MessageCard = ({ m }) => {
 export default MessageCard
 
 const s = StyleSheet.create({
+  outer: {
+    width: '100%',
+    height: 70,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+
+  info: {
+    height: '100%',
+    width: '80%',
+  //  backgroundColor: 'green'
+  },
+
+  header: {
+    width: '100%',
+    height: '35%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+ //   backgroundColor: 'olive'
+  },
+
+  body: {
+    width: '100%',
+    height: '70%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+ //   backgroundColor: 'orange'
+  },
+
+  icon: {
+    height: '100%',
+    width: '15%',
+ //   backgroundColor: 'pink',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  avatarBlock: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+    //    backgroundColor: "pink",
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  point: {
+    height: '100%',
+    width: '5%',
+  //  backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
   arrow: {
     //   backgroundColor: "ivory",
     alignItems: 'center',
@@ -243,21 +363,6 @@ const s = StyleSheet.create({
     backgroundColor: '#2699FB'
   },
 
-  outer: {
-    width: '100%',
-    backgroundColor: 'white',
-    borderRadius: 8,
-    overflow: 'hidden'
-  },
-
-  header: {
-    width: '100%',
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-
   user: {
     paddingLeft: 8,
     // backgroundColor: 'green',
@@ -267,33 +372,16 @@ const s = StyleSheet.create({
     justifyContent: 'center'
   },
 
-  avatarBlock: {
-    height: 30,
-    width: 30,
-    borderRadius: 15,
-    overflow: 'hidden',
-    //    backgroundColor: "pink",
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-
   avatar: {
-    height: 30,
-    width: 30
+    height: '100%',
+    width: '100%'
   },
 
-  info: {
-    //  backgroundColor: 'pink',
-    width: '53%',
-    height: '100%'
-  },
-
-  jobInfo: {
-    height: '50%',
-    width: '100%',
-    //   backgroundColor: "peachpuff",
+  timeInfo: {
+    height: '100%',
+ //   backgroundColor: 'peachpuff',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     flexDirection: 'row'
   },
 
@@ -304,7 +392,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingRight: 4
+    paddingLeft: 20
   },
 
   date: {
@@ -314,7 +402,24 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    paddingLeft: 5
+  },
+
+  from: {
+    height: '100%',
+    //    width: "40%",
+ //   backgroundColor: 'gray',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     paddingRight: 10
+  },
+
+  body: {
+    flex: 1,
+ //   backgroundColor: 'azure',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   messHeaderContainer: {

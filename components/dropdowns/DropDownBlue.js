@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Animated, Easing, StyleSheet, View, Text, Image, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 import { useSelector } from 'react-redux'
 
@@ -17,6 +17,13 @@ const DropDownBlue = ({ name, list, toMe, type }) => {
 
   const [open, setOpen] = useState(false)
 
+  useEffect(() => {
+    if (list.length === 0) setOpen(false)
+    return () => {
+      
+    }
+  }, [list])
+
   const handlePress = () => {
     setOpen(!open)
   }
@@ -25,7 +32,7 @@ const DropDownBlue = ({ name, list, toMe, type }) => {
     <View style={s.outer}>
       <TouchableOpacity style={s.header} onPress={handlePress}>
         <View style={s.arrow}>
-          <Arrow style={{ transform: [{ scaleX: scaleArrow }, { scaleY: scaleArrow }, { rotate: open ? "90deg" : "0deg" }] }} />
+          <Arrow style={{ transform: [{ scaleX: scaleArrow }, { scaleY: scaleArrow }, { rotate: open ? "270deg" : "180deg" }] }} />
         </View>
         <View style={s.name}>
           <Text style={[g.text17_400_grey, s.text]}>{name}</Text>
@@ -59,12 +66,12 @@ const s = StyleSheet.create({
     width: "100%",
     //   backgroundColor: "maroon",
     //  borderRadius: 20,
-    backgroundColor: "#EEEEEE",
+    backgroundColor: "#EFEFEF",
   },
 
   header: {
     width: "100%",
-    height: 52,
+    height: 50,
     //  backgroundColor: "tan",
     flexDirection: "row",
     alignItems: 'center',

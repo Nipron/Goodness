@@ -98,7 +98,7 @@ const s = StyleSheet.create({
   goodnessBlock: {
     width: '100%',
     flex: 1,
-   // backgroundColor: "azure",
+  //  backgroundColor: "azure",
     alignItems: 'center',
     justifyContent: 'space-between'
   },
@@ -107,38 +107,39 @@ const s = StyleSheet.create({
     marginTop: 5,
     height: "15%",
     paddingHorizontal: 15,
-   //  backgroundColor: "yellow",
+  // backgroundColor: "yellow",
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
   },  
 
   logoBlock: {
-    height: "45%",
-   // backgroundColor: 'peru',
+    height: "30%",
+  //  backgroundColor: 'peru',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
 
   descriptionBlock: {
-    height: "15%",
+    top: -4,
+    height: "6%",
     width: '90%',
-    paddingBottom: 26,
     alignItems: 'center',
     justifyContent: 'center',
-//    backgroundColor: 'pink'
+  //  backgroundColor: 'red'
   },
 
   text: {
     color: 'white',
-    fontSize: 20
+    fontSize: 18,
+    lineHeight: 20
   },
 
   yellowButtonBlock: {
-    width: '90%',
-    height: '25%',   
+    width: '100%',
+    height: '29.64%',   
     alignItems: 'center',
     justifyContent: 'flex-start',
-    //  backgroundColor: "green",
+  //   backgroundColor: "green",
   }
 })

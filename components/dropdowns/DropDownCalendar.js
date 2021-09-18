@@ -47,9 +47,9 @@ const DropDownCalendar = ({ date, setDate }) => {
                     <View style={s.calendar}>
                         <Calendar
                             minDate={new Date()}
-                            maxDate={moment().add(31, 'days').format('YYYY-MM-DD')}
+                            maxDate={moment().add(92, 'days').format('YYYY-MM-DD')}
                             onDayPress={day => { handlePickDate(day) }}
-                            monthFormat={'yyyy MM'}
+                            monthFormat={'MM yyyy'}
                             onMonthChange={(month) => { console.log('month changed', month) }}
                             firstDay={1}
                             onPressArrowLeft={subtractMonth => subtractMonth()}

@@ -16,7 +16,8 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useSelector } from 'react-redux'
 import AvatarPlain from '../../Images/AvatarPlain.jpg'
 
@@ -27,10 +28,16 @@ import { g } from '../../styles/global'
 
 export default function SmallLayout (props) {
   const navigation = useNavigation()
-
+  const route = useRoute()
   const data = useSelector(state => state.all)
 
-  const scale = 1.5
+  const scale = 1.2
+
+  const handleExit = async () => {
+    await AsyncStorage.removeItem('token')
+    navigation.navigate('Home')
+    console.log('EXIT OK')
+  }
 
   return (
     <KeyboardAvoidingView style={s.containerMain} behavior='padding'>
@@ -40,7 +47,7 @@ export default function SmallLayout (props) {
           style={s.imageBack}
         >
           <SafeAreaView style={s.safeContainer}>
-            <View style={s.arrowCont}>
+            {route.name !== 'Profile' && (
               <TouchableOpacity
                 style={s.arrowContainer}
                 onPress={() => navigation.goBack()}
@@ -49,27 +56,18 @@ export default function SmallLayout (props) {
                   style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
                 />
               </TouchableOpacity>
+            )}
 
-              {!props.hide && (
-                <TouchableOpacity
-                  style={s.photoOuter}
-                  onPress={() => navigation.navigate('Profile')}
-                >
-                  <View style={s.photoInner}>
-                    <ImageBackground
-                      source={
-                        !!data.avatar
-                          ? {
-                              uri: `http://52.48.233.122:3001/${data.avatar.path}`
-                            }
-                          : AvatarPlain
-                      }
-                      style={s.avatar}
-                    />
-                  </View>
-                </TouchableOpacity>
-              )}
-            </View>
+            {route.name === 'Profile' && (
+              <TouchableOpacity
+                style={s.arrowContainer}
+                onPress={handleExit}
+              >
+                <View style={s.exit}>
+                  <Text style={g.text17_400_white}>לצאת</Text>
+                </View>
+              </TouchableOpacity>
+            )}
 
             <View style={s.logoBlock}>
               <Image
@@ -78,6 +76,24 @@ export default function SmallLayout (props) {
               />
               <Text style={g.text24_700_white}>{props.text}</Text>
             </View>
+
+            <TouchableOpacity
+              style={s.photoOuter}
+              onPress={ () => navigation.navigate(props.hide ? 'Registration' : 'Profile')  }
+            >
+              <View style={s.photoInner}>
+                <ImageBackground
+                  source={
+                    !!data.avatar
+                      ? {
+                          uri: `http://52.48.233.122:3001/${data.avatar.path}`
+                        }
+                      : AvatarPlain
+                  }
+                  style={s.avatar}
+                />
+              </View>
+            </TouchableOpacity>
           </SafeAreaView>
         </ImageBackground>
       </View>
@@ -117,37 +133,56 @@ const s = StyleSheet.create({
     resizeMode: 'cover'
   },
 
-  safeContainer: {
-    height: '100%',
-    width: '100%',
+  exit: {
+    height: 60,
+    width: 60,
+    paddingTop: -4,
+    borderRadius: 30,
     alignItems: 'center',
-    justifyContent: 'flex-start',
-  //  backgroundColor: 'red'
+    justifyContent: 'center',
+   // backgroundColor: '#B83E3E',
+ //   borderColor: '#FFFFFF',
+ //   borderWidth: 2,
+    zIndex: 10,
+    shadowOffset: {
+      width: 3,
+      height: 3
+    },
+    shadowOpacity: 0.3,
+    // shadowColor: "blue",
+    shadowRadius: 4
   },
 
-  arrowCont: {
-    height: 60,
+  safeContainer: {
+    height: '50%',
     width: '100%',
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'space-between',
-  //  backgroundColor: 'pink'
+    justifyContent: 'space-between'
+    // backgroundColor: 'red'
+  },
+
+  arrowCont: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between'
+    //  backgroundColor: 'pink'
   },
 
   arrowContainer: {
     width: 60,
-    height: 40,
+    height: 60,
     //   backgroundColor: "maroon",
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end'
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 12
   },
 
   logoBlock: {
-    top: -60,
-    height: 80,
     alignItems: 'center',
-    justifyContent: 'flex-end',
-   // backgroundColor: 'green'
+    justifyContent: 'flex-end'
+    // backgroundColor: 'green'
   },
 
   logo: {
@@ -156,12 +191,15 @@ const s = StyleSheet.create({
   },
 
   childrenBlockOuter: {
-    width: '88%',
+    width: '92%',
     height: Dimensions.get('window').height * 0.555 + 70,
     marginTop: -60,
     //     backgroundColor: "green",
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3
   },
 
   photoOuter: {

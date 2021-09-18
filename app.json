@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "goodness",
-    "slug": "goodness",
+    "name": "Goodness",
+    "slug": "Goodness",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./Images/goodness.png",
+    "icon": "./Images/Logo4.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -19,10 +19,10 @@
     "ios": {
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "AIzaSyAEQ-0S8BUpm2pMLsXa4RDxa5LDnqQllWI"
+        "googleMapsApiKey": "AIzaSyCaZe06IKSzVqycHnVeB4I1c0MgUIB0xTg"
       },
-      "bundleIdentifier": "goodness.test",
-      "buildNumber": "1.0.0"
+      "bundleIdentifier": "maxim.gutmanovich.goodness",
+      "buildNumber": "0.1.0"
     },
     "android": {
       "adaptiveIcon": {

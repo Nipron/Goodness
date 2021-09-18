@@ -11,47 +11,29 @@ import Phone from '../../Images/Phone.svg'
 import Stars from '../../Images/Stars.svg'
 
 import { g } from '../../styles/global'
-import { commonAPI } from '../../src/api/api';
+import { commonAPI, feedbackAPI } from '../../src/api/api';
 
 import RatingForCardPanel from '../panels/RatingForCardPanel';
+import StatusPanel from '../panels/StatusPanel'
 
 const SomebodysInfo = ({ id }) => {
 
-
     const user = useSelector(state => state.tempUser)
+
+console.log(user)
+  //  console.log(user.works[1].feedback.id)
+
+   /* feedbackAPI.getFeedbackInfo()
+    .then (res => console.log(res))*/
 
     const scale = 1.4
     const scaleStars = 1.4
     const scaleEdit = 1.4
     const scaleT = 1.2
 
-  //  console.log(user)
-
-    let statusSource;
-
-    switch (user.heartsStatus) {
-        case "bronze":
-            statusSource = StatusBronze
-            break;
-        case "silver":
-            statusSource = StatusSilver
-            break;
-        case "gold":
-            statusSource = StatusGold
-            break;
-        case "platimun":
-            statusSource = StatusPlatinum
-            break;
-        default:
-            statusSource = StatusBronze
-            break;
-    }
-
     return (
         !!user.address ?
             <View style={s.personalInfoBlock}>
-
-
 
 
                 <View style={s.rating}>
@@ -74,9 +56,7 @@ const SomebodysInfo = ({ id }) => {
                     <Text style={g.text18_600_blue}> כתובת: </Text>
                 </View>
 
-                <View style={s.status}>
-                    <ImageBackground source={statusSource} style={s.avatar} />
-                </View>
+                <StatusPanel status={user.heartsStatus} />
             </View> : <View />
     )
 }

@@ -63,21 +63,22 @@ const s = StyleSheet.create({
   messagesBlock: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    //  backgroundColor: "brown",
-    backgroundColor: '#FFFFFF',
+    flex: 1,
+  //    backgroundColor: "lightblue",
+    backgroundColor: '#EFEFEF',
     width: '100%',
-    minHeight: 300,
     overflow: 'hidden',
-    borderRadius: 40,
-    paddingHorizontal: 6,
-    paddingTop: 10,
-    paddingBottom: 10,
-    marginTop: -60
+    borderRadius: 20,    
+    padding: 6,
+    marginTop: -60,
+   /* shadowOffset: {width: 3,height: 3},
+    shadowOpacity: 0.2,
+    shadowRadius: 2*/
   },
 
   scrollBlock: {
     width: '100%',
-//      backgroundColor: "blue",
+    //  backgroundColor: "blue",
 
     overflow: 'hidden'
   }

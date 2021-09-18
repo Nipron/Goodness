@@ -13,10 +13,39 @@ const instance = axios.create({
 
 // http://52.48.233.122:3001/users/get-profile/14
 
+export const feedbackAPI = {
+  getFeedbackInfo: async id => {
+    try {
+      let token = await AsyncStorage.getItem('token')
+      let config = {
+        method: 'get',
+        url: `http://52.48.233.122:3001/feedback/19`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=utf-8'
+        }
+      }
+
+      try {        
+        const response = await axios(config)       
+        return response.data
+      } catch (error) {
+        console.log(error)
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  },
+}
+
 export const commonAPI = {
   getCategories: () => {
     return instance.get('service-categories/?lang=he')
     //  return instance.get('serviceCategory')
+  },
+
+  getServiceCategory: id => {
+    return instance.get(`service/${id}`)
   },
 
   getCategoriesFlat: () => {
@@ -485,6 +514,8 @@ export const serviceAPI = {
   },
 
   createService: async values => {
+
+    console.log(values)
     try {
       let token = await AsyncStorage.getItem('token')
 
@@ -569,8 +600,32 @@ export const serviceAPI = {
 
       try {
         console.log('SEARCH OK')
-        const response = await axios(config)
-        console.log(response)
+        const response = await axios(config)       
+        return JSON.stringify(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  },
+
+  deleteService: async id => {
+    try {
+      let token = await AsyncStorage.getItem('token')
+     
+      let config = {
+        method: 'delete',
+        url: `http://52.48.233.122:3001/service/${id}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=utf-8'
+        }
+      }
+
+      try {
+        console.log('DELETE OK')
+        const response = await axios(config)        
         return JSON.stringify(response.data)
       } catch (error) {
         console.log(error)

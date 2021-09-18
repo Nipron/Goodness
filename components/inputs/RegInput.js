@@ -14,7 +14,7 @@ const RegInput = props => {
       <TextInput
         style={[
           s.input,
-          g.text24_400_blue,
+          g.text20_400_blue,
           {
             borderColor: props.borderColor
               ? props.borderColor
@@ -26,9 +26,10 @@ const RegInput = props => {
         onChangeText={props.onChangeText}
         value={props.value}
         placeholder={props.placeholder}
-        placeholderTextColor='#90949C'
+        placeholderTextColor='#CCCCCC'
         autoCapitalize={props.autoCapitalize}
         maxLength={props.maxLength ? props.maxLength :50}
+        secureTextEntry={props.secureTextEntry}
       ></TextInput>
       <View style={s.icon}>
         <View style={s.svg}>{props.children}</View>
@@ -45,7 +46,7 @@ const s = StyleSheet.create({
     position: 'relative',
     //  backgroundColor: "red",
     marginVertical: 5,
-    height: 60,
+    height: 50,
     alignItems: 'flex-end',
     justifyContent: 'center'
   },
@@ -56,7 +57,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     height: '100%',
     width: '100%',
-    fontSize: 18,
+    fontSize: 16,
     position: 'absolute',
     top: 0,
     left: 0,

@@ -20,14 +20,14 @@ const SearchSwitch = ({ createMode, setCreateMode, logged }) => {
         <View style={s.outer}>
             {!createMode && <View style={s.switchBlock}>
                 <View style={s.searchBlock}>
-                    <Text style={[g.text20_400_white, s.switchText]}>חיפוש שירות</Text>
+                    <Text style={[g.text18_400_white, s.switchText]}>חיפוש שירות</Text>
                     <SearchWhite style={[{ transform: [{ scaleX: scaleSearch }, { scaleY: scaleSearch }] }, s.searchIcon]} />
                 </View>
                 <TouchableOpacity style={s.createPress} onPress={() => {
                     logged ? setCreateMode(!createMode) : 
-                    Alert.alert('PLEASE REGISTER', "Redirect to Register", [{ text: "Ok", onPress: () => navigation.navigate("Registration")  }])
+                    Alert.alert('הצעת שירות', "על מנת לבצע פעולה נא להירשם לאפליקציה", [{ text: "לדף ההרשמה", onPress: () => navigation.navigate("Registration")  }])
                     }}>
-                    <Text style={[g.text20_400_grey, s.switchText]}>הצעת שירות</Text>
+                    <Text style={[g.text18_400_grey, s.switchText]}>הצעת שירות</Text>
                     <Hands style={[{ transform: [{ scaleX: scaleHandsGrey }, { scaleY: scaleHandsGrey }] }, s.searchIcon]} />
                 </TouchableOpacity >
             </View>
@@ -54,10 +54,11 @@ const s = StyleSheet.create({
 
     outer: {
         width: "100%",
-        height: "100%",
-        //  backgroundColor: "navy",
+        height: 60,
+       //   backgroundColor: "green",
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: 12
     },
 
     switchBlock: {

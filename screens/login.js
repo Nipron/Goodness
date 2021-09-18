@@ -60,9 +60,10 @@ export default function Login (props) {
       .login(values)
       .then(response => userAPI.saveToken(response.data.access_token))
       .then(() =>
-      messageAPI.getMessages().then(data => {
-        dispatch(setMessagesThunk(data))
-      }))
+        messageAPI.getMessages().then(data => {
+          dispatch(setMessagesThunk(data))
+        })
+      )
       .then(() =>
         userAPI.dashboard().then(data => {
           dispatch(updateAll(data))
@@ -72,8 +73,8 @@ export default function Login (props) {
       .catch(function (error) {
         console.log('LOGIN NO GOOD')
         console.log(error)
-        Alert.alert('Something went wrong!', 'Wrong phone/password', [
-          { text: 'Try again', onPress: () => console.log('alert wrong') }
+        Alert.alert('עֵרָנִי!', 'טעות במספר טלפון או סיסמה', [
+          { text: 'נסה שוב', onPress: () => console.log('alert wrong') }
         ])
       })
   }
@@ -91,10 +92,10 @@ export default function Login (props) {
       try {
         await userAPI
           .forgotPass({
-            phone            
+            phone
           })
           .then(res => {
-          //  console.log(res)
+            //  console.log(res)
             setPasswordBorderModal('')
             setModalPass(false)
             setModalCode(true)
@@ -103,8 +104,8 @@ export default function Login (props) {
         console.log(e)
       }
     } else {
-      Alert.alert('Something went wrong!', "Passwords don't match", [
-        { text: 'Try again', onPress: () => console.log('alert wrong') }
+      Alert.alert('עֵרָנִי!', 'הסיסמאות אינן תואמות', [
+        { text: 'נסה שוב', onPress: () => console.log("Passwords don't match") }
       ])
       setPasswordBorderModal('red')
     }
@@ -120,12 +121,12 @@ export default function Login (props) {
           password
         })
         .then(res => {
-          console.log("PASSWORD CHANGED")
-         // console.log(res)
+          console.log('PASSWORD CHANGED')
+          // console.log(res)
         })
 
       await userAPI
-        .login({phone, password})
+        .login({ phone, password })
         .then(response => userAPI.saveToken(response.data.access_token))
         .then(() =>
           userAPI.dashboard().then(data => {
@@ -140,8 +141,8 @@ export default function Login (props) {
         .catch(function (error) {
           console.log('LOGIN NO GOOD')
           console.log(error)
-          Alert.alert('Something went wrong!', 'Wrong phone/password', [
-            { text: 'Try again', onPress: () => console.log('alert wrong') }
+          Alert.alert('משהו השתבש!', 'טעות במספר טלפון או סיסמה', [
+            { text: 'נסה שוב', onPress: () => console.log('alert wrong') }
           ])
         })
     } catch (e) {
@@ -182,14 +183,14 @@ export default function Login (props) {
                         <CloseIcon />
                       </TouchableOpacity>
                       <View style={mS.titleBlock}>
-                        <Text style={g.text24_700_blue}>אנא הזן אישורים </Text>
+                        <Text style={g.text24_700_blue}>שינוי סיסמה</Text>
                       </View>
                       <View style={mS.inputsBlock}>
                         <RegInput
                           onChangeText={setPhone}
                           value={phone}
                           keyboardType='number-pad'
-                          placeholder='972 1 234 5678'
+                          placeholder='972 54 1234567'
                           borderColor={phoneBorder}
                           maxLength={12}
                         >
@@ -198,18 +199,20 @@ export default function Login (props) {
                         <RegInput
                           onChangeText={setPassword}
                           value={password}
-                          placeholder='סיסמה'
+                          placeholder='סיסמה חדשה'
                           borderColor={passwordBorderModal}
                           autoCapitalize='none'
+                          secureTextEntry={true}
                         >
                           <LockIcon />
                         </RegInput>
                         <RegInput
-                          onChangeText={setConfPass}
+                          onChangeText={setConfPass}d
                           value={confPass}
-                          placeholder='אשר סיסמה'
+                          placeholder='אשר סיסמה חדשה'
                           borderColor={passwordBorderModal}
                           autoCapitalize='none'
+                          secureTextEntry={true}
                         >
                           <LockIcon />
                         </RegInput>
@@ -273,14 +276,16 @@ export default function Login (props) {
               <KeyboardAvoidingView
                 style={s.avoidBlock}
                 behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-                contentContainerStyle={s.outer}
+                contentContainerStyle={s.outer2}
               >
                 <View style={s.logoBlock}>
                   <LogoGroup />
                 </View>
 
                 <View style={s.descriptionBlock}>
-                  <Text style={g.text24_700_white}>כניסת לקוח קיים</Text>
+                  <Text style={[g.text22_700_white, { marginTop: -10 }]}>
+                    כניסת לקוח קיים
+                  </Text>
                 </View>
 
                 <View style={s.inputsBlock}>
@@ -288,7 +293,7 @@ export default function Login (props) {
                     onChangeText={props.handleChange('phone')}
                     value={props.values.phone}
                     keyboardType='number-pad'
-                    placeholder='972 1 234 5678'
+                    placeholder='972 54 1234567'
                     borderColor={phoneBorder}
                     maxLength={12}
                   >
@@ -300,6 +305,7 @@ export default function Login (props) {
                     placeholder='סיסמה'
                     borderColor={passwordBorder}
                     autoCapitalize='none'
+                    secureTextEntry={true}
                   >
                     <LockIcon />
                   </RegInput>
@@ -309,8 +315,8 @@ export default function Login (props) {
                   style={s.forgotPasswordBlock}
                   onPress={() => setModalPass(true)}
                 >
-                  <Text style={g.text20_400_white}>שכחת את הסיסמה?</Text>
-                  <Text style={g.text20_400_white}>
+                  <Text style={[g.text17_400_white, {textDecorationLine:"underline"}]}>שכחת את הסיסמה?</Text>
+                  <Text style={[g.text17_400_white, {textDecorationLine:"underline"}]}>
                     כניסה עם קוד חד-פעמי ב-סמס
                   </Text>
                 </TouchableOpacity>
@@ -333,7 +339,15 @@ const s = StyleSheet.create({
   outer: {
     flex: 1,
     width: '100%',
-    //  backgroundColor: 'lightblue',
+//backgroundColor: 'orange',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+
+  outer2: {
+    flex: 1,
+    width: '100%',
+  //  backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'space-between'
   },
@@ -341,7 +355,7 @@ const s = StyleSheet.create({
   goodnessBlock: {
     width: '100%',
     flex: 1,
-    //  backgroundColor: 'peru',
+ //   backgroundColor: 'peru',
     alignItems: 'center',
     justifyContent: 'space-between'
   },
@@ -361,53 +375,55 @@ const s = StyleSheet.create({
   logoBlock: {
     height: '40%',
     alignItems: 'center',
-    justifyContent: 'center'
-    //  backgroundColor: 'green'
+    justifyContent: 'center',
+//    backgroundColor: 'green'
   },
   descriptionBlock: {
-    height: '5%',
+    height: '12%',
     alignItems: 'center',
-    justifyContent: 'center'
-    //  backgroundColor: 'pink'
+    justifyContent: 'flex-end',
+   // backgroundColor: 'pink',
+    paddingBottom: 20
   },
 
   inputsBlock: {
-    width: '90%',
-    height: '25%',
+    width: '78%',
+    height: '20%',
     alignItems: 'center',
-    justifyContent: 'space-evenly'
-    //  backgroundColor: 'red'
+    justifyContent: 'space-evenly',
+//    backgroundColor: 'red'
   },
 
   forgotPasswordBlock: {
     // width: '90%',
     height: '15%',
+    top: -10,
     alignItems: 'center',
-    justifyContent: 'center'
-    // backgroundColor: 'lightblue'
+    justifyContent: 'center',
+//backgroundColor: 'lightblue'
   },
 
   yellowButtonBlock: {
-    width: '90%',
-    height: '10%',
+    width: '100%',
+    height: '20%',
     alignItems: 'center',
-    justifyContent: 'flex-start'
-    // backgroundColor: 'green'
+    justifyContent: 'flex-start',
+  //  backgroundColor: 'green'
   },
 
   avoidBlock: {
     width: '100%',
-    height: Dimensions.get('window').height * 0.74,
+    height: Dimensions.get('window').height * 0.75,
 
     alignItems: 'center',
-    justifyContent: 'flex-end'
-    // backgroundColor: 'olive'
+    justifyContent: 'flex-end',
+  //   backgroundColor: 'olive'
   },
 
   notAvoidBlock: {
-    // backgroundColor: 'yellow',
+  //   backgroundColor: 'blue',
     width: '90%',
-    height: Dimensions.get('window').height * 0.14
+    height: Dimensions.get('window').height * 0.125
   }
 })
 
@@ -455,7 +471,7 @@ const mS = StyleSheet.create({
     width: '90%',
     height: '50%',
     alignItems: 'center',
-    justifyContent: 'space-evenly'
-    //  backgroundColor: 'red'
+    justifyContent: 'space-evenly',
+  //    backgroundColor: 'red'
   }
 })

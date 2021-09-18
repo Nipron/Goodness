@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, } from 'react-native';
-import RegAva from '../../Images/RegAva.svg'
+import Lock from '../../Images/Lock.svg'
 
 const RegAvatar = () =>
     <View style={s.regOuter}>
-        <RegAva style={{marginLeft: 4}}/>
+        <Lock style={{marginLeft: 4}}/>
     </View>
     
 export default RegAvatar

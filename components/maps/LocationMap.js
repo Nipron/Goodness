@@ -1,5 +1,21 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, Image, Dimensions, Pressable, ScrollView, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react'
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  Dimensions,
+  Pressable,
+  ScrollView,
+  Modal,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ImageBackground
+} from 'react-native'
 import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps'
 //import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
@@ -14,335 +30,400 @@ import { g } from '../../styles/global'
 import { useNavigation } from '@react-navigation/native'
 
 import { useSelector, useDispatch } from 'react-redux'
-import SearchPlaceInput from '../inputs/SearchPlaceInput';
-import Footer from '../footer/Footer';
-import DistancePanel from '../panels/DistancePanel';
-import ButtonYellowSelect from '../buttons/ButtonYellowSelect';
+import SearchPlaceInput from '../inputs/SearchPlaceInput'
+import Footer from '../footer/Footer'
+import DistancePanel from '../panels/DistancePanel'
+import ButtonYellowSelect from '../buttons/ButtonYellowSelect'
 
+export default function LocationMap (props) {
+  const scaleArrow = 1.2
+  const scaleTarget = 1.1
+  const scalePlusMinus = 1.1
 
-export default function LocationMap(props) {
-
-    const scaleArrow = 1.2
-    const scaleTarget = 1.1
-    const scalePlusMinus = 1.1
-
-    const [cats4, setCats4] = useState([
-        { label: "Country", value: "country" },
-        { label: "City", value: "city" },
-        { label: "5km", value: 5 },
-        { label: "1km", value: 1 },
-    ])
-
-
-    const [coordinate, setCoordinate] = useState({ latitude: 32,
-        longitude: 34.8, })
-
-    useEffect(() => {
-        setCoordinate({ ...props.coordinate })
-    }, [])
-
-    //DropDow open
-
-    const [showMap, setShowMap] = useState(false)
-
-    const data = useSelector(state => state.all)
+  const [coordinate, setCoordinate] = useState({
+    latitude: 32,
+    longitude: 34.8
+  })
 
 
 
-    const handleSearch = values => {
-     //   console.log(values)
-    }
+  if (props.result.length > 0) {
+    
+   // console.log(props.result.length)
+ //   console.log(props.result[0].coordinates.coordinates)
+  }
+  
 
+  useEffect(() => {
+    setCoordinate({ ...props.coordinate })
+  }, [])
 
+  //DropDow open
 
-    const coordinatePress = async e => {
-        let coords = await e.nativeEvent
-        setCoordinate({ ...coords.coordinate })
-     //   console.log("Coor OK")
-     //   console.log({ ...coords.coordinate })
-    }
+  const [showMap, setShowMap] = useState(false)
 
+  const data = useSelector(state => state.all)
 
-    const map = useRef(null);
+  const handleSearch = values => {
+    //   console.log(values)
+  }
 
-    const onZoomInPress = () => {
-        map.current.getCamera().then((cam) => {
-            cam.zoom += 1;
-            map.current.animateCamera(cam);
-        });
-    };
+  const coordinatePress = async e => {
+    let coords = await e.nativeEvent
+    setCoordinate({ ...coords.coordinate })
+    //   console.log("Coor OK")
+    //   console.log({ ...coords.coordinate })
+  }
 
-    const onZoomOutPress = () => {
-        map.current.getCamera().then((cam) => {
-            cam.zoom -= 1;
-            map.current.animateCamera(cam);
-        });
-    };
+  const map = useRef(null)
 
-    const onGeoLocation = () => {
-        console.log("PRESSED Geo Location")
-    }
+  const onZoomInPress = () => {
+    map.current.getCamera().then(cam => {
+      cam.zoom += 1
+      map.current.animateCamera(cam)
+    })
+  }
 
-    const handleBackArrowPress = () => {
-        props.setShowMap(false)
-        props.setCoordinate({ ...coordinate })
-    }
+  const onZoomOutPress = () => {
+    map.current.getCamera().then(cam => {
+      cam.zoom -= 1
+      map.current.animateCamera(cam)
+    })
+  }
 
-    return (
+  const onGeoLocation = () => {
+    console.log('PRESSED Geo Location')
+  }
 
-        <Modal
-            transparent={true}
-            animationType="slide"
-            visible={props.showMap}>
-            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
-                <View style={s.outer}>
+  const handleBackArrowPress = () => {
+    props.setShowMap(false)
+    props.setCoordinate({ ...coordinate })
+  }
 
-                    <View style={s.mapBlock}>
-                        <MapView
-                            ref={map}
-                            onPress={coordinatePress}
-                            style={s.mapview}
-                            provider={PROVIDER_GOOGLE}
-                            // customMapStyle={mapStyle}
-                            initialRegion={{
-                                latitude: 32,
-                                longitude: 34.8,
-                                latitudeDelta: 0.3,
-                                longitudeDelta: 0.3,
-                            }}
-                            mapType="standard"
-                        >
-                            <Marker key={1} coordinate={coordinate} title={"המיקום שלי"} />
-                            <Circle center={coordinate}
-                                radius={props.distance * 1000}
-                                fillColor={'#00Df3125'}
-                                strokeWidth={0} />
-                        </MapView>
-                        <View style={s.buttonsBlock} pointerEvents='box-none'>
-                            <View style={s.topButtons} pointerEvents='box-none'>
-                                <TouchableOpacity style={s.backButton} onPress={handleBackArrowPress}>
-                                    <ArrowBack style={{ transform: [{ scaleX: scaleArrow }, { scaleY: scaleArrow }] }} />
-                                </TouchableOpacity>
-                                {/*  <View style={s.searchPlaceBlock}>
+  return (
+    <Modal transparent={true} animationType='slide' visible={props.showMap}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss()
+        }}
+      >
+        <View style={s.outer}>
+          <View style={s.inner1}>
+            <View style={s.mapBlock}>
+              <MapView
+                ref={map}
+                onPress={coordinatePress}
+                style={s.mapview}
+                provider={PROVIDER_GOOGLE}
+                // customMapStyle={mapStyle}
+                initialRegion={{
+                  latitude: 32,
+                  longitude: 34.8,
+                  latitudeDelta: 0.3,
+                  longitudeDelta: 0.3
+                }}
+                mapType='standard'
+              >
+                <Marker key={1} coordinate={coordinate} title={'המיקום שלי'} />
+               {props.createMode && <Circle
+                  center={coordinate}
+                  radius={props.distance * 1000}
+                  fillColor={'#00Df3125'}
+                  strokeWidth={0}
+                />}
+                {(props.result.length > 0) &&
+                props.result.map(item => <Marker key={item.id} 
+                  coordinate={{latitude: item.coordinates.coordinates[0], longitude: item.coordinates.coordinates[1]}} 
+                  title={item.name}                  
+                  >
+                    <View style={s.avaBlock}>
+                    <ImageBackground source={{uri: `http://52.48.233.122:3001/${item.author.avatar.path}`} }
+                    resizeMethod={'auto'} style={s.mark} />
+                    </View>
+                    
+                  </Marker>)
+                }    
+                            
+              </MapView>
+              <View style={s.buttonsBlock} pointerEvents='box-none'>
+                <View style={s.topButtons} pointerEvents='box-none'>
+                  <TouchableOpacity
+                    style={s.backButton}
+                    onPress={handleBackArrowPress}
+                  >
+                    <ArrowBack
+                      style={{
+                        transform: [
+                          { scaleX: scaleArrow },
+                          { scaleY: scaleArrow }
+                        ]
+                      }}
+                    />
+                  </TouchableOpacity>
+                  {/*  <View style={s.searchPlaceBlock}>
                                     <SearchPlaceInput coordinate={coordinate}/>
                         </View>*/}
-                            </View>
-                            {/* <View style={s.google}>
+                </View>
+                {/* <View style={s.google}>
                                 <GooglePlacesInput />
                         </View>*/}
-                            <View style={s.bottomButtons} pointerEvents='box-none'>
-                                <TouchableOpacity style={s.geolocation} onPress={onGeoLocation}>
-                                    <TargetGrey style={{ transform: [{ scaleX: scaleTarget }, { scaleY: scaleTarget }] }} />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={s.zoomIn} onPress={onZoomInPress}>
-                                    <PlusGrey style={{ transform: [{ scaleX: scalePlusMinus }, { scaleY: scalePlusMinus }] }} />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={s.zoomOut} onPress={onZoomOutPress}>
-                                    <MinusGrey style={{ transform: [{ scaleX: scalePlusMinus }, { scaleY: scalePlusMinus }] }} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-                    <Text style={s.description}>אנא בחר מרחק מרבי</Text>
-                    <DistancePanel distance={props.distance} setDistance={props.setDistance} />
-                    <ButtonYellowSelect name={"בחר"} onPress={handleBackArrowPress} />
-                    <Footer />
+                <View style={s.bottomButtons} pointerEvents='box-none'>
+                  <TouchableOpacity
+                    style={s.geolocation}
+                    onPress={onGeoLocation}
+                  >
+                    <TargetGrey
+                      style={{
+                        transform: [
+                          { scaleX: scaleTarget },
+                          { scaleY: scaleTarget }
+                        ]
+                      }}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={s.zoomIn} onPress={onZoomInPress}>
+                    <PlusGrey
+                      style={{
+                        transform: [
+                          { scaleX: scalePlusMinus },
+                          { scaleY: scalePlusMinus }
+                        ]
+                      }}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={s.zoomOut} onPress={onZoomOutPress}>
+                    <MinusGrey
+                      style={{
+                        transform: [
+                          { scaleX: scalePlusMinus },
+                          { scaleY: scalePlusMinus }
+                        ]
+                      }}
+                    />
+                  </TouchableOpacity>
                 </View>
-            </TouchableWithoutFeedback>
-        </Modal >
-
-
-
-    )
+              </View>
+            </View>
+            {props.createMode && <View style={s.panelBlock}>
+              <Text style={s.description}>אנא בחר מרחק מרבי</Text>
+              <DistancePanel
+                distance={props.distance}
+                setDistance={props.setDistance}
+              />
+            </View>}
+          </View>
+          <View style={s.inner2}>
+            <ButtonYellowSelect name={'בחר'} onPress={handleBackArrowPress} />
+          </View>
+          <Footer />
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  )
 }
 
 const s = StyleSheet.create({
 
-    google: {
-        width: "95%",
-        height: 100,
-        backgroundColor: "red"
-    },
+  avaBlock: 
+  {
+    width: 40,
+    height: 40,
+    borderRadius: 1000,
+    overflow: "hidden"
+  },
 
-    outer: {
-        flex: 1,
-        backgroundColor: "white",
-        alignItems: "center",
-        justifyContent: "space-between"
-    },
+mark: {
+width: "100%",
+height: "100%",
+},
 
-    mapBlock: {
-        width: "100%",
-        height: "68%",
-        backgroundColor: "pink",
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-        overflow: "hidden",
-        justifyContent: "center",
-        alignItems: "center",
-    },
+  google: {
+    width: '95%',
+    height: 100,
+    backgroundColor: 'red'
+  },
 
-    mapview: {
-        width: "100%",
-        height: "100%",
-        backgroundColor: "olive",
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
-    },
+  outer: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
 
-    buttonsBlock: {
-        width: "100%",
-        height: "100%",
-        alignItems: "flex-end",
-        justifyContent: "space-between",
-    },
+  inner1: {
+    width: '100%',
+    height: '84%',
+ //   backgroundColor: 'green'
+  },
+  inner2: {
+    width: '100%',
+    height: '7%',
+ //   backgroundColor: 'yellow',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
 
-    topButtons: {
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: 15,
-        marginTop: 45
-    },
+  mapBlock: {
+    flex: 1,
+ //   backgroundColor: 'pink',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5
+  },
 
-    bottomButtons: {
-        //   width: "100%",
-        //   backgroundColor: "orange",
-        alignItems: "center",
-        justifyContent: "flex-end",
-    },
+  panelBlock: {
+    alignItems: 'center',
+    marginBottom: 5
+  },
 
-    backButton: {
-        width: 50,
-        height: 50,
-        backgroundColor: "navy",
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: 10
-    },
+  mapview: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'olive',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
+  },
 
-    searchPlaceBlock: {
-        width: "80%",
-    },
+  buttonsBlock: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between'
+  },
 
-    geolocation: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
-        backgroundColor: '#243663',
-        justifyContent: "center",
-        alignItems: "center",
-        marginHorizontal: 10,
-        marginBottom: 20,
-    },
+  topButtons: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 15,
+    marginTop: 45
+  },
 
-    zoomIn: {
-        width: 35,
-        height: 35,
-        backgroundColor: '#243663',
-        justifyContent: "center",
-        alignItems: "center",
-        marginHorizontal: 10,
-        marginBottom: 10,
-    },
+  bottomButtons: {
+    //   width: "100%",
+    //   backgroundColor: "orange",
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
 
-    zoomOut: {
-        width: 35,
-        height: 35,
-        backgroundColor: '#243663',
-        justifyContent: "center",
-        alignItems: "center",
-        marginHorizontal: 10,
-        marginBottom: 20,
-    },
+  backButton: {
+    width: 50,
+    height: 50,
+    backgroundColor: 'navy',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10
+  },
 
-    description: {
-        color: "#B4B4B4"
-    },
+  searchPlaceBlock: {
+    width: '80%'
+  },
 
+  geolocation: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#243663',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
+    marginBottom: 20
+  },
 
+  zoomIn: {
+    width: 35,
+    height: 35,
+    backgroundColor: '#243663',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
+    marginBottom: 10
+  },
 
+  zoomOut: {
+    width: 35,
+    height: 35,
+    backgroundColor: '#243663',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
+    marginBottom: 20
+  },
 
+  description: {
+    color: '#B4B4B4'
+  },
 
+  block1: {
+    width: '100%',
+    height: '20%',
+    backgroundColor: 'green'
+  },
 
+  close: {
+    width: 100,
+    height: 100,
+    backgroundColor: 'red'
+  },
 
+  showMapBlock: {
+    width: '100%',
+    height: 60,
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 
+  showMapButton: {
+    width: '100%',
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'navy',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 
+  closeIcon: {
+    position: 'absolute',
+    top: 10,
+    right: 10
+  },
 
-    block1: {
-        width: "100%",
-        height: "20%",
-        backgroundColor: "green"
-    },
+  zoomInContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 
+  zoomOutContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 
+  pinContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 
-    close: {
-        width: 100,
-        height: 100,
-        backgroundColor: "red"
-    },
+  point: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'purple'
+  },
 
-    showMapBlock: {
-        width: "100%",
-        height: 60,
-        backgroundColor: 'red',
-        justifyContent: "center",
-        alignItems: "center",
-    },
-
-    showMapButton: {
-        width: "100%",
-        height: 50,
-        borderRadius: 25,
-        backgroundColor: 'navy',
-        justifyContent: "center",
-        alignItems: "center",
-    },
-
-    closeIcon: {
-        position: 'absolute',
-        top: 10,
-        right: 10
-    },
-
-    zoomInContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-    },
-
-    zoomOutContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-    },
-
-
-
-
-    pinContainer: {
-        justifyContent: "center",
-        alignItems: "center"
-    },
-
-    point: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        backgroundColor: "purple"
-    },
-
-    mapcont: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
-        backgroundColor: "pink",
-        justifyContent: "center",
-        alignItems: "center"
-    },
-
-
-
+  mapcont: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    backgroundColor: 'pink',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 })

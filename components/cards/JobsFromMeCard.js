@@ -70,14 +70,14 @@ const JobsFromMeCard = ({ item, toMe }) => {
   //  console.log("idi ", item.status)
 
     const handleRate = async () => {
-        await serviceAPI.approveService(item.id)
         await serviceAPI.rateService(item.id, newRating)
+        await serviceAPI.approveService(item.id)        
         await userAPI.dashboard()
             .then(data => {
                 dispatch(updateAll(data))
+                setModalOpen(false)
                 navigation.navigate('Profile')
-            })
-        setModalOpen(false)
+            })        
     }
 
     const goToPersonalInfo = () => {

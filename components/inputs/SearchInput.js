@@ -26,7 +26,7 @@ const SearchInput = ({ code, setCode }) => {
     return (
         <TouchableOpacity style={s.outer} onPress={() => navigation.navigate('Create')} >
         <View style={s.outer}>
-            <TextInput style={[s.searchInput, g.text24_400_grey]} textAlign="right"
+            <TextInput style={[s.searchInput, g.text18_400_blue]} textAlign="right"
                 placeholder="חיפוש שירות" onChangeText={handleChange} />
 
             <View style={s.icons} >
@@ -49,7 +49,7 @@ const s = StyleSheet.create({
 
     outer: {
         width: '100%',
-        height: 60,
+        height: 50,
         position: 'relative',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -61,7 +61,7 @@ const s = StyleSheet.create({
         borderRadius: 30,
         height: "100%",
         width: '100%',
-        fontSize: 20,
+        fontSize: 18,
         paddingRight: 60
     },
 
@@ -82,7 +82,7 @@ const s = StyleSheet.create({
         backgroundColor: "#FDC27A",
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: 9
+        marginLeft: 5
     },
 
     hands: {
@@ -94,7 +94,7 @@ const s = StyleSheet.create({
         justifyContent: 'center',
         borderWidth: 1,
         borderColor: "lightgrey",
-        marginRight: 9
+        marginRight: 5
     },
 
 

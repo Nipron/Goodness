@@ -7,7 +7,7 @@ const DistancePanel = ({ distance, setDistance }) => {
     const color2 = "white"
     const color3 = "white"
     const color4 = "black"
-    const fontSize = 22
+    const fontSize = 16
 
     return (
         <View style={s.outer}>
@@ -23,9 +23,13 @@ const DistancePanel = ({ distance, setDistance }) => {
                 onPress={() => setDistance(10)}>
                 <Text style={{ fontWeight: distance === 10 ? "bold" : "normal", color: distance === 10 ? color3 : color4, fontSize }}>10 ק"מ</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 20 ? color1 : color2 }]}
-                onPress={() => setDistance(20)}>
-                <Text style={{ fontWeight: distance === 20 ? "bold" : "normal", color: distance === 20 ? color3 : color4, fontSize }}>עִיר</Text>
+            <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 25 ? color1 : color2 }]}
+                onPress={() => setDistance(25)}>
+                <Text style={{ fontWeight: distance === 25 ? "bold" : "normal", color: distance === 25 ? color3 : color4, fontSize }}>אזור</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 25000 ? color1 : color2 }]}
+                onPress={() => setDistance(25000)}>
+                <Text style={{ fontWeight: distance === 25000 ? "bold" : "normal", color: distance === 25000 ? color3 : color4, fontSize }}>Online</Text>
             </TouchableOpacity>
         </View>
     )
@@ -49,7 +53,7 @@ const s = StyleSheet.create({
     },
 
     distanceContainer: {
-        width: "25%",
+        width: "20%",
         height: "100%",
         backgroundColor: "pink",
         alignItems: "center",

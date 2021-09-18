@@ -31,9 +31,9 @@ export default function CalendarModal({ modalOpen, setModalOpen, date, setDate }
 
                         <Calendar
                             minDate={new Date()}
-                            maxDate={moment().add(31, 'days').format('YYYY-MM-DD')}
+                            maxDate={moment().add(92, 'days').format('YYYY-MM-DD')}
                             onDayPress={day => { handlePickDate(day) }}
-                            monthFormat={'yyyy MM'}
+                            monthFormat={'MM yyyy'}
                             onMonthChange={(month) => { console.log('month changed', month) }}
                             firstDay={0}
                             onPressArrowLeft={subtractMonth => subtractMonth()}

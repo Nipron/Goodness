@@ -202,7 +202,7 @@ export default function Registration2() {
                                         <View style={s.fieldsBlock}>
 
                                             <View style={s.personalBlock}>
-                                                <Text style={g.text28_700_blue}>
+                                                <Text style={g.text24_700_blue}>
                                                     פרטים אישיים
                                                 </Text>
                                                 <RegInput
@@ -217,7 +217,7 @@ export default function Registration2() {
                                                     onChangeText={props.handleChange('phone')}
                                                     value={props.values.phone}
                                                     keyboardType="number-pad"
-                                                    placeholder="טלפון"
+                                                    placeholder="972 54 1234567"
                                                     borderColor={phoneBorder}
                                                 >
                                                     <PhoneIcon />
@@ -242,7 +242,7 @@ export default function Registration2() {
                                             </View>
 
                                             <View style={s.personalBlock}>
-                                                <Text style={g.text28_700_blue}>
+                                                <Text style={g.text24_700_blue}>
                                                     כתובת מגורים
                                                 </Text>
                                                 <RegInput
@@ -286,7 +286,7 @@ export default function Registration2() {
                                             </View>
 
                                             <View style={s.personalBlock}>
-                                                <Text style={g.text28_700_blue}>
+                                                <Text style={g.text24_700_blue}>
                                                     מידע אישי
                                                 </Text>
                                                 <RegInput
@@ -295,15 +295,17 @@ export default function Registration2() {
                                                     placeholder="סיסמה"
                                                     borderColor={passwordBorder}
                                                     autoCapitalize="none"
+                                                    secureTextEntry={true}
                                                 >
                                                     <LockIcon />
                                                 </RegInput>
                                                 <RegInput
                                                     onChangeText={props.handleChange('confirmPassword')}
                                                     value={props.values.confirmPassword}
-                                                    placeholder="אימות סיסמא"
+                                                    placeholder="אימות סיסמה"
                                                     borderColor={confirmPasswordBorder}
                                                     autoCapitalize="none"
+                                                    secureTextEntry={true}
                                                 >
                                                     <LockIcon />
                                                 </RegInput>

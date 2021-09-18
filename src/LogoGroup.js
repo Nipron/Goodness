@@ -15,7 +15,7 @@ const LogoGroup = () => {
 
   return (
     <View style={s.logoBlock}>
-      <Image style={s.logo} source={require('../Images/Logo1.png')} />
+      <Image style={s.logo} source={require('../Images/Logo2.png')} />
       <Text style={s.textGOODNESS}>GOODNESS</Text>
     </View>
   )
@@ -25,7 +25,8 @@ const s = StyleSheet.create({
   logoBlock: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+   // backgroundColor: "pink"
   },
   logo: {
     width: 120,
@@ -34,7 +35,7 @@ const s = StyleSheet.create({
   textGOODNESS: {
     fontFamily: 'Assistant_700Bold',
     color: 'white',
-    marginTop: 5,
+    marginTop: 15,
     fontSize: 36
   }
 })

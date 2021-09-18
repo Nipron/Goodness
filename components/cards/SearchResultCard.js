@@ -13,6 +13,7 @@ import { g } from '../../styles/global'
 import { useNavigation } from '@react-navigation/native'
 
 import { setTempUserThunk } from '../../redux/tempUserReducer';
+import RatingForCardPanel from '../panels/RatingForCardPanel';
 
 
 const SearchResultCard = (props) => {
@@ -23,6 +24,8 @@ const SearchResultCard = (props) => {
 
     const name = props.data.author.name
     const avaPath = props.data.author.avatar.path
+
+    console.log(props.data.author)
 
     
     const catId = props.data.category.id
@@ -81,13 +84,12 @@ const SearchResultCard = (props) => {
             </View>
             <View style={s.personalInfoBlock}>
                 <Text style={[g.text16_600_blue, s.nameStyle]}>{name}</Text>
-                <View style={s.rating}>
-                    <Stars style={{ transform: [{ scaleX: scaleStars }, { scaleY: scaleStars }] }} />
-                </View>
+                <RatingForCardPanel rating={3} scale={0.25}/>
             </View>
             <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
                 <ImageBackground source={avaPath ? {uri: `http://52.48.233.122:3001/${avaPath}`} : AvatarPlain}
                     resizeMethod={'auto'} style={s.avatar} />
+                   
             </TouchableOpacity>
         </TouchableOpacity>
     )
@@ -105,7 +107,7 @@ const s = StyleSheet.create({
         height: 80,
         //  backgroundColor: "ivory",
         borderRadius: 20,
-        marginVertical: 5,
+        marginBottom: 12,
         overflow: 'hidden',
         backgroundColor: "#FFFFFF",
     },

@@ -33,8 +33,8 @@ const s = StyleSheet.create({
         fontFamily: "Assistant_700Bold",
         color: "#FFFFFF",
         fontWeight: 'bold',
-        fontSize: 24,
-        lineHeight: 24,
+        fontSize: 18,
+        lineHeight: 18,
     }
 });
 

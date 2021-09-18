@@ -11,19 +11,39 @@ import {
 } from '@expo-google-fonts/assistant';
 
 export const g = StyleSheet.create({
+    text10_400_blue: {
+        fontFamily: "Assistant_400Regular",
+        color: '#123D60',
+        fontSize: 10
+    },
     text13_400_blue: {
         fontFamily: "Assistant_400Regular",
         color: '#123D60',
         fontSize: 13
     },
+    text12_600_blue: {
+        fontFamily: "Assistant_600SemiBold",
+        color: '#243663',
+        fontSize: 12
+    },
     text14_600_blue: {
         fontFamily: "Assistant_600SemiBold",
         color: '#243663',
+        fontSize: 14
+    },
+    text14_400_blue: {
+        fontFamily: "Assistant_400Regular",
+        color: '#123D60',
         fontSize: 14
     },  
     text16_600_blue: {
         fontFamily: "Assistant_600SemiBold",
         color: '#243663',
+        fontSize: 16
+    },
+    text16_400_blue: {
+        fontFamily: "Assistant_400Regular",
+        color: '#123D60',
         fontSize: 16
     },
     text17_400_grey: {
@@ -36,14 +56,29 @@ export const g = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 17
     }, 
+    text18_400_white: {
+        fontFamily: "Assistant_400Regular",
+        color: '#FFFFFF',
+        fontSize: 18
+    }, 
     text18_400_grey: {
         fontFamily: "Assistant_400Regular",
         color: '#104E5B',
         fontSize: 18
     },  
+    text18_400_blue: {
+        fontFamily: "Assistant_400Regular",
+        color: '#034794',
+        fontSize: 18
+    }, 
     text18_600_blue: {
         fontFamily: "Assistant_600SemiBold",
         color: '#034794',
+        fontSize: 18
+    }, 
+    text18_700_white: {
+        fontFamily: "Assistant_700Bold",
+        color: '#FFFFFF',
         fontSize: 18
     }, 
     text19_400_grey: {
@@ -85,11 +120,21 @@ export const g = StyleSheet.create({
         fontFamily: "Assistant_700Bold",
         color: '#243663',
         fontSize: 24
+    },  
+    text24_400_blue: {
+        fontFamily: "Assistant_400Regular",
+        color: '#243663',
+        fontSize: 24
     },   
     text24_400_grey: {
         fontFamily: "Assistant_400Regular",
         color: '#104E5B',
         fontSize: 24
+    },  
+    text28_400_blue: {
+        fontFamily: "Assistant_400Regular",
+        color: '#243663',
+        fontSize: 28
     },    
     text28_700_blue: {
         fontFamily: "Assistant_700Bold",

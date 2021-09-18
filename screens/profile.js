@@ -28,24 +28,25 @@ import DropDownBlue from '../components/dropdowns/DropDownBlue'
 import ButtonRed from '../components/buttons/ButtonRed'
 
 export default function Profile () {
+
+console.log("FFF FFF FFF")
+
   const navigation = useNavigation()
 
   const d = useSelector(state => state.all)
-  const m = useSelector(state => state.messages)
   const [data, setData] = useState(d)
-  const [messages, setMessages] = useState(m)
 
   useFocusEffect(
     React.useCallback(() => {
       let isActive = true
       if (isActive) {
-        setData(d)
-        setMessages(m)
+        setData(d)    
       }
+      
       return () => {
         isActive = false
       }
-    }, [d, m])
+    }, [d])
   )
 
   let worksToMe = []
@@ -80,12 +81,13 @@ export default function Profile () {
     >
       <SmallLayout text={` שלום, ${data.name}`}>
         <AvatarBig path={data.avatar ? data.avatar.path : null} />
-        <PersonalInfo />
-
+       
         <ScrollView
           style={s.regBlock}
           contentContainerStyle={s.regBlockContainer}
         >
+           <PersonalInfo />
+           
           <View style={s.folders}>
             <DropDownBlue
               name={'שירותים מוזמנים על ידי משתמשים אחרים'}
@@ -115,7 +117,7 @@ export default function Profile () {
               type={3}
             />
           </View>
-          <ButtonRed name='לצאת מהחשבון שלי' onPress={handleExit} />
+          <ButtonRed name='הצעת שירות / חיפוש שירות' onPress={() => navigation.navigate('Create')} />
         </ScrollView>
       </SmallLayout>
     </TouchableWithoutFeedback>
@@ -126,9 +128,14 @@ const s = StyleSheet.create({
   regBlock: {
     width: '100%',
     height: '100%',
-    //   backgroundColor: "yellow",
-    //   backgroundColor: "#EEEEEE",
-    borderRadius: 20
+  // backgroundColor: "yellow",
+  paddingBottom: 50,
+       backgroundColor: "#EFEFEF",
+    borderRadius: 20,
+    shadowOffset: {width: 0,height: 6},
+    shadowOpacity: 0.2,
+    shadowRadius: 8
+    
   },
 
   regBlockContainer: {
@@ -141,8 +148,8 @@ const s = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#EEEEEE',
-    //  backgroundColor: "pink",
+   // backgroundColor: '#EEEEEE',
+   //   backgroundColor: "pink",
     borderRadius: 20,
     overflow: 'hidden'
   },

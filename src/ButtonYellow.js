@@ -27,8 +27,8 @@ const s = StyleSheet.create({
         marginTop: 6,
         fontFamily: "Assistant_700Bold",
         fontWeight: 'bold',
-        fontSize: 24,
-        lineHeight: 24,
+        fontSize: 18,
+        lineHeight: 18,
     }
 });
 

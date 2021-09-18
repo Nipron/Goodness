@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, TextInput, Image, Dimensions, Pressable, Scroll
 
 import ButtonBlue from '../src/ButtonBlue';
 import { userAPI } from '../src/api/api';
-import RegAvatar from '../components/avatars/RegAvatar';
 
 import CloseIcon from '../Images/CloseIcon'
 import { g } from '../styles/global'

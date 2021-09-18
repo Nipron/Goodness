@@ -31,7 +31,7 @@ export default function SmallLayout2 (props) {
 
   const data = useSelector(state => state.all)
 
-  const scale = 1.5
+  const scale = 1.2
 
   return (
     <TouchableWithoutFeedback
@@ -47,47 +47,47 @@ export default function SmallLayout2 (props) {
             style={s.imageBack}
           >
             <SafeAreaView style={s.safeContainer}>
-              <TouchableOpacity
-                style={s.arrowContainer}
-                onPress={() => navigation.goBack()}
-              >
-                <ArrowBack
-                  style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
-                />
-              </TouchableOpacity>
-
-              {!props.hide && (
+              <View style={s.safeArrow}>
                 <TouchableOpacity
-                  style={s.photoOuter}
-                  onPress={() => navigation.navigate('Profile')}
+                  style={s.arrowContainer}
+                  onPress={() => navigation.goBack()}
                 >
-                  <View style={s.photoInner}>
-                    <ImageBackground
-                      source={
-                        !!data.avatar
-                          ? {
-                              uri: `http://52.48.233.122:3001/${data.avatar.path}`
-                            }
-                          : AvatarPlain
-                      }
-                      style={s.avatar}
-                    />
-                  </View>
+                  <ArrowBack
+                    style={{
+                      transform: [{ scaleX: scale }, { scaleY: scale }]
+                    }}
+                  />
                 </TouchableOpacity>
-              )}              
 
-            </SafeAreaView>
+                {!props.hide && (
+                  <TouchableOpacity
+                    style={s.photoOuter}
+                    onPress={() => navigation.navigate('Profile')}
+                  >
+                    <View style={s.photoInner}>
+                      <ImageBackground
+                        source={
+                          !!data.avatar
+                            ? {
+                                uri: `http://52.48.233.122:3001/${data.avatar.path}`
+                              }
+                            : AvatarPlain
+                        }
+                        style={s.avatar}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                )}
+              </View>
 
-
-            <View style={s.logoBlock}>
+              <View style={s.logoBlock}>
                 <Image
                   style={s.logo}
                   source={require('../../Images/Logo1.png')}
                 />
                 <Text style={g.text24_700_white}>{props.text}</Text>
               </View>
-
-
+            </SafeAreaView>
           </ImageBackground>
         </View>
 
@@ -100,6 +100,8 @@ export default function SmallLayout2 (props) {
 }
 
 const s = StyleSheet.create({
+
+
   containerMain: {
     flex: 1,
     alignItems: 'center',
@@ -127,13 +129,19 @@ const s = StyleSheet.create({
     resizeMode: 'cover'
   },
 
-  safeContainer: {
-    height: '18%',
+  safeContainer: {    
+    width: '100%',  
+    alignItems: "center"  
+  //  backgroundColor: 'red',    
+  },
+
+  safeArrow: {
     width: '100%',
+    height: 80,
+  //  backgroundColor: 'green',
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-  //     backgroundColor: "red"
   },
 
   arrowContainer: {
@@ -145,8 +153,9 @@ const s = StyleSheet.create({
   },
 
   logoBlock: {
-    marginTop: -20,
+    top: -80,
     height: 80,
+    width: 100,
     alignItems: 'center',
     justifyContent: 'flex-end'
     //      backgroundColor: 'green'

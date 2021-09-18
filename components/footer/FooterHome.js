@@ -12,8 +12,8 @@ const FooterHome = (props) => {
     return (
         <View style={s.footer}>
             <View style={s.footerInner}>
-                <TouchableOpacity style={s.termsBlock} /*onPress={() => navigation.navigate('Terms')}*/>
-                    <Text style={[g.text22_400_grey, s.terms]}>תנאי שימוש  </Text>
+                <TouchableOpacity style={s.termsBlock} onPress={() => navigation.navigate('Terms')}>
+                    <Text style={[g.text18_400_grey, s.terms]}>תנאי שימוש  </Text>
                     <Checked />
                 </TouchableOpacity>
             </View>
@@ -24,7 +24,7 @@ const FooterHome = (props) => {
 const s = StyleSheet.create({
     footer: {
         width: "100%",
-        height: "12%",
+        height: "12.5%",
         marginTop: -26,
         paddingTop: 26,
       //  backgroundColor: "green",
