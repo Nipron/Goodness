@@ -61,7 +61,7 @@ export default function About () {
             באפליקציה זו, יכולים לחפש את התחום שבו הם מעוניינים לקבל מעשה טוב.
             ובעצם כך שהם נותנים-הם מקבלים…. {'\n'}
           </Text>
-          <Text style={{ textAlign: 'right' }}>
+          <Text style={{ textAlign: 'right', marginBottom: 60 }}>
             רק לאחר ביצוע מעשה טוב, לאותו משתמש מתאסף לב - המסמל ״מעשה טוב שהוא
             עשה לאחר״ מי שיתן יותר כמובן יקבל יותר בחזרה…
           </Text>
@@ -86,7 +86,6 @@ const s = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 40,
     paddingHorizontal: 12,
-    paddingTop: 40,
-    paddingBottom: 20
+    paddingTop: 30,
   }
 })

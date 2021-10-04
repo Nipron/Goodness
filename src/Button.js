@@ -22,7 +22,14 @@ const s = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderColor: "#FFFFFF",
-        borderWidth: 2
+        borderWidth: 2,
+        shadowOffset: {
+            width: 3,
+            height: 3
+          },
+          shadowOpacity: 0.3,
+          // shadowColor: "blue",
+          shadowRadius: 4
     },
     text: {
         fontWeight: 'bold',

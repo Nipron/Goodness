@@ -34,8 +34,9 @@ import SearchPlaceInput from '../inputs/SearchPlaceInput'
 import Footer from '../footer/Footer'
 import DistancePanel from '../panels/DistancePanel'
 import ButtonYellowSelect from '../buttons/ButtonYellowSelect'
+import GooglePlacesInput from './GooglePlacesInput'
 
-export default function LocationMap (props) {
+export default function LocationMap(props) {
   const scaleArrow = 1.2
   const scaleTarget = 1.1
   const scalePlusMinus = 1.1
@@ -45,14 +46,17 @@ export default function LocationMap (props) {
     longitude: 34.8
   })
 
+  const [latitude, setLatitude] = useState(32)
+  const [longitude, setLongitude] = useState(34.8)
+
 
 
   if (props.result.length > 0) {
-    
-   // console.log(props.result.length)
- //   console.log(props.result[0].coordinates.coordinates)
+
+    // console.log(props.result.length)
+    //   console.log(props.result[0].coordinates.coordinates)
   }
-  
+
 
   useEffect(() => {
     setCoordinate({ ...props.coordinate })
@@ -69,7 +73,9 @@ export default function LocationMap (props) {
   }
 
   const coordinatePress = async e => {
-    let coords = await e.nativeEvent
+    const coords = await e.nativeEvent
+    setLatitude(coords.coordinate.latitude)
+    setLongitude(coords.coordinate.longitude)
     setCoordinate({ ...coords.coordinate })
     //   console.log("Coor OK")
     //   console.log({ ...coords.coordinate })
@@ -77,8 +83,11 @@ export default function LocationMap (props) {
 
   const map = useRef(null)
 
+  const [x, setX] = useState(1)
+
   const onZoomInPress = () => {
     map.current.getCamera().then(cam => {
+      setX(x / 2)
       cam.zoom += 1
       map.current.animateCamera(cam)
     })
@@ -86,6 +95,7 @@ export default function LocationMap (props) {
 
   const onZoomOutPress = () => {
     map.current.getCamera().then(cam => {
+      setX(x * 2)
       cam.zoom -= 1
       map.current.animateCamera(cam)
     })
@@ -117,33 +127,45 @@ export default function LocationMap (props) {
                 provider={PROVIDER_GOOGLE}
                 // customMapStyle={mapStyle}
                 initialRegion={{
-                  latitude: 32,
-                  longitude: 34.8,
-                  latitudeDelta: 0.3,
-                  longitudeDelta: 0.3
+                  latitude: latitude,
+                  longitude: longitude,
+                  latitudeDelta: x,
+                  longitudeDelta: x
                 }}
+              /*  region={{
+                  latitude: latitude,
+                  longitude: longitude,
+                  latitudeDelta: x,
+                  longitudeDelta: x
+                }}*/
                 mapType='standard'
               >
-                <Marker key={1} coordinate={coordinate} title={'המיקום שלי'} />
-               {props.createMode && <Circle
-                  center={coordinate}
+                <Marker key={1} coordinate={{
+                  latitude: latitude,
+                  longitude: longitude
+                }} title={'המיקום שלי'} />
+                {props.createMode && <Circle
+                  center={{
+                    latitude: latitude,
+                    longitude: longitude
+                  }}
                   radius={props.distance * 1000}
                   fillColor={'#00Df3125'}
                   strokeWidth={0}
                 />}
                 {(props.result.length > 0) &&
-                props.result.map(item => <Marker key={item.id} 
-                  coordinate={{latitude: item.coordinates.coordinates[0], longitude: item.coordinates.coordinates[1]}} 
-                  title={item.name}                  
+                  props.result.map(item => <Marker key={item.id}
+                    coordinate={{ latitude: item.coordinates.coordinates[0], longitude: item.coordinates.coordinates[1] }}
+                    title={item.name}
                   >
                     <View style={s.avaBlock}>
-                    <ImageBackground source={{uri: `http://52.48.233.122:3001/${item.author.avatar.path}`} }
-                    resizeMethod={'auto'} style={s.mark} />
+                      <ImageBackground source={{ uri: `http://52.48.233.122:3001/${item.author.avatar.path}` }}
+                        resizeMethod={'auto'} style={s.mark} />
                     </View>
-                    
+
                   </Marker>)
-                }    
-                            
+                }
+
               </MapView>
               <View style={s.buttonsBlock} pointerEvents='box-none'>
                 <View style={s.topButtons} pointerEvents='box-none'>
@@ -165,8 +187,8 @@ export default function LocationMap (props) {
                         </View>*/}
                 </View>
                 {/* <View style={s.google}>
-                                <GooglePlacesInput />
-                        </View>*/}
+                                <GooglePlacesInput setLatitude={setLatitude} setLongitude={setLongitude}/>
+                      </View>*/}
                 <View style={s.bottomButtons} pointerEvents='box-none'>
                   <TouchableOpacity
                     style={s.geolocation}
@@ -224,7 +246,7 @@ export default function LocationMap (props) {
 
 const s = StyleSheet.create({
 
-  avaBlock: 
+  avaBlock:
   {
     width: 40,
     height: 40,
@@ -232,15 +254,15 @@ const s = StyleSheet.create({
     overflow: "hidden"
   },
 
-mark: {
-width: "100%",
-height: "100%",
-},
+  mark: {
+    width: "100%",
+    height: "100%",
+  },
 
   google: {
-    width: '95%',
+    top: -180,
+    width: '80%',
     height: 100,
-    backgroundColor: 'red'
   },
 
   outer: {
@@ -254,19 +276,19 @@ height: "100%",
   inner1: {
     width: '100%',
     height: '84%',
- //   backgroundColor: 'green'
+    //   backgroundColor: 'green'
   },
   inner2: {
     width: '100%',
     height: '7%',
- //   backgroundColor: 'yellow',
+    //   backgroundColor: 'yellow',
     alignItems: 'center',
     justifyContent: 'flex-end'
   },
 
   mapBlock: {
     flex: 1,
- //   backgroundColor: 'pink',
+    //   backgroundColor: 'pink',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     overflow: 'hidden',

@@ -29,11 +29,10 @@ import { feedbackAPI } from '../../src/api/api'
 const PersonalInfo = () => {
   const navigation = useNavigation()
   const info = useSelector(state => state.all)
-  console.log(Object.keys(info))
   const scale = 1.4
   const scaleHeart = 1.2 
 
- // feedbackAPI.getFeedbackInfo().then(res => console.log(res))
+  let rating = info.avgRating  
 
   const pressAlert = () =>
     Alert.alert('EDIT PROFILE', 'Redirect ot EditProfile', [
@@ -60,11 +59,14 @@ const PersonalInfo = () => {
       </View>
 
       <View style={s.rating}>
-        <RatingForCardPanel rating={info.feedbackResult} scale={0.6} />
+        <RatingForCardPanel rating={rating} scale={0.6} />
       </View>
 
       <View style={s.phone}>
-        <Text style={[s.phoneNumber, g.text18_600_blue]}>{info.phone}</Text>
+        
+        <Text selectable={true} style={[s.phoneNumber, g.text18_600_blue]}>{`+${info.phone}`}</Text>
+        
+        
         <Phone style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
       </View>
 
@@ -150,14 +152,15 @@ const s = StyleSheet.create({
   phone: {
     width: '90%',
     height: 50,
-    //   backgroundColor: "lightgreen",
+   //    backgroundColor: "lightgreen",
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
   },
 
   phoneNumber: {
-    marginRight: 10
+    marginRight: 10,
+  //  backgroundColor: "red"
   },
 
   status: {

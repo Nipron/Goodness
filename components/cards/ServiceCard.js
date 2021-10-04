@@ -20,6 +20,7 @@ import Date from '../../Images/Date.svg'
 import Time from '../../Images/Time.svg'
 import Arrow from '../../Images/Arrow.svg'
 import PinkX from '../../Images/PinkX.svg'
+import BinRed from '../../Images/BinRed.svg'
 
 import { g } from '../../styles/global'
 import { messageAPI, serviceAPI, userAPI, commonAPI } from '../../src/api/api'
@@ -86,6 +87,15 @@ const ServiceCard = ({ serv }) => {
   return (
     <View>
       <View style={s.outer}>
+      <View style={s.icon}>
+          <TouchableOpacity style={s.avatarBlock} onPress={handleDelete}>
+            <BinRed
+              style={{
+                transform: [{ scaleX: scaleRedX }, { scaleY: scaleRedX }]
+              }}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={s.info}>
           <View style={s.header}>
             <View style={s.timeInfo}>
@@ -123,19 +133,22 @@ const ServiceCard = ({ serv }) => {
               <DaysPanelSmall days={days} textFont={10} />
             </View>
             <View style={s.area}>
-              <Text>{`אֵזוֹר ${(serv.actionRadius / 1000 > 20) ? "Online" : (serv.actionRadius / 1000 === 20) ? "עִיר" : (serv.actionRadius / 1000)}`}</Text>
+              {
+                (serv.actionRadius / 1000 > 25) && 
+                <Text>Online</Text>
+              }
+              {
+                (serv.actionRadius / 1000 === 25) && 
+                <Text>אזור עיר</Text>
+              }
+              {
+                (serv.actionRadius / 1000 < 25) && 
+                <Text>ק"מ {serv.actionRadius / 1000} מרחק</Text>
+              }             
             </View>
           </View>
         </View>
-        <View style={s.icon}>
-          <TouchableOpacity style={s.avatarBlock} onPress={handleDelete}>
-            <PinkX
-              style={{
-                transform: [{ scaleX: scaleRedX }, { scaleY: scaleRedX }]
-              }}
-            />
-          </TouchableOpacity>
-        </View>
+        
       </View>
       <View style={s.line} />
     </View>
@@ -153,7 +166,14 @@ const s = StyleSheet.create({
     overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    shadowOffset: {
+      width: 3,
+      height: 3
+    },
+    shadowOpacity: 0.2,
+    // shadowColor: "blue",
+    shadowRadius: 4
   },
 
   info: {
@@ -176,7 +196,8 @@ const s = StyleSheet.create({
     width: '100%',
     //  backgroundColor: 'pink',
     alignItems: 'flex-end',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingRight: 10
   },
 
   days: {
@@ -201,9 +222,10 @@ const s = StyleSheet.create({
   area: {
     width: '50%',
     height: '100%',
-    // backgroundColor: "maroon" ,
+   //  backgroundColor: "maroon" ,
     alignItems: 'flex-end',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingRight: 10
   },
 
   body: {

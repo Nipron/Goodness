@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Text } from 'react-native';
-import Lock from '../../Images/Lock.svg'
+import { StyleSheet, View, TextInput } from 'react-native';
 import F_Asterisk from './F_Asterisk';
+import OTPInputView from '@twotalltotems/react-native-otp-input'
 
 const AsteriskInput = ({code, setCode}) => {
 
@@ -27,15 +27,18 @@ const AsteriskInput = ({code, setCode}) => {
     }
 
     return (
-        <View style={s.outer}>
+        <View style={s.outer}>            
             <TextInput style={s.searchInput}
                 textAlign="left"
                 placeholder=""
                 //autoFocus="true"
+                textContentType="oneTimeCode"
                 caretHidden={true}
                 keyboardType="number-pad"
                 maxLength={5}
                 onChangeText={handleChange}
+                textContentType="oneTimeCode"
+                
             >
             </TextInput>
             <View style={s.plug}

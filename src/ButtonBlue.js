@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, Pressable } from 'react-native';
+import { StyleSheet, Text, Pressable, TouchableOpacity } from 'react-native';
 
 
 import {
@@ -8,9 +8,9 @@ import {
 
 const ButtonBlue = props => {
     return (
-        <Pressable style={[s.button, {marginBottom: props.bottom}]}  onPress={props.onPress}>
+        <TouchableOpacity style={[s.button, {marginBottom: props.bottom}]}  onPress={props.onPress}>
             <Text style={s.text}>{props.name}</Text>
-        </Pressable>
+        </TouchableOpacity>
     );
 }
 
@@ -26,7 +26,14 @@ const s = StyleSheet.create({
         borderColor: "#FFFFFF",
         borderWidth: 2,
         zIndex: 10,
-      //  marginBottom: 350
+      //  marginBottom: 350,
+      shadowOffset: {
+        width: 3,
+        height: 3
+      },
+      shadowOpacity: 0.3,
+      // shadowColor: "blue",
+      shadowRadius: 4
     },
     text: {
         marginTop: 6,

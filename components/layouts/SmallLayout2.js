@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
   Dimensions,
   StyleSheet,
@@ -40,7 +40,7 @@ export default function SmallLayout2 (props) {
         Keyboard.dismiss()
       }}
     >
-      <View style={s.containerMain}>
+      <KeyboardAvoidingView style={s.containerMain}>
         <View style={s.background}>
           <ImageBackground
             source={require('../../Images/BackgroundSmall.png')}
@@ -91,15 +91,23 @@ export default function SmallLayout2 (props) {
           </ImageBackground>
         </View>
 
-        <View style={s.childrenBlockOuter}>{props.children}</View>
+        <View style={[s.childrenBlockOuter, {height: Dimensions.get('window').height * 0.555 + 70 - (props.focus && 160)}]}>{props.children}</View>
+        
 
         <Footer hide={props.hide} />
-      </View>
+        {props.focus && <KeyboardAvoidingView style={s.bottomPlug} />}
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   )
 }
 
 const s = StyleSheet.create({
+
+  bottomPlug: {
+    width: "100%",
+    height: 160,
+   // backgroundColor: "green"
+},
 
 
   containerMain: {

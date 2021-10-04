@@ -7,6 +7,7 @@ import Stars from '../../Images/Stars.svg'
 import Repair from '../../Images/Repair.svg'
 import Date from '../../Images/Date.svg'
 import Time from '../../Images/Time.svg'
+import moment from 'moment'
 
 import { g } from '../../styles/global'
 
@@ -24,10 +25,9 @@ const SearchResultCard = (props) => {
 
     const name = props.data.author.name
     const avaPath = props.data.author.avatar.path
+  //  const rating = props.data.author.avgRating
+  const rating = props.data.avgRating
 
-    console.log(props.data.author)
-
-    
     const catId = props.data.category.id
     const jobTitle = catsFlat.find(cat => cat.id === catId).title
 
@@ -35,11 +35,12 @@ const SearchResultCard = (props) => {
     const id = props.data.id
     const userId = props.data.author.id
 
+ // console.log(Object.keys(props.data))
+  //  console.log(props.data.avgRating)
+
     const avatar = null
-    //const name = "בנדר רודריגס"
-  //  const jobTitle = "אדם עצלן"
-    const date = "23.07.21"
-    const time = "10:00"
+    const date = moment(props.data.createdAt).format('L')
+    const time = moment(props.data.createdAt).format('LT')
 
     const scaleDate = 1.4
     const scaleTime = 1.4
@@ -55,8 +56,7 @@ const SearchResultCard = (props) => {
         }
     }
 
-    const goToPersonalInfo = () => {
-      //  console.log(userId)
+    const goToPersonalInfo = async () => {
         dispatch(setTempUserThunk(userId));
         navigation.navigate('UserInfo')
     }
@@ -83,8 +83,8 @@ const SearchResultCard = (props) => {
                 <Repair style={{ transform: [{ scaleX: scaleRepair }, { scaleY: scaleRepair }] }} />
             </View>
             <View style={s.personalInfoBlock}>
-                <Text style={[g.text16_600_blue, s.nameStyle]}>{name}</Text>
-                <RatingForCardPanel rating={3} scale={0.25}/>
+                <Text style={[g.text13_400_blue, s.nameStyle]}>{name}</Text>
+                <RatingForCardPanel rating={rating} scale={0.25}/>
             </View>
             <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
                 <ImageBackground source={avaPath ? {uri: `http://52.48.233.122:3001/${avaPath}`} : AvatarPlain}
@@ -124,7 +124,7 @@ const s = StyleSheet.create({
 
     jobInfo: {
         height: "100%",
-        width: "38%",
+        width: "42%",
         //   backgroundColor: "peachpuff",
         padding: 5,
         alignItems: 'flex-end',

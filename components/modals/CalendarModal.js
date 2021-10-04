@@ -30,7 +30,7 @@ export default function CalendarModal({ modalOpen, setModalOpen, date, setDate }
                         </TouchableOpacity>
 
                         <Calendar
-                            minDate={new Date()}
+                            minDate={moment().add(1, 'days').format('YYYY-MM-DD')}
                             maxDate={moment().add(92, 'days').format('YYYY-MM-DD')}
                             onDayPress={day => { handlePickDate(day) }}
                             monthFormat={'MM yyyy'}
@@ -59,7 +59,7 @@ const mS = StyleSheet.create({
 
     innerBlock: {
         width: "90%",
-        height: 320,
+       // height: 360,
         borderRadius: 20,
         backgroundColor: 'white',
         alignItems: 'center',

@@ -21,51 +21,70 @@ import SmallLayout from '../components/layouts/SmallLayout'
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 import PersonalInfo from '../components/personalInfo/PersonalInfo'
 
 import DropDownBlue from '../components/dropdowns/DropDownBlue'
 import ButtonRed from '../components/buttons/ButtonRed'
 
-export default function Profile () {
-
-console.log("FFF FFF FFF")
-
+export default function Profile() {
   const navigation = useNavigation()
 
-  const d = useSelector(state => state.all)
-  const [data, setData] = useState(d)
+  const data = useSelector(state => state.all)
+  
+  console.log("ПОЛЯ ЮЗЕРА - ПРОФИЛЬ")
+  console.log(Object.keys(data).length)
 
-  useFocusEffect(
-    React.useCallback(() => {
-      let isActive = true
-      if (isActive) {
-        setData(d)    
-      }
-      
-      return () => {
-        isActive = false
-      }
-    }, [d])
-  )
+  const works = useSelector(state => state.all.works, shallowEqual)
+  const orders = useSelector(state => state.all.orders, shallowEqual/*(old, cur) => {
+    let eq = true
+    for (let i = 0; i < old.length; i++) {
+      eq = eq && (old[i].status === cur[i].status)
+    }
+    console.log(eq)
+    return eq
+  }*/)
+
+  /*
+    const [data, setData] = useState(d)
+  
+    useFocusEffect(
+      React.useCallback(() => {
+        let isActive = true
+        if (isActive) {
+          setData(d)
+        }
+        console.log("FFF33")
+        return () => {
+          isActive = false
+        }
+      }, [d, z2])
+    )*/
 
   let worksToMe = []
   let worksToMeHistory = []
   let ordersFromMe = []
   let ordersFromMeHistory = []
 
-  if (!!data.works) {
+  if (!!works) {
     //works - from somebody to me (I work)
-    worksToMe = data.works.filter(
+    worksToMe = works.filter(
       job => job.status === 'in_process' || job.status === 'done'
-    )
-    worksToMeHistory = data.works.filter(job => job.status === 'approved')
-    //orders - from me to somebody (I give orders - somebody works)
-    ordersFromMe = data.orders.filter(
-      job => job.status === 'in_process' || job.status === 'done'
-    )
-    ordersFromMeHistory = data.orders.filter(job => job.status === 'approved')
+    ).sort((a, b) => b.id - a.id)
+    worksToMeHistory = works.filter(job => job.status === 'approved').sort((a, b) => b.id - a.id)
   }
+  if (!!orders) {
+    //orders - from me to somebody (I give orders - somebody works)
+    ordersFromMe = orders.filter(
+      job => job.status === 'in_process' || job.status === 'done'
+    ).sort((a, b) => b.id - a.id)
+    ordersFromMeHistory = orders.filter(job => job.status === 'approved').sort((a, b) => b.id - a.id)
+  }
+
+  /* console.log(worksToMe.length)
+   console.log(worksToMeHistory.length)
+   console.log(ordersFromMe.length)
+   console.log(ordersFromMeHistory.length)*/
 
   const handleExit = async () => {
     await AsyncStorage.removeItem('token')
@@ -81,13 +100,13 @@ console.log("FFF FFF FFF")
     >
       <SmallLayout text={` שלום, ${data.name}`}>
         <AvatarBig path={data.avatar ? data.avatar.path : null} />
-       
+
         <ScrollView
           style={s.regBlock}
           contentContainerStyle={s.regBlockContainer}
         >
-           <PersonalInfo />
-           
+          <PersonalInfo />
+
           <View style={s.folders}>
             <DropDownBlue
               name={'שירותים מוזמנים על ידי משתמשים אחרים'}
@@ -117,7 +136,10 @@ console.log("FFF FFF FFF")
               type={3}
             />
           </View>
-          <ButtonRed name='הצעת שירות / חיפוש שירות' onPress={() => navigation.navigate('Create')} />
+          <ButtonRed
+            name='הצעת שירות / חיפוש שירות'
+            onPress={() => navigation.navigate('Create')}
+          />
         </ScrollView>
       </SmallLayout>
     </TouchableWithoutFeedback>
@@ -128,14 +150,13 @@ const s = StyleSheet.create({
   regBlock: {
     width: '100%',
     height: '100%',
-  // backgroundColor: "yellow",
-  paddingBottom: 50,
-       backgroundColor: "#EFEFEF",
+    // backgroundColor: "yellow",
+    paddingBottom: 50,
+    backgroundColor: '#EFEFEF',
     borderRadius: 20,
-    shadowOffset: {width: 0,height: 6},
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.2,
     shadowRadius: 8
-    
   },
 
   regBlockContainer: {
@@ -148,8 +169,8 @@ const s = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'flex-start',
-   // backgroundColor: '#EEEEEE',
-   //   backgroundColor: "pink",
+    // backgroundColor: '#EEEEEE',
+    //   backgroundColor: "pink",
     borderRadius: 20,
     overflow: 'hidden'
   },

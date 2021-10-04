@@ -188,15 +188,25 @@ export default function EditProfile2 () {
       await userAPI.dashboard().then(data => {
         console.log('DASHBOARD OK')
         dispatch(updateAll(data))
-        navigation.navigate('Profile')
+        Alert.alert("הַצלָחָה!", ".שינוים נשמרו בהצלחה", [
+          {
+              text: 'אישור', onPress: () => {
+                  console.log('changed profile')
+                  navigation.navigate('Profile')
+              }
+          }
+      ])
+       
       })
     } else {
       console.log('Not OK')
     }
   }
 
+  const [focus, setFocus] = useState(false)
+
   return (
-    <SmallLayout2 text='הרשמה' hide={true}>
+    <SmallLayout2 text='הרשמה' hide={true} focus={focus}>
       <SafeAreaView style={s.outer}>
         <View style={s.registrationBlock}>
           <CameraAvatar image={image} setImage={setImage} />
@@ -232,6 +242,7 @@ export default function EditProfile2 () {
                         value={props.values.name}
                         placeholder='שם מלא'
                         borderColor={nameBorder}
+                        setFocus={setFocus}
                       >
                         <PersonIcon />
                       </RegInput>
@@ -250,6 +261,7 @@ export default function EditProfile2 () {
                         placeholder='אימייל'
                         borderColor={emailBorder}
                         autoCapitalize='none'
+                        setFocus={setFocus}
                       >
                         <EmailIcon />
                       </RegInput>
@@ -258,6 +270,7 @@ export default function EditProfile2 () {
                         value={props.values.job}
                         placeholder='עיסוק'
                         borderColor={jobBorder}
+                        setFocus={setFocus}
                       >
                         <JobIcon />
                       </RegInput>
@@ -270,6 +283,7 @@ export default function EditProfile2 () {
                         value={props.values.city}
                         placeholder='עיר'
                         borderColor={cityBorder}
+                        setFocus={setFocus}
                       >
                         <PinIcon />
                       </RegInput>
@@ -278,6 +292,7 @@ export default function EditProfile2 () {
                         value={props.values.street}
                         placeholder='רחוב'
                         borderColor={streetBorder}
+                        setFocus={setFocus}
                       >
                         <PinIcon />
                       </RegInput>
@@ -289,6 +304,7 @@ export default function EditProfile2 () {
                           keyboardType='number-pad'
                           style={{ width: '47%' }}
                           borderColor={aptBorder}
+                          setFocus={setFocus}
                         >
                           <HashIcon />
                         </RegInputSmall>
@@ -299,6 +315,7 @@ export default function EditProfile2 () {
                           keyboardType='number-pad'
                           style={{ width: '50%' }}
                           borderColor={houseBorder}
+                          setFocus={setFocus}
                         >
                           <HashIcon />
                         </RegInputSmall>

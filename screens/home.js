@@ -29,9 +29,9 @@ import { setCategoriesFlatThunk } from '../redux/categoriesFlatReducer'
 import { updateAll } from '../redux/store'
 import { setMessagesThunk } from '../redux/messagesReducer'
 
-export default function Home (props) {
+export default function Home(props) {
   const dispatch = useDispatch()
- // dispatch(updateAll(JSON.stringify({})))
+  dispatch(updateAll(JSON.stringify({})))
 
   useFocusEffect(() => {
     dispatch(setCategoriesThunk())
@@ -77,9 +77,7 @@ export default function Home (props) {
           </View>
 
           <View style={s.descriptionBlock}>
-            <Text style={s.text}>שיתוף בין אנשים את מה שהם יכולים לתת</Text>
-            <Text style={s.text}>בזמנם הפנוי ובתמורה לקבל מעשה טוב</Text>
-            <Text style={s.text}>של אדם אחר.</Text>
+            <Text style={s.text}>פלטפורמה לשיתוף "מעשים טובים" בין האנשים</Text>
           </View>
 
           <View style={s.yellowButtonBlock}>
@@ -98,7 +96,7 @@ const s = StyleSheet.create({
   goodnessBlock: {
     width: '100%',
     flex: 1,
-  //  backgroundColor: "azure",
+    //  backgroundColor: "azure",
     alignItems: 'center',
     justifyContent: 'space-between'
   },
@@ -107,15 +105,15 @@ const s = StyleSheet.create({
     marginTop: 5,
     height: "15%",
     paddingHorizontal: 15,
-  // backgroundColor: "yellow",
+    // backgroundColor: "yellow",
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
-  },  
+  },
 
   logoBlock: {
     height: "30%",
-  //  backgroundColor: 'peru',
+    //  backgroundColor: 'peru',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
@@ -126,7 +124,7 @@ const s = StyleSheet.create({
     width: '90%',
     alignItems: 'center',
     justifyContent: 'center',
-  //  backgroundColor: 'red'
+    //  backgroundColor: 'red'
   },
 
   text: {
@@ -137,9 +135,9 @@ const s = StyleSheet.create({
 
   yellowButtonBlock: {
     width: '100%',
-    height: '29.64%',   
+    height: '29.64%',
     alignItems: 'center',
     justifyContent: 'flex-start',
-  //   backgroundColor: "green",
+    //   backgroundColor: "green",
   }
 })

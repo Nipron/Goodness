@@ -10,6 +10,9 @@ import {
 import g from '../../styles/global'
 
 const StatusPanel = ({ status }) => {
+
+  console.log(status)
+
   return (
     <View style={s.status2}>
       <View style={s.roll1}>
@@ -26,7 +29,7 @@ const StatusPanel = ({ status }) => {
           style={s.imageBack}
         />
         <Text style={g.text12_600_blue}>זהב</Text>
-        {status !== 'gold' && <View style={s.plug}/>}
+        {(status === 'bronze' || status === 'silver') && <View style={s.plug}/>}
       </View>
       <View style={s.roll3}>
         <ImageBackground
@@ -34,7 +37,7 @@ const StatusPanel = ({ status }) => {
           style={s.imageBack}
         />
         <Text style={g.text12_600_blue}>כסף</Text>
-        {status !== 'silver' && <View style={s.plug}/>}
+        {status === 'bronze' && <View style={s.plug}/>}
       </View>
       <View style={s.roll4}>
         <ImageBackground
@@ -42,7 +45,7 @@ const StatusPanel = ({ status }) => {
           style={s.imageBack}
         />
         <Text style={g.text12_600_blue}>בְּרוֹנזָה</Text>
-       {status !== 'bronze' && <View style={s.plug}/>}
+       {/*status !== 'bronze' && <View style={s.plug}/>*/}
       </View>
     </View>
   )
@@ -54,7 +57,7 @@ const s = StyleSheet.create({
   plug: {
     width: '110%',
     height: '100%',
-    backgroundColor: '#FFFFFF77',
+    backgroundColor: '#FFFFFFBB',
     position: 'absolute',
     borderTopLeftRadius: 1000,
     borderBottomLeftRadius: 1000
@@ -149,6 +152,7 @@ const s = StyleSheet.create({
 
   status2: {
     width: '100%',
+    marginVertical: 5,
     height: 42,
     flexDirection: 'row',
     alignItems: 'center',

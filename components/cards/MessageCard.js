@@ -20,6 +20,7 @@ import Date from '../../Images/Date.svg'
 import Time from '../../Images/Time.svg'
 import Arrow from '../../Images/Arrow.svg'
 import RedX from '../../Images/RedX.svg'
+import BinRed from '../../Images/BinRed.svg'
 
 import { g } from '../../styles/global'
 import { messageAPI, serviceAPI, userAPI, commonAPI } from '../../src/api/api'
@@ -28,9 +29,12 @@ import { setTempUserThunk } from '../../redux/tempUserReducer'
 
 import { setMessagesThunk } from '../../redux/messagesReducer'
 
+import Spinner from 'react-native-loading-spinner-overlay'
+
 const MessageCard = ({ m }) => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
+  const [loading, setLoading] = useState(false)
 
   const [open, setOpen] = useState(false)
   const [user, setUser] = useState(m.from)
@@ -45,29 +49,12 @@ const MessageCard = ({ m }) => {
 
   const [header, setHeader] = useState('הודעת מערכת')
 
-  const scaleRedX = 2.4
-
-  console.log(m.type)
-  console.log(m.message.status)
-
-  console.log(m)
+  const scaleRedX = 1.2
 
   useEffect(() => {
     switch (m.type) {
       case 'contract_created':
-        switch (m.message.status) {
-          case 'approved':
-            setHeader('הזמנתכם אושרה')
-            break
-          case 'in_process':
-            setHeader('התקבלה הזמנה חדשה')
-            break
-          case 'canceled':
-            setHeader('הזמנת משימה בוטלה')
-            break
-          default:
-            break
-        }
+        setHeader('התקבלה הזמנה חדשה')
         break
 
       case 'contract_changed':
@@ -97,41 +84,48 @@ const MessageCard = ({ m }) => {
       default:
         break
     }
-    return () => {}
+    return () => { }
   }, [m])
 
   const handleOpen = async () => {
     if (!open) {
+      setLoading(true)
       await messageAPI.readMessage(m.id)
-      await messageAPI.getMessages().then(data => {
-        dispatch(setMessagesThunk(data))
-      })
+      dispatch(setMessagesThunk())
+      setOpen(true)
+      setLoading(false)
     }
-    setOpen(!open)
+
   }
 
   const handleDelete = async () => {
+    setLoading(true)
     await messageAPI.deleteMessage(m.id)
-    await messageAPI.getMessages().then(data => {
-      dispatch(setMessagesThunk(data))
-    })
-    navigation.navigate('Messages')
+    dispatch(setMessagesThunk())
+    setLoading(false)
   }
 
   const goToPersonalInfo = async () => {
+    setLoading(true)
     dispatch(setTempUserThunk(user.id))
     navigation.navigate('UserInfo')
+    setLoading(false)
   }
 
   return (
-    <View>
+    <View style={{alignItems: "center"}}>
+      <Spinner
+        visible={loading}
+        textContent={'טוען...'}
+        textStyle={g.text22_700_white}
+      />
       <TouchableOpacity style={s.outer} onPress={handleOpen}>
         <View style={s.info}>
           <View style={s.header}>
             <View style={s.timeInfo}>
               <View style={s.time}>
                 <Text
-                  style={[g.text10_400_blue, s.dateStyle, { marginRight: 4 }]}
+                  style={[m.isRead ? g.text10_400_grey : g.text10_400_blue, s.dateStyle, { marginRight: 4 }]}
                 >
                   {time}
                 </Text>
@@ -143,7 +137,7 @@ const MessageCard = ({ m }) => {
               </View>
               <View style={s.date}>
                 <Text
-                  style={[g.text10_400_blue, s.dateStyle, { marginRight: 4 }]}
+                  style={[m.isRead ? g.text10_400_grey : g.text10_400_blue, s.dateStyle, { marginRight: 4 }]}
                 >
                   {date}
                 </Text>
@@ -159,126 +153,30 @@ const MessageCard = ({ m }) => {
             </View>
           </View>
           <View style={s.body}>
-            <Text style={g.text20_400_blue}>{header}</Text>
-          </View>
-        </View>
-        <View style={s.icon}>
-          <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
-            <ImageBackground
-              source={
-                user.avatar.path
-                  ? { uri: `http://52.48.233.122:3001/${user.avatar.path}` }
-                  : AvatarPlain
-              }
-              resizeMethod={'auto'}
-              style={s.avatar}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={s.point}>
-          <View
-            style={{
-              width: 10,
-              height: 10,
-              backgroundColor: m.isRead ? '#E5E5E5' : '#3993D6',
-              borderRadius: 5
-            }}
-          ></View>
-        </View>
-
-        {/*<View style={s.arrow}>
-            <Arrow
-              style={{
-                transform: [
-                  { scaleX: scaleArrow },
-                  { scaleY: scaleArrow },
-                  { rotate: open ? '90deg' : '0deg' }
-                ]
-              }}
-            />
-            </View>*/}
-        {/*<View style={s.user}>
-            <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
-              <ImageBackground
-                source={
-                  user.avatar.path
-                    ? { uri: `http://52.48.233.122:3001/${user.avatar.path}` }
-                    : AvatarPlain
-                }
-                resizeMethod={'auto'}
-                style={s.avatar}
-              />
-            </TouchableOpacity>
-            <Text style={g.text13_400_blue}>{user.name}</Text>
-          </View>
-          <View style={s.info}>
-            <View style={s.jobInfo}>
-              <View style={s.date}>
-                <Text
-                  style={[g.text13_400_blue, s.dateStyle, { marginRight: 4 }]}
-                >
-                  {date}
-                </Text>
-                <Date
-                  style={{
-                    transform: [{ scaleX: scaleDate }, { scaleY: scaleDate }]
-                  }}
-                />
-              </View>
-              <View style={s.time}>
-                <Text
-                  style={[g.text13_400_blue, s.dateStyle, { marginRight: 4 }]}
-                >
-                  {time}
-                </Text>
-                <Time
-                  style={{
-                    transform: [{ scaleX: scaleTime }, { scaleY: scaleTime }]
-                  }}
-                />
-              </View>
-            </View>
-            <View style={s.messHeaderContainer}>
-              <Text style={g.text16_600_blue}>{header}</Text>
-            </View>
-          </View>*/}
-
-        {/*!m.isRead && (
-            <View style={s.envIcon}>
-              <LetterClosed
-                style={{
-                  transform: [
-                    { scaleX: scaleEnvelope },
-                    { scaleY: scaleEnvelope }
-                  ]
-                }}
-              />
-            </View>
-          )}
-          {m.isRead && (
-            <View style={s.envIcon}>
-              <LetterOpened
-                style={{
-                  transform: [
-                    { scaleX: scaleEnvelope },
-                    { scaleY: scaleEnvelope }
-                  ]
-                }}
-              />
-            </View>
-          )*/}
-
-        {/*open && Object.keys(user).length > 0 && (
-          <View style={s.messBody}>
-            <TouchableOpacity onPress={handleDelete}>
-              <RedX
+            <TouchableOpacity onPress={handleDelete} style={{ marginLeft: 20}}>
+              <BinRed
                 style={{
                   transform: [{ scaleX: scaleRedX }, { scaleY: scaleRedX }]
                 }}
               />
             </TouchableOpacity>
+            <Text style={m.isRead ? g.text20_400_grey2 : g.text20_400_blue}>{header}</Text>
+            <View style={s.icon}>
+              <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
+                <ImageBackground
+                  source={
+                    user.avatar.path
+                      ? { uri: `http://52.48.233.122:3001/${user.avatar.path}` }
+                      : AvatarPlain
+                  }
+                  resizeMethod={'auto'}
+                  style={s.avatar}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-              )*/}
+        </View>
+
       </TouchableOpacity>
       <View style={s.line} />
     </View>
@@ -296,13 +194,14 @@ const s = StyleSheet.create({
     overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    
   },
 
   info: {
     height: '100%',
-    width: '80%',
-  //  backgroundColor: 'green'
+    width: '100%',
+    //  backgroundColor: 'green'
   },
 
   header: {
@@ -311,22 +210,23 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
- //   backgroundColor: 'olive'
+  //     backgroundColor: 'olive'
   },
 
   body: {
     width: '100%',
-    height: '70%',
+    height: '65%',
+   // paddingLeft: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
- //   backgroundColor: 'orange'
+  //    backgroundColor: 'orange'
   },
 
   icon: {
     height: '100%',
-    width: '15%',
- //   backgroundColor: 'pink',
+    width: '20%',
+//     backgroundColor: 'pink',
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -341,14 +241,6 @@ const s = StyleSheet.create({
     justifyContent: 'center'
   },
 
-  point: {
-    height: '100%',
-    width: '5%',
-  //  backgroundColor: 'red',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-
   arrow: {
     //   backgroundColor: "ivory",
     alignItems: 'center',
@@ -357,14 +249,13 @@ const s = StyleSheet.create({
   },
 
   line: {
-    width: '100%',
+    width: '80%',
     height: 1,
     marginVertical: 3,
     backgroundColor: '#2699FB'
   },
 
   user: {
-    paddingLeft: 8,
     // backgroundColor: 'green',
     width: '25%',
     height: '100%',
@@ -379,10 +270,12 @@ const s = StyleSheet.create({
 
   timeInfo: {
     height: '100%',
- //   backgroundColor: 'peachpuff',
+    width: "50%",
+   //    backgroundColor: 'peachpuff',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    flexDirection: 'row'
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    paddingRight: 5
   },
 
   time: {
@@ -407,20 +300,15 @@ const s = StyleSheet.create({
 
   from: {
     height: '100%',
-    //    width: "40%",
- //   backgroundColor: 'gray',
+        width: "50%",
+  //     backgroundColor: 'gray',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingRight: 10
+    paddingRight: 20
   },
 
-  body: {
-    flex: 1,
- //   backgroundColor: 'azure',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
+
 
   messHeaderContainer: {
     alignItems: 'flex-end',

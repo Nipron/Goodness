@@ -19,19 +19,19 @@ export default AvatarBig
 const s = StyleSheet.create({
     photoOuter: {
         zIndex: 2,
-        marginTop: -60,
-        width: 120,
-        height: 120,
-        borderRadius: 73,
+        marginTop: -63,
+        width: 126,
+        height: 126,
+        borderRadius: 1000,
         backgroundColor: "#FDC27A",
         alignItems: 'center',
         justifyContent: 'center',
         position: 'absolute'
     },
     photoInner: {
-        width: 108,
-        height: 108,
-        borderRadius: 65,
+        width: 114,
+        height: 114,
+        borderRadius: 1000,
         backgroundColor: "#034794",
         alignItems: 'center',
         justifyContent: 'center',

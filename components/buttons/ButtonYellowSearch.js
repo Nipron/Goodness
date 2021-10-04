@@ -1,48 +1,60 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, Pressable, Alert } from 'react-native'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { StyleSheet, Text, Alert, TouchableOpacity } from 'react-native'
 import { g } from '../../styles/global'
-import { serviceAPI, userAPI } from '../../src/api/api'
+import { serviceAPI } from '../../src/api/api'
 
 import { useNavigation } from '@react-navigation/native'
-import { updateAll } from '../../redux/store'
+import { updateProfileThunk } from '../../redux/store'
+
+import Spinner from 'react-native-loading-spinner-overlay'
 
 const ButtonYellowSearch = props => {
   const navigation = useNavigation()
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
 
   const onPress = async () => {
     if (props.logged) {
-      //  console.log("Ordered ID# ", props.chosenId)
-      await serviceAPI.orderService(props.chosenId, props.date)
-      await userAPI.dashboard().then(data => {
-        dispatch(updateAll(data))
-        Alert.alert('מזל טוב !!! ', 'המשימה נוספה בהצלחה', [
-          { text: 'בסדר' , onPress: () => navigation.navigate('Profile') }
-        ])        
-      })
+      setLoading(true)
+
+
+      try {
+        await serviceAPI.orderService(props.chosenId, props.date)
+        dispatch(updateProfileThunk())
+  
+        Alert.alert('מזל טוב !', 'המשימה נוספה בהצלחה', [{
+          text: 'אישור',
+          onPress: () => {
+            setLoading(false)
+            navigation.navigate('Profile')
+          } 
+        }])
+      } catch (e) {
+        console.log(e)
+      }
+
+   
+
     } else {
-      Alert.alert('אנא הירשם', 'הפניה לרישום', [
-        { text: 'Ok', onPress: () => navigation.navigate('Registration') }
-      ])
+      Alert.alert('אנא הירשם', 'הפניה לרישום', [{
+        text: 'אישור',
+        onPress: () => navigation.navigate('Registration')
+      }])
     }
   }
 
-  return (
-    <Pressable
-      style={[s.button, { marginBottom: props.bottom }]}
-      onPress={onPress}
-    >
-      <Text style={[g.text24_700_blue, s.text]}>{props.name}</Text>
-    </Pressable>
-  )
+  return <TouchableOpacity style={[s.button, { marginBottom: props.bottom }]} onPress={onPress} >
+    <Spinner visible={loading} textContent={'טוען...'} textStyle={g.text22_700_white} />
+    <Text style={[g.text24_700_blue, s.text]} > {props.name} </Text>
+  </TouchableOpacity>
 }
 
 const s = StyleSheet.create({
   button: {
     //top: -26,
     //marginBottom: -56,
-    bottom: "9%",
+    bottom: '9%',
     height: 52,
     width: '70%',
     borderRadius: 26,
@@ -52,7 +64,14 @@ const s = StyleSheet.create({
     borderColor: '#FFFFFF',
     borderWidth: 2,
     zIndex: 10,
-    position: "absolute"
+    position: 'absolute',
+    shadowOffset: {
+      width: 3,
+      height: 3
+    },
+    shadowOpacity: 0.3,
+    // shadowColor: "blue",
+    shadowRadius: 4
   },
 
   text: {

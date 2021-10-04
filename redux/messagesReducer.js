@@ -8,10 +8,10 @@ let messagesInitialState = []
 const setMessages = data => ({ type: SET_MESSAGES, payload: data })
 
 //Thunk creators
-export const setMessagesThunk = () => dispatch => {
-  messageAPI.getMessages().then(res => {
-    dispatch(setMessages(res))
-  })
+export const setMessagesThunk = () => async dispatch => {
+  const res = await messageAPI.getMessages()
+  dispatch(setMessages(res)) 
+
 }
 
 export const messages = (state = messagesInitialState, action) => {

@@ -13,9 +13,6 @@ import Time from '../../Images/Time.svg'
 import CloseIcon from '../../Images/CloseIcon'
 
 import { g } from '../../styles/global'
-import { serviceAPI, userAPI } from '../../src/api/api';
-
-import { updateAll } from '../../redux/store';
 
 import { useNavigation } from '@react-navigation/native'
 
@@ -38,9 +35,9 @@ const HistoryCard = ({ item, toMe }) => {
     const name = partner.name
     const userId = partner.id
     const avaPath = partner.avatar.path
-    const rating = partner.feedbackResult
-    const date = moment(item.service.createdAt).format('L')
-    const time = item.service.dayTime
+    const rating = partner.avgRating
+    const date = !!item.feedback ? moment(item.feedback.createdAt).format('L') : "22/09/2021"
+    const time = !!item.feedback ? moment(item.feedback.createdAt).format('LT') : "12:06"
 
     const [newRating, setNewRating] = useState(3)
 
@@ -51,56 +48,32 @@ const HistoryCard = ({ item, toMe }) => {
     const scaleRating = 0.23
     const scaleRepair = 1.2
 
-    const [modalOpen, setModalOpen] = useState(false)
-
-    const handelCancel = async () => {
-        await serviceAPI.cancelService(item.id)
-        await userAPI.dashboard()
-            .then(data => {
-                dispatch(updateAll(data))
-                navigation.navigate('Profile')
-            })
-    }
-
-    const handleRate = async () => {
-     //   console.log(newRating)
-     //   console.log(item.id)
-        await serviceAPI.approveService(item.id)
-        await serviceAPI.rateService(item.id, newRating)
-        await userAPI.dashboard()
-            .then(data => {
-                dispatch(updateAll(data))
-                navigation.navigate('Profile')
-            })
-        setModalOpen(false)
-    }
-
     const goToPersonalInfo = () => {
         dispatch(setTempUserThunk(userId));
         navigation.navigate('UserInfo')
     }
 
     return (
-        <View style={s.testCard}>         
+        <View style={s.testCard}>
+            <View style={s.buttons} />
 
             <View style={s.jobInfo}>
                 <View style={s.jobTitle}>
                     <Text style={g.text14_600_blue}>{cat}</Text>
                 </View>
                 <View style={s.date}>
-                    <Text style={[g.text13_400_blue, s.dateStyle]}>{date}</Text>
+                    <Text style={[g.text10_400_blue, s.dateStyle]}>{time}</Text>
+                    <Time style={{ transform: [{ scaleX: scaleTime }, { scaleY: scaleTime }] }} />
+                    <Text style={[g.text10_400_blue, s.dateStyle]}>{date}</Text>
                     <Date style={{ transform: [{ scaleX: scaleDate }, { scaleY: scaleDate }] }} />
                 </View>
-                <View style={s.time}>
-                    <Text style={[g.text13_400_blue, s.dateStyle]}>{time}</Text>
-                    <Time style={{ transform: [{ scaleX: scaleTime }, { scaleY: scaleTime }] }} />
-                </View>
+
             </View>
             <View style={s.jobIcon}>
                 <Repair style={{ transform: [{ scaleX: scaleRepair }, { scaleY: scaleRepair }] }} />
             </View>
             <View style={s.personalInfoBlock}>
-                <Text style={[g.text16_600_blue, s.nameStyle]}>{name}</Text>
+                <Text style={[g.text14_600_blue, s.nameStyle]}>{name}</Text>
                 <View style={s.rating}>
                     <RatingForCardPanel rating={rating} scale={scaleRating} />
                 </View>
@@ -123,44 +96,52 @@ const s = StyleSheet.create({
         justifyContent: 'space-between',
         width: "100%",
         height: 80,
-        //  backgroundColor: "ivory",
+        //   backgroundColor: "ivory",
         borderRadius: 20,
         marginVertical: 5,
-        overflow: 'hidden',
+      //  overflow: 'hidden',
         backgroundColor: "#FFFFFF",
+        paddingVertical: 12,
+        shadowOffset: {
+            width: 3,
+            height: 3
+        },
+        shadowOpacity: 0.1,
+        // shadowColor: "blue",
+        shadowRadius: 2
     },
 
     buttons: {
         height: "100%",
-        width: "12%",
+        width: "10%",
         //    backgroundColor: "plum",
-        paddingVertical: 12,
+        paddingBottom: 2,
         paddingHorizontal: 8,
-        alignItems: 'flex-end',
+        alignItems: 'center',
         justifyContent: 'space-between',
     },
 
     jobInfo: {
         height: "100%",
-        width: "38%",
-        //     backgroundColor: "peachpuff",
-        padding: 5,
+        width: "40%",
+        //  backgroundColor: "peachpuff",
         alignItems: 'flex-end',
         justifyContent: 'space-evenly',
     },
 
     jobTitle: {
         height: "30%",
-        width: "100%",
-        //     backgroundColor: "peru",
+        //  width: "100%",
+        //   backgroundColor: "green",
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
+        marginRight: 4
     },
 
     dateTime: {
         height: "30%",
         width: "100%",
-        //    backgroundColor: "navy",
+        backgroundColor: "navy",
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
@@ -169,7 +150,7 @@ const s = StyleSheet.create({
     time: {
         height: "30%",
         // width: "40%",
-        //  backgroundColor: "olive",
+        backgroundColor: "olive",
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
@@ -183,18 +164,19 @@ const s = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingRight: 4,
+        marginRight: 4
     },
 
     dateStyle: {
-        marginRight: 4
+        marginRight: 3,
+        marginLeft: 8
     },
 
     jobIcon: {
         height: "100%",
         width: "14%",
         padding: 5,
-        //   backgroundColor: "lime",
+        //    backgroundColor: "lime",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -202,15 +184,15 @@ const s = StyleSheet.create({
     personalInfoBlock: {
         height: "100%",
         //  maxWidth: "22%",
-        width: "20%",
-        //  backgroundColor: "magenta",
+        width: "21%",
+        //   backgroundColor: "magenta",
         justifyContent: 'center',
         alignItems: 'center',
         padding: 5,
     },
 
     nameStyle: {
-        //   backgroundColor: "yellow",
+        //    backgroundColor: "yellow",
         marginTop: 6,
         marginBottom: -6,
         textAlign: 'right'
@@ -225,17 +207,16 @@ const s = StyleSheet.create({
 
     avatarBlock: {
         height: "100%",
-        width: "14%",
+        width: "15%",
         //   backgroundColor: "pink",
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
-        padding: 5,
     },
 
     avatar: {
         height: 40,
         width: 40,
-        //   backgroundColor: "azure",
+        //  backgroundColor: "azure",
         borderRadius: 20,
         overflow: 'hidden'
     },

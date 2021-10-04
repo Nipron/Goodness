@@ -22,6 +22,13 @@ const s = StyleSheet.create({
         borderColor: "#FFFFFF",
         borderWidth: 2,
         zIndex: 10,
+        shadowOffset: {
+            width: 3,
+            height: 3
+          },
+          shadowOpacity: 0.3,
+          // shadowColor: "blue",
+          shadowRadius: 4
     },
 
     text: {

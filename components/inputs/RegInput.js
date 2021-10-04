@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
   StyleSheet,
   View,
@@ -9,8 +9,11 @@ import {
 import { g } from '../../styles/global'
 
 const RegInput = props => {
+
+const [focus, setFocus] = useState(false)
+
   return (
-    <View style={s.outer}>
+    <KeyboardAvoidingView style={s.outer}>
       <TextInput
         style={[
           s.input,
@@ -30,17 +33,27 @@ const RegInput = props => {
         autoCapitalize={props.autoCapitalize}
         maxLength={props.maxLength ? props.maxLength :50}
         secureTextEntry={props.secureTextEntry}
+        onFocus={() => props.setFocus(true)}
+        onBlur={() => props.setFocus(false)}
+        maxLength={20}
       ></TextInput>
       <View style={s.icon}>
         <View style={s.svg}>{props.children}</View>
       </View>
-    </View>
+      
+    </KeyboardAvoidingView>
   )
 }
 
 export default RegInput
 
 const s = StyleSheet.create({
+
+  bottomPlug: {
+    width: "100%",
+    height: 150,
+    backgroundColor: "red"
+},
   outer: {
     width: '100%',
     position: 'relative',

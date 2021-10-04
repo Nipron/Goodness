@@ -35,6 +35,7 @@ const DaysPanel = ({ days, setDays, textFont }) => {
           ש
         </Text>
       </TouchableOpacity>
+      <View style={s.palka} />
       <TouchableOpacity
         style={[s.dayContainer, { backgroundColor: days[5] ? color1 : color2 }]}
         onPress={() => handleClick(5)}
@@ -49,6 +50,7 @@ const DaysPanel = ({ days, setDays, textFont }) => {
           ו
         </Text>
       </TouchableOpacity>
+      <View style={s.palka} />
       <TouchableOpacity
         style={[s.dayContainer, { backgroundColor: days[4] ? color1 : color2 }]}
         onPress={() => handleClick(4)}
@@ -63,6 +65,7 @@ const DaysPanel = ({ days, setDays, textFont }) => {
           ה
         </Text>
       </TouchableOpacity>
+      <View style={s.palka} />
       <TouchableOpacity
         style={[s.dayContainer, { backgroundColor: days[3] ? color1 : color2 }]}
         onPress={() => handleClick(3)}
@@ -77,6 +80,7 @@ const DaysPanel = ({ days, setDays, textFont }) => {
           ד
         </Text>
       </TouchableOpacity>
+      <View style={s.palka} />
       <TouchableOpacity
         style={[s.dayContainer, { backgroundColor: days[2] ? color1 : color2 }]}
         onPress={() => handleClick(2)}
@@ -91,6 +95,7 @@ const DaysPanel = ({ days, setDays, textFont }) => {
           ג
         </Text>
       </TouchableOpacity>
+      <View style={s.palka} />
       <TouchableOpacity
         style={[s.dayContainer, { backgroundColor: days[1] ? color1 : color2 }]}
         onPress={() => handleClick(1)}
@@ -105,7 +110,7 @@ const DaysPanel = ({ days, setDays, textFont }) => {
           ב
         </Text>
       </TouchableOpacity>
-
+      <View style={s.palka} />
       <TouchableOpacity
         style={[s.dayContainer, { backgroundColor: days[0] ? color1 : color2, borderTopRightRadius: 50, borderBottomRightRadius: 50 }]}
         onPress={() => handleClick(0)}
@@ -127,6 +132,13 @@ const DaysPanel = ({ days, setDays, textFont }) => {
 export default DaysPanel
 
 const s = StyleSheet.create({
+
+  palka: {
+    width: 2,
+    height: '100%',
+    backgroundColor: '#243663'
+  },
+
   outer: {
     width: '100%',
     height: "100%",
@@ -136,17 +148,15 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#243663'
   },
 
   dayContainer: {
-    width: '14.28%',
+    width: '13.8%',
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 0.5,
-    borderColor: '#243663',
+    justifyContent: 'center',  
     paddingTop: 5
   }
 })

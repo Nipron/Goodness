@@ -47,28 +47,50 @@ export default function SmallLayout (props) {
           style={s.imageBack}
         >
           <SafeAreaView style={s.safeContainer}>
-            {route.name !== 'Profile' && (
-              <TouchableOpacity
-                style={s.arrowContainer}
-                onPress={() => navigation.goBack()}
-              >
-                <ArrowBack
-                  style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
-                />
-              </TouchableOpacity>
-            )}
+            <View style={s.upper1}>
+              {route.name !== 'Profile' && (
+                <TouchableOpacity
+                  style={s.arrowContainer}
+                  onPress={() => navigation.goBack()}
+                >
+                  <ArrowBack
+                    style={{
+                      transform: [{ scaleX: scale }, { scaleY: scale }]
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
 
-            {route.name === 'Profile' && (
-              <TouchableOpacity
-                style={s.arrowContainer}
-                onPress={handleExit}
-              >
-                <View style={s.exit}>
-                  <Text style={g.text17_400_white}>לצאת</Text>
-                </View>
-              </TouchableOpacity>
-            )}
+              {route.name === 'Profile' && (
+                <TouchableOpacity style={s.arrowContainer} onPress={handleExit}>
+                  <View style={s.exit}>
+                    <Text style={g.text17_400_white}>יציאה</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
 
+              {(route.name !== 'Profile') && (route.name !== 'Terms') && (route.name !== 'About') && (
+                <TouchableOpacity
+                  style={s.photoOuter}
+                  onPress={() =>
+                    navigation.navigate(props.hide ? 'Registration' : 'Profile')
+                  }
+                >
+                  <View style={s.photoInner}>
+                    <ImageBackground
+                      source={
+                        !!data.avatar
+                          ? {
+                              uri: `http://52.48.233.122:3001/${data.avatar.path}`
+                            }
+                          : AvatarPlain
+                      }
+                      style={s.avatar}
+                    />
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
             <View style={s.logoBlock}>
               <Image
                 style={s.logo}
@@ -76,24 +98,6 @@ export default function SmallLayout (props) {
               />
               <Text style={g.text24_700_white}>{props.text}</Text>
             </View>
-
-            <TouchableOpacity
-              style={s.photoOuter}
-              onPress={ () => navigation.navigate(props.hide ? 'Registration' : 'Profile')  }
-            >
-              <View style={s.photoInner}>
-                <ImageBackground
-                  source={
-                    !!data.avatar
-                      ? {
-                          uri: `http://52.48.233.122:3001/${data.avatar.path}`
-                        }
-                      : AvatarPlain
-                  }
-                  style={s.avatar}
-                />
-              </View>
-            </TouchableOpacity>
           </SafeAreaView>
         </ImageBackground>
       </View>
@@ -106,6 +110,14 @@ export default function SmallLayout (props) {
 }
 
 const s = StyleSheet.create({
+  upper1: {
+    width: '100%',
+    height: 60,
+  //  backgroundColor: "yellow",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
   containerMain: {
     flex: 1,
     alignItems: 'center',
@@ -140,9 +152,9 @@ const s = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-   // backgroundColor: '#B83E3E',
- //   borderColor: '#FFFFFF',
- //   borderWidth: 2,
+    // backgroundColor: '#B83E3E',
+    //   borderColor: '#FFFFFF',
+    //   borderWidth: 2,
     zIndex: 10,
     shadowOffset: {
       width: 3,
@@ -154,11 +166,8 @@ const s = StyleSheet.create({
   },
 
   safeContainer: {
-    height: '50%',
     width: '100%',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between'
+    alignItems: 'center',
     // backgroundColor: 'red'
   },
 
@@ -181,8 +190,9 @@ const s = StyleSheet.create({
 
   logoBlock: {
     alignItems: 'center',
-    justifyContent: 'flex-end'
-    // backgroundColor: 'green'
+    justifyContent: 'flex-end',
+    top: -60,
+  //   backgroundColor: 'green'
   },
 
   logo: {

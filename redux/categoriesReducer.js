@@ -8,17 +8,15 @@ let categoriesInitialState = {};
 export const setCategories = data => ({ type: SET_CATEGORIES, payload: data })
 
 //Thunk creators
-export const setCategoriesThunk = () => (dispatch) => {    
-    commonAPI.getCategories()
-    .then(res => {
-      dispatch(setCategories(res.data))
-    })
+export const setCategoriesThunk = () => async (dispatch) => {
+    const res = await commonAPI.getCategories()
+    dispatch(setCategories(res.data))
 }
 
 export const categories = (state = categoriesInitialState, action) => {
     switch (action.type) {
-        case SET_CATEGORIES:               
-                state = action.payload
+        case SET_CATEGORIES:
+            state = action.payload
             return state;
         default:
             return state;

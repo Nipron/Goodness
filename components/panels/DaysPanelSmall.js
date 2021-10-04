@@ -16,7 +16,14 @@ const DaysPanelSmall = ({ days, textFont }) => {
   return (
     <View style={s.outer}>
       <View
-        style={[s.dayContainer, { backgroundColor: days[6] ? color1 : color2, borderTopLeftRadius: 20, borderBottomLeftRadius: 20}]}
+        style={[
+          s.dayContainer,
+          {
+            backgroundColor: days[6] ? color1 : color2,
+            borderTopLeftRadius: 20,
+            borderBottomLeftRadius: 20
+          }
+        ]}
       >
         <Text
           style={{
@@ -28,6 +35,7 @@ const DaysPanelSmall = ({ days, textFont }) => {
           ש
         </Text>
       </View>
+      <View style={s.palka} />
       <View
         style={[s.dayContainer, { backgroundColor: days[5] ? color1 : color2 }]}
       >
@@ -41,6 +49,7 @@ const DaysPanelSmall = ({ days, textFont }) => {
           ו
         </Text>
       </View>
+      <View style={s.palka} />
       <View
         style={[s.dayContainer, { backgroundColor: days[4] ? color1 : color2 }]}
       >
@@ -54,6 +63,7 @@ const DaysPanelSmall = ({ days, textFont }) => {
           ה
         </Text>
       </View>
+      <View style={s.palka} />
       <View
         style={[s.dayContainer, { backgroundColor: days[3] ? color1 : color2 }]}
       >
@@ -67,6 +77,7 @@ const DaysPanelSmall = ({ days, textFont }) => {
           ד
         </Text>
       </View>
+      <View style={s.palka} />
       <View
         style={[s.dayContainer, { backgroundColor: days[2] ? color1 : color2 }]}
       >
@@ -80,6 +91,7 @@ const DaysPanelSmall = ({ days, textFont }) => {
           ג
         </Text>
       </View>
+      <View style={s.palka} />
       <View
         style={[s.dayContainer, { backgroundColor: days[1] ? color1 : color2 }]}
       >
@@ -93,9 +105,16 @@ const DaysPanelSmall = ({ days, textFont }) => {
           ב
         </Text>
       </View>
-
+      <View style={s.palka} />
       <View
-        style={[s.dayContainer, { backgroundColor: days[0] ? color1 : color2, borderTopRightRadius: 20, borderBottomRightRadius: 20 }]}
+        style={[
+          s.dayContainer,
+          {
+            backgroundColor: days[0] ? color1 : color2,
+            borderTopRightRadius: 20,
+            borderBottomRightRadius: 20
+          }
+        ]}
       >
         <Text
           style={{
@@ -114,22 +133,30 @@ const DaysPanelSmall = ({ days, textFont }) => {
 export default DaysPanelSmall
 
 const s = StyleSheet.create({
+  palka: {
+    width: 1,
+    height: '100%',
+    backgroundColor: '#243663'
+  },
+
   outer: {
     width: '95%',
     height: '100%',
     overflow: 'hidden',
-  //  backgroundColor: 'ivory',
+    //  backgroundColor: 'ivory',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',    
+    justifyContent: 'flex-start',
+    borderWidth: 1,
+    borderColor: '#243663',
+    borderRadius: 1000,
+    
   },
 
   dayContainer: {
-    width: '14%',
+    width: '13.6%',
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 0.3,
-    borderColor: '#243663'
+    justifyContent: 'center'
   }
 })

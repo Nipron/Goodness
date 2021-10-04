@@ -96,7 +96,7 @@ const s = StyleSheet.create({
   container2: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    height: "14.28%",
+    height: "14.05%",
     width: '100%',
     marginBottom: 10
   },
@@ -105,7 +105,7 @@ const s = StyleSheet.create({
      backgroundColor: '#EEEEEE',
     width: '100%',    
     borderRadius: 20,
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
    
   }
 })

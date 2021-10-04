@@ -132,34 +132,84 @@ export default function Registration2() {
     }
 
     const onFormikSubmit = values => {
-        if (!values.name) { setNameBorder("red") } else setNameBorder("lightgreen")
-        if (!(values.phone && values.phone.length === 12)) { setPhoneBorder("red") } else setPhoneBorder("lightgreen")
-        if (!values.email) { setEmailBorder("red") } else setEmailBorder("lightgreen")
-        if (!values.job) { setJobBorder("red") } else setJobBorder("lightgreen")
+        if (!values.name || (values.name.length < 3)) { setNameBorder("red") } else setNameBorder("lightgreen")
+        const phoneClean = values.phone.replace(/[^\d]/g, '')
+        const referralClean = values.referral.replace(/[^\d]/g, '')
+        if (!phoneClean ) { setPhoneBorder("red") } else setPhoneBorder("lightgreen")
+      //  if (!values.email) { setEmailBorder("red") } else setEmailBorder("lightgreen")
+        if (!values.job || (values.job.length < 3)) { setJobBorder("red") } else setJobBorder("lightgreen")
         // if (!values.city) {setCityBorder("red")} else setCityBorder("lightgreen")
         // if (!values.street) {setStreetBorder("red")} else setStreetBorder("lightgreen")
         // if (!values.house) {setHouseBorder("red")} else setHouseBorder("lightgreen")
         // if (!values.apt) {setAptBorder("red")} else setAptBorder("lightgreen")
         if (!values.password) { setPasswordBorder("red") } else setPasswordBorder("lightgreen")
 
+
+        const reg = new RegExp(/^(?:[0-9]+[a-z]|[a-z]+[0-9])[a-z0-9]*$/i);
+
+        const containsSymbolAndNuber = reg.test(values.password)
+
+        if ((values.password.length < 6) || !containsSymbolAndNuber) {
+            Alert.alert("משהו השתבש!", ".סיסמה חייבת להיות מורכבת מ-6 תווים לפחות, כולל לפחות ספרה 1 ואות 1, מקסימום 20 תווים", [
+                {
+                    text: 'אישור', onPress: () => {
+                        console.log('alert wrong')
+                    }
+                }
+            ])
+        }
+
+        if (values.name.length < 3) {
+            Alert.alert("משהו השתבש!", "אורך השם צריך להיות לפחות 3 תווים", [
+                {
+                    text: 'אישור', onPress: () => {
+                        console.log('alert wrong name')
+                    }
+                }
+            ])
+        }
+
+        if (values.job.length < 3) {
+            Alert.alert("משהו השתבש!", "אורך המקצוע צריך להיות לפחות 3 תווים", [
+                {
+                    text: 'אישור', onPress: () => {
+                        console.log('alert wrong name')
+                    }
+                }
+            ])
+        }
+
         if (!values.confirmPassword || !(values.password === values.confirmPassword)) { setConfirmPasswordBorder("red") } else setConfirmPasswordBorder("lightgreen")
 
-        if (values.name && values.phone && values.phone.length === 12 && values.email && values.job /*&& values.city 
+        if ((values.password.length > 5) &&
+            containsSymbolAndNuber &&
+            (values.name.length > 2) &&
+            (values.job.length > 2) &&
+            values.name && phoneClean && values.job /*&& values.city 
         && values.street && values.house && value.appt*/ && values.password
             && (values.password === values.confirmPassword)) {
-            userAPI.getSMS(values.phone, values.email)
+            userAPI.getSMS(phoneClean, values.email)
             dispatch(setTempImage(image))
-            setRegValues(values)
+            setRegValues({...values, phone: phoneClean, referral: referralClean})
             //    console.log(regValues)
             //    console.log("OK")
             setModalOpen(true)
         } else {
+            Alert.alert("משהו השתבש!", "אנא מלא את כל השדות הדרושים", [
+                {
+                    text: 'אישור', onPress: () => {
+                        console.log('alert wrong name')
+                    }
+                }
+            ])
             console.log("Not OK")
         }
     }
 
+    const [focus, setFocus] = useState(false)
+
     return (
-        <SmallLayout2 text="הרשמה" hide={true}>
+        <SmallLayout2 text="הרשמה" hide={true} focus={focus}>
             <SafeAreaView style={s.outer}>
 
                 <Modal
@@ -210,15 +260,17 @@ export default function Registration2() {
                                                     value={props.values.name}
                                                     placeholder="שם מלא"
                                                     borderColor={nameBorder}
+                                                    setFocus={setFocus}
                                                 >
                                                     <PersonIcon />
                                                 </RegInput>
                                                 <RegInput
                                                     onChangeText={props.handleChange('phone')}
                                                     value={props.values.phone}
-                                                    keyboardType="number-pad"
-                                                    placeholder="972 54 1234567"
+                                                    keyboardType="phone-pad"
+                                                    placeholder="+972 54 1234567"
                                                     borderColor={phoneBorder}
+                                                    setFocus={setFocus}
                                                 >
                                                     <PhoneIcon />
                                                 </RegInput>
@@ -228,6 +280,7 @@ export default function Registration2() {
                                                     placeholder="אימייל"
                                                     borderColor={emailBorder}
                                                     autoCapitalize="none"
+                                                    setFocus={setFocus}
                                                 >
                                                     <EmailIcon />
                                                 </RegInput>
@@ -236,6 +289,7 @@ export default function Registration2() {
                                                     value={props.values.job}
                                                     placeholder="עיסוק"
                                                     borderColor={jobBorder}
+                                                    setFocus={setFocus}
                                                 >
                                                     <JobIcon />
                                                 </RegInput>
@@ -250,6 +304,7 @@ export default function Registration2() {
                                                     value={props.values.city}
                                                     placeholder="עיר"
                                                     borderColor={cityBorder}
+                                                    setFocus={setFocus}
                                                 >
                                                     <PinIcon />
                                                 </RegInput>
@@ -258,6 +313,7 @@ export default function Registration2() {
                                                     value={props.values.street}
                                                     placeholder="רחוב"
                                                     borderColor={streetBorder}
+                                                    setFocus={setFocus}
                                                 >
                                                     <PinIcon />
                                                 </RegInput>
@@ -269,6 +325,7 @@ export default function Registration2() {
                                                         keyboardType="number-pad"
                                                         style={{ width: "47%" }}
                                                         borderColor={aptBorder}
+                                                        setFocus={setFocus}
                                                     >
                                                         <HashIcon />
                                                     </RegInputSmall>
@@ -279,6 +336,7 @@ export default function Registration2() {
                                                         keyboardType="number-pad"
                                                         style={{ width: "50%" }}
                                                         borderColor={houseBorder}
+                                                        setFocus={setFocus}
                                                     >
                                                         <HashIcon />
                                                     </RegInputSmall>
@@ -296,6 +354,7 @@ export default function Registration2() {
                                                     borderColor={passwordBorder}
                                                     autoCapitalize="none"
                                                     secureTextEntry={true}
+                                                    setFocus={setFocus}
                                                 >
                                                     <LockIcon />
                                                 </RegInput>
@@ -306,6 +365,7 @@ export default function Registration2() {
                                                     borderColor={confirmPasswordBorder}
                                                     autoCapitalize="none"
                                                     secureTextEntry={true}
+                                                    setFocus={setFocus}
                                                 >
                                                     <LockIcon />
                                                 </RegInput>
@@ -318,12 +378,15 @@ export default function Registration2() {
                                                 <RegInput
                                                     onChangeText={props.handleChange('referral')}
                                                     value={props.values.referral}
-                                                    keyboardType="number-pad"
+                                                    keyboardType="phone-pad"
                                                     placeholder="טלפון של המזמין לאפליקציה"
                                                     borderColor={referralBorder}
+                                                    setFocus={setFocus}
                                                 >
                                                     <ReferalIcon />
+
                                                 </RegInput>
+
                                             </View>
 
 
@@ -344,8 +407,14 @@ export default function Registration2() {
 
 const s = StyleSheet.create({
 
+    bottomPlug: {
+        width: "100%",
+        height: 200,
+        // backgroundColor: "red"
+    },
+
     outer: {
-      //  backgroundColor: "green",
+        //  backgroundColor: "green",
         width: "100%",
         flex: 1
     },
@@ -356,8 +425,8 @@ const s = StyleSheet.create({
         justifyContent: 'flex-start',
         width: "100%",
         flex: 1,
-     //   paddingBottom: 20,
-     //   backgroundColor: "olive",
+        //   paddingBottom: 20,
+        //   backgroundColor: "olive",
         //  backgroundColor: "#EEEEEE",
     },
 
@@ -375,10 +444,10 @@ const s = StyleSheet.create({
     },
 
     goodnessBlock: {
-      //  backgroundColor: "pink",
+        //  backgroundColor: "pink",
         width: "100%",
-       // marginBottom: 150,
-       flex: 1
+        // marginBottom: 150,
+        flex: 1
     },
 
     formikBlock: {
@@ -387,8 +456,8 @@ const s = StyleSheet.create({
         width: "100%",
         borderRadius: 40,
         height: Dimensions.get('window').height * 0.58 + 73,
-       // marginBottom: 200,
-      //  backgroundColor: "lightblue",
+        // marginBottom: 200,
+        //  backgroundColor: "lightblue",
         //  backgroundColor: "#FFFFFF",
     },
 

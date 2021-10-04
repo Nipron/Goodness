@@ -7,7 +7,9 @@ import AvatarPlain from '../../Images/AvatarPlain.jpg'
 import Stars from '../../Images/Stars.svg'
 import Repair from '../../Images/Repair.svg'
 import RedX from '../../Images/RedX.svg'
+import PinkX from '../../Images/PinkX.svg'
 import Thumb from '../../Images/Thumb.svg'
+import ThumbGrey from '../../Images/ThumbGrey.svg'
 import Date from '../../Images/Date.svg'
 import Time from '../../Images/Time.svg'
 import CloseIcon from '../../Images/CloseIcon'
@@ -16,7 +18,7 @@ import CheckGreen from '../../Images/CheckGreen'
 import { g } from '../../styles/global'
 import { serviceAPI, userAPI } from '../../src/api/api';
 
-import { updateAll } from '../../redux/store';
+import { updateAll, updateProfileThunk } from '../../redux/store';
 
 import { useNavigation } from '@react-navigation/native'
 
@@ -25,6 +27,8 @@ import { setTempUserThunk } from '../../redux/tempUserReducer';
 import ButtonBlue from '../../src/ButtonBlue';
 import RatingPanel from '../panels/RatingPanel';
 import RatingForCardPanel from '../panels/RatingForCardPanel';
+
+import Spinner from 'react-native-loading-spinner-overlay'
 
 const JobsFromMeCard = ({ item, toMe }) => {
 
@@ -39,45 +43,51 @@ const JobsFromMeCard = ({ item, toMe }) => {
     const name = partner.name
     const userId = partner.id
     const avaPath = partner.avatar.path
-    const rating = partner.feedbackResult
-    const date = moment(item.service.createdAt).format('L')
-    const time = item.service.dayTime
+    const rating = partner.avgRating
+    const date = moment(item.createdAt).format('L')
+    const time = moment(item.createdAt).format('LT')
 
     const [newRating, setNewRating] = useState(3)
 
-    const scaleRedX = 1.6
-    const scaleCheckGreen = 1.6
-    const scaleThumb = 1.6
-    const scaleDate = 1.4
-    const scaleTime = 1.4
+    const scaleRedX = 1
+    const scaleCheckGreen = 1.7
+    const scaleThumb = 1.7
+    const scaleDate = 1.2
+    const scaleTime = 1.2
     const scaleRating = 0.23
     const scaleRepair = 1.2
 
     const [modalOpen, setModalOpen] = useState(false)
 
+    const [loading, setLoading] = useState(false)
+
     const handleCancel = async () => {
-        await serviceAPI.cancelService(item.id)
-        await userAPI.dashboard()
-            .then(data => {
-                dispatch(updateAll(data))
-                navigation.navigate('Profile')
-            })
+        setLoading(true)
+        try {
+            console.log("ZZZ DELETE")
+            await serviceAPI.cancelService(item.id)
+            dispatch(updateProfileThunk())
+        } catch (e) {
+            console.log(e)
+        }
+        setLoading(false)
+
     }
 
-    const handleCheck = () => Alert.alert('JOB IS DONE!', `${name} has finished the job, please confirm`, [{ text: "Ok"/*, onPress: () => console.log('alert wrong') */ }])
+    const handleCheck = () => Alert.alert('התפקיד נעשה', `אשר את השלמת העבודה`, [{ text: "Ok"/*, onPress: () => console.log('alert wrong') */ }])
 
-  //  console.log("ratin ", newRating)
-  //  console.log("idi ", item.status)
 
     const handleRate = async () => {
+        setLoading(true)
         await serviceAPI.rateService(item.id, newRating)
-        await serviceAPI.approveService(item.id)        
+        await serviceAPI.approveService(item.id)
         await userAPI.dashboard()
             .then(data => {
                 dispatch(updateAll(data))
                 setModalOpen(false)
                 navigation.navigate('Profile')
-            })        
+                setLoading(false)
+            })
     }
 
     const goToPersonalInfo = () => {
@@ -87,6 +97,11 @@ const JobsFromMeCard = ({ item, toMe }) => {
 
     return (
         <View style={s.testCard}>
+            <Spinner
+                visible={loading}
+                textContent={'טוען...'}
+                textStyle={g.text22_700_white}
+            />
 
             <Modal
                 transparent={true}
@@ -111,33 +126,33 @@ const JobsFromMeCard = ({ item, toMe }) => {
 
             <View style={s.buttons}>
                 {(item.status === "in_process") && <TouchableOpacity onPress={handleCancel}>
-                    <RedX style={{ transform: [{ scaleX: scaleRedX }, { scaleY: scaleRedX }] }} />
+                    <PinkX style={[{ transform: [{ scaleX: scaleRedX }, { scaleY: scaleRedX }] }, { top: -6 }]} />
                 </TouchableOpacity>}
                 {(item.status === "done") && <TouchableOpacity onPress={handleCheck}>
                     <CheckGreen style={{ transform: [{ scaleX: scaleCheckGreen }, { scaleY: scaleCheckGreen }] }} />
                 </TouchableOpacity>}
                 <TouchableOpacity onPress={() => setModalOpen(true)}>
-                    <Thumb style={{ transform: [{ scaleX: scaleThumb }, { scaleY: scaleThumb }] }} />
+                    <ThumbGrey style={{ transform: [{ scaleX: scaleThumb }, { scaleY: scaleThumb }] }} />
                 </TouchableOpacity>
             </View>
+
             <View style={s.jobInfo}>
                 <View style={s.jobTitle}>
                     <Text style={g.text14_600_blue}>{cat}</Text>
                 </View>
                 <View style={s.date}>
-                    <Text style={[g.text13_400_blue, s.dateStyle]}>{date}</Text>
+                    <Text style={[g.text10_400_blue, s.dateStyle]}>{time}</Text>
+                    <Time style={{ transform: [{ scaleX: scaleTime }, { scaleY: scaleTime }] }} />
+                    <Text style={[g.text10_400_blue, s.dateStyle]}>{date}</Text>
                     <Date style={{ transform: [{ scaleX: scaleDate }, { scaleY: scaleDate }] }} />
                 </View>
-                <View style={s.time}>
-                    <Text style={[g.text13_400_blue, s.dateStyle]}>{time}</Text>
-                    <Time style={{ transform: [{ scaleX: scaleTime }, { scaleY: scaleTime }] }} />
-                </View>
+
             </View>
             <View style={s.jobIcon}>
                 <Repair style={{ transform: [{ scaleX: scaleRepair }, { scaleY: scaleRepair }] }} />
             </View>
             <View style={s.personalInfoBlock}>
-                <Text style={[g.text16_600_blue, s.nameStyle]}>{name}</Text>
+                <Text style={[g.text14_600_blue, s.nameStyle]}>{name}</Text>
                 <View style={s.rating}>
                     <RatingForCardPanel rating={rating} scale={scaleRating} />
                 </View>
@@ -160,44 +175,53 @@ const s = StyleSheet.create({
         justifyContent: 'space-between',
         width: "100%",
         height: 80,
-        //  backgroundColor: "ivory",
+        //   backgroundColor: "ivory",
         borderRadius: 20,
         marginVertical: 5,
-        overflow: 'hidden',
+        //  overflow: 'hidden',
         backgroundColor: "#FFFFFF",
+        paddingVertical: 12,
+        shadowOffset: {
+            width: 3,
+            height: 3
+        },
+        shadowOpacity: 0.1,
+        // shadowColor: "blue",
+        shadowRadius: 2
     },
 
     buttons: {
         height: "100%",
         width: "12%",
         //    backgroundColor: "plum",
-        paddingVertical: 12,
+        paddingTop: 4,
+        paddingBottom: 2,
         paddingHorizontal: 8,
-        alignItems: 'flex-end',
+        alignItems: 'center',
         justifyContent: 'space-between',
     },
 
     jobInfo: {
         height: "100%",
         width: "38%",
-        //     backgroundColor: "peachpuff",
-        padding: 5,
+        //  backgroundColor: "peachpuff",
         alignItems: 'flex-end',
         justifyContent: 'space-evenly',
     },
 
     jobTitle: {
         height: "30%",
-        width: "100%",
-        //     backgroundColor: "peru",
+        //  width: "100%",
+        //   backgroundColor: "green",
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
+        marginRight: 4
     },
 
     dateTime: {
         height: "30%",
         width: "100%",
-        //    backgroundColor: "navy",
+        backgroundColor: "navy",
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
@@ -206,7 +230,7 @@ const s = StyleSheet.create({
     time: {
         height: "30%",
         // width: "40%",
-        //  backgroundColor: "olive",
+        backgroundColor: "olive",
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
@@ -220,18 +244,19 @@ const s = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingRight: 4,
+        marginRight: 4
     },
 
     dateStyle: {
-        marginRight: 4
+        marginRight: 3,
+        marginLeft: 8
     },
 
     jobIcon: {
         height: "100%",
         width: "14%",
         padding: 5,
-        //   backgroundColor: "lime",
+        //    backgroundColor: "lime",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -239,15 +264,15 @@ const s = StyleSheet.create({
     personalInfoBlock: {
         height: "100%",
         //  maxWidth: "22%",
-        width: "20%",
-        //  backgroundColor: "magenta",
+        width: "21%",
+        //   backgroundColor: "magenta",
         justifyContent: 'center',
         alignItems: 'center',
         padding: 5,
     },
 
     nameStyle: {
-        //   backgroundColor: "yellow",
+        //    backgroundColor: "yellow",
         marginTop: 6,
         marginBottom: -6,
         textAlign: 'right'
@@ -262,17 +287,16 @@ const s = StyleSheet.create({
 
     avatarBlock: {
         height: "100%",
-        width: "14%",
+        width: "15%",
         //   backgroundColor: "pink",
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
-        padding: 5,
     },
 
     avatar: {
         height: 40,
         width: 40,
-        //   backgroundColor: "azure",
+        //  backgroundColor: "azure",
         borderRadius: 20,
         overflow: 'hidden'
     },

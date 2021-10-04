@@ -10,6 +10,8 @@ import {
 } from 'react-native'
 import MessageCard from '../components/cards/MessageCard'
 
+import g from '../styles/global'
+
 import SmallLayout from '../components/layouts/SmallLayout'
 import MessageSimple from '../components/messages/messageSimple'
 
@@ -19,21 +21,8 @@ import { messageAPI, serviceAPI, userAPI } from '../src/api/api'
 import ServiceCard from '../components/cards/ServiceCard'
 
 export default function Services ({ navigation }) {
-  const serv = useSelector(state => state.all.services)
-  const [services, setServices] = useState(serv)
- 
-  
-  useFocusEffect(
-    React.useCallback(() => {
-      let isActive = true
-      if (isActive) {
-        setServices(serv)
-      }
-      return () => {
-        isActive = false
-      }
-    }, [serv])
-  )
+
+  const services = useSelector(state => state.all.services) 
 
   const sortedServices = services.sort((a, b) => {
     return new Date(b.createdAt) - new Date(a.createdAt)
@@ -45,8 +34,20 @@ export default function Services ({ navigation }) {
         Keyboard.dismiss()
       }}
     >
-      <SmallLayout text='מעשים טובים שלי שהוזמנו'>
+      <SmallLayout text='מעשים טובים שלי'>
         <View style={s.messagesBlock}>
+        {sortedServices.length === 0 && (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                width: '100%'
+              }}
+            >
+              <Text style={g.text24_700_blue}>לא יצרת שירותים</Text>
+            </View>
+          )}
           <ScrollView
             style={s.scrollBlock}
             contentContainerStyle={s.scrollBlockContent}

@@ -28,7 +28,7 @@ import { g } from '../../styles/global'
 
 import { useNavigation } from '@react-navigation/native'
 
-import ButtonYellowSearch from '../../components/buttons/ButtonYellowSearch'
+import ButtonOrder from '../../components/buttons/ButtonYellowSearch'
 
 export default function SearchLayout (props) {
   const scale = 1.2
@@ -48,15 +48,45 @@ export default function SearchLayout (props) {
           style={s.background}
         >
           <SafeAreaView style={s.safeContainer}>
-            <TouchableOpacity
-              style={s.arrowContainer}
-              onPress={() => navigation.goBack()}
-            >
-              <ArrowBack
-                style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
-              />
-            </TouchableOpacity>
+            <View style={s.upper1}>
+              <TouchableOpacity
+                style={s.arrowContainer}
+                onPress={() => navigation.goBack()}
+              >
+                <ArrowBack
+                  style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
+                />
+              </TouchableOpacity>
 
+              <TouchableOpacity
+                style={s.photoOuter}
+                onPress={() => {
+                  props.logged
+                    ? navigation.navigate('Profile')
+                    : Alert.alert(
+                        'הודעת מערכת',
+                        'על מנת להשתמש באפליקציה נא להירשם.',
+                        [
+                          {
+                            text: 'Ok',
+                            onPress: () => navigation.navigate('Registration')
+                          }
+                        ]
+                      )
+                }}
+              >
+                <View style={s.photoInner}>
+                  <ImageBackground
+                    source={
+                      !!path
+                        ? { uri: `http://52.48.233.122:3001/${path}` }
+                        : AvatarPlain
+                    }
+                    style={s.avatar}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
             <View style={s.logoBlock}>
               <Image
                 style={s.logo}
@@ -64,39 +94,13 @@ export default function SearchLayout (props) {
               />
               <Text style={g.text24_700_white}>{props.text}</Text>
             </View>
-            
-            <TouchableOpacity
-              style={s.photoOuter}
-              onPress={() => {
-                props.logged
-                  ? navigation.navigate('Profile')
-                  : Alert.alert('הודעת מערכת', 'על מנת להשתמש באפליקציה נא להירשם.', [
-                      {
-                        text: 'Ok',
-                        onPress: () => navigation.navigate('Registration')
-                      }
-                    ])
-              }}
-            >
-              <View style={s.photoInner}>
-                <ImageBackground
-                  source={
-                    !!path
-                      ? { uri: `http://52.48.233.122:3001/${path}` }
-                      : AvatarPlain
-                  }
-                  style={s.avatar}
-                />
-              </View>
-            </TouchableOpacity>
-          
           </SafeAreaView>
 
           {props.children}
         </ImageBackground>
       </View>
       {!!props.chosenId && (
-        <ButtonYellowSearch
+        <ButtonOrder
           name={'להזמין'}
           chosenId={props.chosenId}
           date={props.date}
@@ -109,6 +113,15 @@ export default function SearchLayout (props) {
 }
 
 const s = StyleSheet.create({
+  upper1: {
+    width: '100%',
+    height: 60,
+    //  backgroundColor: "yellow",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+
   containerMain: {
     flex: 1,
     alignItems: 'center',
@@ -121,8 +134,8 @@ const s = StyleSheet.create({
     height: '88%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-  //  backgroundColor: "pink"
+    justifyContent: 'flex-start'
+    //  backgroundColor: "pink"
   },
 
   background: {
@@ -147,17 +160,15 @@ const s = StyleSheet.create({
   safeContainer: {
     height: '20%',
     width: '100%',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-   // backgroundColor: 'lightblue'
-   marginBottom: 10
+    alignItems: 'center',
+    // backgroundColor: 'lightblue'
+    marginBottom: 10
   },
 
   arrowContainer: {
     width: 60,
     height: 40,
-  //     backgroundColor: "maroon",
+    //     backgroundColor: "maroon",
     alignItems: 'flex-end',
     justifyContent: 'flex-end'
   },
@@ -165,15 +176,14 @@ const s = StyleSheet.create({
   burgerContainer: {
     width: 60,
     height: 40,
- //       backgroundColor: "purple",
+    //       backgroundColor: "purple",
     alignItems: 'flex-start',
     justifyContent: 'flex-end'
   },
 
   logoBlock: {
-   
-    alignItems: 'center',
-
+    top: -60,
+    alignItems: 'center'
   },
 
   logo: {

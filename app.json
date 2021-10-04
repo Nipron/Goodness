@@ -22,7 +22,7 @@
         "googleMapsApiKey": "AIzaSyCaZe06IKSzVqycHnVeB4I1c0MgUIB0xTg"
       },
       "bundleIdentifier": "maxim.gutmanovich.goodness",
-      "buildNumber": "0.1.0"
+      "buildNumber": "0.3.0"
     },
     "android": {
       "adaptiveIcon": {

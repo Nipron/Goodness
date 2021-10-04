@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, TextInput, Text, KeyboardAvoidingView } from 'react-native';
 import { g } from "../../styles/global"
 
-const RegInputSmall = (props) => {    
+const RegInputSmall = (props) => {
 
     return (
         <View style={[props.style, s.outer]} behavior="height">
@@ -14,6 +14,8 @@ const RegInputSmall = (props) => {
                 value={props.value.toString()}
                 placeholder={props.placeholder}
                 placeholderTextColor="#CCCCCC"
+                onFocus={() => props.setFocus(true)}
+                onBlur={() => props.setFocus(false)} Í
             >
             </TextInput>
             <View style={s.icon}>

@@ -93,8 +93,7 @@ export const messageAPI = {
         }
       }
 
-      try {
-        console.log('READ MESSAGE', id)
+      try {       
         const response = await axios(config)
         return JSON.stringify(response.data)
       } catch (error) {
@@ -118,7 +117,6 @@ export const messageAPI = {
       }
 
       try {
-        console.log('READ MESSAGE', id)
         const response = await axios(config)
         return JSON.stringify(response.data)
       } catch (error) {
@@ -220,7 +218,7 @@ export const userAPI = {
       })
     ),
 
-  forgotPass: values =>
+  forgotPass: async values =>
     instance.post(
       'auth/forgot',
       JSON.stringify({
@@ -265,7 +263,11 @@ export const userAPI = {
       try {
         console.log('DASHBOARD OK')
         const response = await axios(config)
-        return JSON.stringify(response.data)
+        const data = JSON.stringify(response.data)
+        console.log("ПОЛЯ ЮЗЕРА - АПИХА")
+       // console.log(data.id)
+        console.log(Object.keys(data).length)
+        return data
       } catch (error) {
         console.log(error)
       }

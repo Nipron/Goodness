@@ -4,20 +4,20 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { useNavigation, useRoute } from '@react-navigation/native'
 
-import Bell from '../../Images/Bell.svg'
-import BellLight from '../../Images/BellLight.svg'
-import BellAlert from '../../Images/BellAlert.svg'
-import BellAlertLight from '../../Images/BellAlertLight.svg'
-import Profile from '../../Images/Profile.svg'
-import ProfileLight from '../../Images/ProfileLight.svg'
-import Info from '../../Images/Info.svg'
+import Bell from '../../Images/BellY.svg'
+import BellLight from '../../Images/BellY.svg'
+import BellAlert from '../../Images/BellY.svg'
+import BellAlertLight from '../../Images/BellY.svg'
+import Profile from '../../Images/ProfileY.svg'
+import ProfileLight from '../../Images/ProfileY.svg'
+import Info from '../../Images/InfoY.svg'
 import InfoLight from '../../Images/InfoLight.svg'
 import Search from '../../Images/Search.svg'
 import SearchLight from '../../Images/SearchLight.svg'
-import Service from '../../Images/Service.svg'
+import Service from '../../Images/HeartY.svg'
 import ServiceLight from '../../Images/ServiceLight.svg'
-import Create from '../../Images/Create.svg'
-import CreateLight from '../../Images/CreateLight.svg'
+import Create from '../../Images/HandsY.svg'
+import CreateLight from '../../Images/HandsNewLight.svg'
 
 
 const Footer = ({ hide }) => {
@@ -29,8 +29,8 @@ const Footer = ({ hide }) => {
   hide = !data.id
 
   const scale = 1.4
-  const scaleHands = 1.3
-  const scaleCabinet = 1.3
+  const scaleHands = 1.4
+  const scaleCabinet = 1.4
   let unread = 0
 
   if (!hide) {
@@ -46,50 +46,22 @@ const Footer = ({ hide }) => {
   return (
     <View style={s.footer}>
       <View style={s.footerInner}>
-        <TouchableOpacity onPress={() => navigation.navigate('About')}>
-          {route.name === 'About' ? (
-            <InfoLight
-              style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
-            />
-          ) : (
-            <Info
-              style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
-            />
-          )}
+        <TouchableOpacity onPress={() => navigation.navigate('About')} style={[s.outer, route.name === 'About' && s.shadow]}>
+          <Info
+            style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
+          />
         </TouchableOpacity>
+
         {!hide && (
           <TouchableOpacity
-            onPress={() => navigation.navigate('Messages')}
-            style={s.bell}
-          >
-            {!unread &&
-              (route.name === 'Messages' ? (
-                <BellLight
-                  style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
-                />
-              ) : (
-                <Bell
-                  style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
-                />
-              ))}
-            {!!unread &&
-              (route.name === 'Messages' ? (
-                <View>
-                  <BellAlertLight
-                    style={{
-                      transform: [{ scaleX: scale }, { scaleY: scale }]
-                    }}
-                  />
-                </View>
-              ) : (
-                <View>
-                  <BellAlert
-                    style={{
-                      transform: [{ scaleX: scale }, { scaleY: scale }]
-                    }}
-                  />
-                </View>
-              ))}
+            onPress={() => navigation.navigate('Messages') }
+            style={[s.outer, route.name === 'Messages' && s.shadow]}          >
+
+            <Bell
+              style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
+            />
+
+
             {!!unread && (
               <View style={s.red}>
                 <Text style={s.amount}>{unread}</Text>
@@ -98,52 +70,29 @@ const Footer = ({ hide }) => {
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity onPress={() => navigation.navigate('Create')}>
-          {route.name === 'Create' ? (
-            <CreateLight
-              style={{ transform: [{ scaleX: scaleHands }, { scaleY: scaleHands }] }}
-            />
-          ) : (
-            <Create
-              style={{ transform: [{ scaleX: scaleHands }, { scaleY: scaleHands }] }}
-            />
-          )}
+        <TouchableOpacity onPress={() => navigation.navigate('Create')} style={[s.outer, route.name === 'Create' && s.shadow]}>
+          <Create
+            style={{ transform: [{ scaleX: scaleHands }, { scaleY: scaleHands }] }}
+          />
         </TouchableOpacity>
 
         {!hide && (
-          <TouchableOpacity onPress={() => navigation.navigate('Services')}>
-            {route.name === 'Services' ? (
-              <ServiceLight
-                style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
-              />
-            ) : (
-              <Service
-                style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
-              />
-            )}
+          <TouchableOpacity onPress={() => navigation.navigate('Services')} style={[s.outer, route.name === 'Services' && s.shadow]}>
+            <Service
+              style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }}
+            />
           </TouchableOpacity>
         )}
+
         {!hide && (
-          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-            {route.name === 'Profile' ? (
-              <ProfileLight
-                style={{
-                  transform: [
-                    { scaleX: scaleCabinet },
-                    { scaleY: scaleCabinet }
-                  ]
-                }}
-              />
-            ) : (
-              <Profile
-                style={{
-                  transform: [
-                    { scaleX: scaleCabinet },
-                    { scaleY: scaleCabinet }
-                  ]
-                }}
-              />
-            )}
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={[s.outer, route.name === 'Profile' && s.shadow]}>
+            <Profile
+              style={{
+                transform: [
+                  { scaleX: scaleCabinet },
+                  { scaleY: scaleCabinet }
+                ]
+              }} />
           </TouchableOpacity>
         )}
       </View>
@@ -152,6 +101,27 @@ const Footer = ({ hide }) => {
 }
 
 const s = StyleSheet.create({
+
+  shadow: {
+    shadowOffset: {
+      width: 0,
+      height: 0
+    },
+    shadowOpacity: 1,
+    shadowColor: "#275BAE",
+    shadowRadius: 13
+
+  },
+
+  outer: {
+    width: 42,
+    height: 42,
+    backgroundColor: "white",
+    borderRadius: 1000,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+
   footer: {
     width: '100%',
     height: '9%',
@@ -160,13 +130,9 @@ const s = StyleSheet.create({
     //   backgroundColor: "olive"
   },
 
-  bell: {
-    //   backgroundColor: "pink"
-  },
-
   amount: {
     color: 'white',
-    fontSize: 13,
+    fontSize: 10,
     marginLeft: 1,
     fontWeight: 'bold'
   },
@@ -180,8 +146,10 @@ const s = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: -4,
-    top: -4
+    right: 5,
+    top: 8,
+    borderWidth: 1.5,
+    borderColor: "white"
   },
 
   footerInner: {

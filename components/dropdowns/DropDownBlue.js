@@ -27,7 +27,7 @@ const DropDownBlue = ({ name, list, toMe, type }) => {
   const handlePress = () => {
     setOpen(!open)
   }
-
+  
   return (
     <View style={s.outer}>
       <TouchableOpacity style={s.header} onPress={handlePress}>
@@ -42,13 +42,13 @@ const DropDownBlue = ({ name, list, toMe, type }) => {
       {open &&
         <View style={s.cards}>
           {
-            !!list && (type === 1) && list.map(item => <OrdersToMeCard item={item} key={item.id} toMe={toMe} />)
+            (list.length > 0) && (type === 1) && list.map(item => <OrdersToMeCard item={item} key={item.id} toMe={toMe} />)
           }
           {
-            !!list && (type === 2) && list.map(item => <JobsFromMeCard item={item} key={item.id} toMe={toMe} />)
+            (list.length > 0) && (type === 2) && list.map(item => <JobsFromMeCard item={item} key={item.id} toMe={toMe} />)
           }
           {
-            !!list && (type === 3) && list.map(item => <HistoryCard item={item} key={item.id} toMe={toMe} />)
+            (list.length > 0) && (type === 3) && list.map(item => <HistoryCard item={item} key={item.id} toMe={toMe} />)
           }
         </View>
       }

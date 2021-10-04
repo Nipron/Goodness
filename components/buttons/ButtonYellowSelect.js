@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, Pressable } from 'react-native';
+import { StyleSheet, Text, Pressable, TouchableOpacity } from 'react-native';
 import { g } from '../../styles/global';
 
 const ButtonYellowSelect = props => {
     return (
-        <Pressable style={[s.button, { marginBottom: props.bottom }]} onPress={props.onPress}>
+        <TouchableOpacity style={[s.button, { marginBottom: props.bottom }]} onPress={props.onPress}>
             <Text style={[g.text24_700_blue, s.text]}>{props.name}</Text>
-        </Pressable>
+        </TouchableOpacity>
     );
 }
 
@@ -20,6 +20,13 @@ const s = StyleSheet.create({
         backgroundColor: "#FECB07",
         borderColor: "#FFFFFF",
         borderWidth: 2,
+        shadowOffset: {
+            width: 3,
+            height: 3
+          },
+          shadowOpacity: 0.3,
+          // shadowColor: "blue",
+          shadowRadius: 4
     },
 
     text: {

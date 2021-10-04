@@ -1,6 +1,7 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
+  Text,
   StyleSheet,
   View,
   ScrollView,
@@ -15,11 +16,11 @@ import MessageSimple from '../components/messages/messageSimple'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
 import { messageAPI, serviceAPI, userAPI } from '../src/api/api'
+import g from '../styles/global'
 
 export default function Messages ({ navigation }) {
-  
-  const m = useSelector(state => state.messages)
-  const [messages, setMessages] = useState(m)
+  const messages = useSelector(state => state.messages)
+ /* const [messages, setMessages] = useState(m)
 
   useFocusEffect(
     React.useCallback(() => {
@@ -31,8 +32,8 @@ export default function Messages ({ navigation }) {
         isActive = false
       }
     }, [m])
-  )
-  
+  )*/
+
   const sortedMessages = messages.sort((a, b) => {
     return new Date(b.createdAt) - new Date(a.createdAt)
   })
@@ -45,6 +46,18 @@ export default function Messages ({ navigation }) {
     >
       <SmallLayout text='הודעות'>
         <View style={s.messagesBlock}>
+          {sortedMessages.length === 0 && (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                width: '100%'
+              }}
+            >
+              <Text style={g.text24_700_blue}>אין לך הודעות</Text>
+            </View>
+          )}
           <ScrollView
             style={s.scrollBlock}
             contentContainerStyle={s.scrollBlockContent}
@@ -64,14 +77,14 @@ const s = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     flex: 1,
-  //    backgroundColor: "lightblue",
-    backgroundColor: '#EFEFEF',
+    //    backgroundColor: "lightblue",
+    backgroundColor: '#FFFFFF',
     width: '100%',
     overflow: 'hidden',
-    borderRadius: 20,    
+    borderRadius: 20,
     padding: 6,
-    marginTop: -60,
-   /* shadowOffset: {width: 3,height: 3},
+    marginTop: -60
+    /* shadowOffset: {width: 3,height: 3},
     shadowOpacity: 0.2,
     shadowRadius: 2*/
   },

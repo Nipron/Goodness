@@ -1,5 +1,6 @@
 import React from 'react'
 
+import Crash from '../screens/crash'
 import Home from '../screens/home'
 import Login from '../screens/login'
 import Registration from '../screens/registration'
@@ -21,6 +22,11 @@ export default function Navigate () {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name='Crash'
+          component={Crash}
+          option={{ title: 'Crash' }}
+        />
         <Stack.Screen
           name='Home'
           component={Home}

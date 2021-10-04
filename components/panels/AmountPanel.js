@@ -40,7 +40,7 @@ const s = StyleSheet.create({
 
     outer: {
         width: '49%',
-        height: 60,
+        height: 52,
         borderRadius: 1000,
         backgroundColor: "white",
         flexDirection: "row",
