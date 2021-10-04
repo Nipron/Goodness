@@ -266,8 +266,8 @@ export const userAPI = {
         const data = JSON.stringify(response.data)
         console.log("ПОЛЯ ЮЗЕРА - АПИХА")
        // console.log(data.id)
-        console.log(Object.keys(data).length)
-        return data
+        console.log(Object.keys(JSON.parse(data)).length)
+        return JSON.parse(data)
       } catch (error) {
         console.log(error)
       }
@@ -287,7 +287,6 @@ export const userAPI = {
           'Content-Type': 'application/json; charset=utf-8'
         }
       }
-
       try {
         console.log('DASHBOARD OK')
         const response = await axios(config)

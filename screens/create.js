@@ -367,6 +367,14 @@ export default function Create() {
          }*/
   }, [createMode])
 
+  const closeAll = () => {
+    setCats2([])
+    setCats3([])
+    setCat1open(false)
+    setCat2open(false)
+    setCat3open(false)
+  }
+
   //<TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
   //</TouchableWithoutFeedback>
   return (
@@ -411,6 +419,7 @@ export default function Create() {
             createMode={createMode}
             setCreateMode={setCreateMode}
             logged={logged}
+            closeAll={closeAll}
           />
 
           <ScrollView
@@ -856,7 +865,7 @@ const s = StyleSheet.create({
   pickersBlock: {
     width: '100%',
     // height: "10%",
-    //   backgroundColor: "yellow",
+   //    backgroundColor: "yellow",
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10
@@ -891,8 +900,8 @@ const s = StyleSheet.create({
 
   picker3: {
     width: '100%',
-    height: 60,
-    //   backgroundColor: "peachpuff",
+    height: 52,
+   //    backgroundColor: "peachpuff",
     zIndex: 8,
     marginBottom: 12
   },

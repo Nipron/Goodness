@@ -31,7 +31,7 @@ export const all = (state = allInitialState, action) => {
     switch (action.type) {
         case UPDATE_ALL:
             //  state = _.cloneDeep(JSON.parse(action.payload))
-            state = Object.assign({}, { ...JSON.parse(action.payload) })
+            state = Object.assign({}, { ...action.payload })
             //     state = JSON.parse(action.payload)
             return state;
         default:

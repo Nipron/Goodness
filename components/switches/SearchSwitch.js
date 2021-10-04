@@ -8,9 +8,9 @@ import Hands from '../../Images/Hands.svg'
 
 import { useNavigation, useScrollToTop } from '@react-navigation/native'
 
-const SearchSwitch = ({ createMode, setCreateMode, logged }) => {
+const SearchSwitch = ({ createMode, setCreateMode, logged, closeAll }) => {
 
-     const navigation = useNavigation()
+    const navigation = useNavigation()
 
     const scaleSearch = 1.5;
     const scaleHands = 1.5;
@@ -24,16 +24,21 @@ const SearchSwitch = ({ createMode, setCreateMode, logged }) => {
                     <SearchWhite style={[{ transform: [{ scaleX: scaleSearch }, { scaleY: scaleSearch }] }, s.searchIcon]} />
                 </View>
                 <TouchableOpacity style={s.createPress} onPress={() => {
-                    logged ? setCreateMode(!createMode) : 
-                    Alert.alert('הצעת שירות', "על מנת לבצע פעולה נא להירשם לאפליקציה", [{ text: "לדף ההרשמה", onPress: () => navigation.navigate("Registration")  }])
-                    }}>
+                    closeAll()
+                    logged ? setCreateMode(!createMode) :
+                        Alert.alert('הצעת שירות', "על מנת לבצע פעולה נא להירשם לאפליקציה", [{ text: "לדף ההרשמה", onPress: () => navigation.navigate("Registration") }])
+                }}>
                     <Text style={[g.text18_400_grey, s.switchText]}>הצעת שירות</Text>
                     <Hands style={[{ transform: [{ scaleX: scaleHandsGrey }, { scaleY: scaleHandsGrey }] }, s.searchIcon]} />
                 </TouchableOpacity >
             </View>
             }
             {createMode && <View style={s.switchBlock}>
-                <TouchableOpacity style={s.searchPress} onPress={() => setCreateMode(!createMode)}>
+                <TouchableOpacity style={s.searchPress} onPress={() => {
+                    closeAll()
+                    setCreateMode(!createMode)
+                }
+                } >
                     <Text style={[g.text20_400_grey, s.switchText]}>חיפוש שירות</Text>
                     <SearchGrey style={[{ transform: [{ scaleX: scaleSearch }, { scaleY: scaleSearch }] }, s.searchIcon]} />
                 </TouchableOpacity >
@@ -55,7 +60,7 @@ const s = StyleSheet.create({
     outer: {
         width: "100%",
         height: 60,
-       //   backgroundColor: "green",
+        //   backgroundColor: "green",
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 12
@@ -95,14 +100,14 @@ const s = StyleSheet.create({
     createPress: {
         width: "50%",
         height: "50%",
-      // backgroundColor: "sienna",
+        // backgroundColor: "sienna",
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
     },
 
     greyHands: {
-       
+
     },
 
     searchPress: {
@@ -124,7 +129,7 @@ const s = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
-        
+
     },
 
 

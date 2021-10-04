@@ -17,8 +17,6 @@ const AmountPanel = ({ amount, setAmount }) => {
         }
     }
 
-    console.log("Amount: ", amount)
-
     return (
         <View style={s.outer}>
             <TouchableOpacity style={s.signContainer}
