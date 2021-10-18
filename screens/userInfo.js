@@ -43,6 +43,10 @@ export default function UserInfo () {
   const data = useSelector(state => state.tempUser)    
   const path = !!data.avatar ? data.avatar.path : null
 
+  console.log(Object.keys(data))
+
+  console.log('' && true)
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {

@@ -18,9 +18,10 @@ import Service from '../../Images/HeartY.svg'
 import ServiceLight from '../../Images/ServiceLight.svg'
 import Create from '../../Images/HandsY.svg'
 import CreateLight from '../../Images/HandsNewLight.svg'
+import Login from '../../screens/login'
 
 
-const Footer = ({ hide }) => {
+const Footer = ({ hide, color }) => {
   const navigation = useNavigation()
   const route = useRoute()
   const data = useSelector(state => state.all)
@@ -54,7 +55,7 @@ const Footer = ({ hide }) => {
 
         {!hide && (
           <TouchableOpacity
-            onPress={() => navigation.navigate('Messages') }
+            onPress={() => navigation.navigate('Messages')}
             style={[s.outer, route.name === 'Messages' && s.shadow]}          >
 
             <Bell
@@ -126,7 +127,7 @@ const s = StyleSheet.create({
     width: '100%',
     height: '9%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
     //   backgroundColor: "olive"
   },
 
@@ -162,3 +163,43 @@ const s = StyleSheet.create({
 })
 
 export default Footer
+
+
+
+
+
+
+
+
+
+
+
+
+/*const RegisterAndLogin = async (codeSMS, data, image) => {
+
+  try {
+
+    await sendCode(codeSMS)
+      .then( res => {
+        
+        const token = await sendData(data)
+      })
+
+
+    
+
+    AsyncStorage.setItem('token', token)
+
+    await login(token)
+
+    await uploadImage(image)
+
+    dispatch(userThunk(userData))
+
+    navigation.navigate("Profile")
+
+  } catch (e) {
+    console.log(e)
+  }
+
+}*/

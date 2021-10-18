@@ -11,23 +11,22 @@ const DistancePanel = ({ distance, setDistance }) => {
 
     return (
         <View style={s.outer}>
-            <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 1 ? color1 : color2 }]}
-                onPress={() => setDistance(1)}>
-                <Text style={{ fontWeight: distance === 1 ? "bold" : "normal", color: distance === 1 ? color3 : color4, fontSize }}>1 ק"מ</Text>
+            <TouchableOpacity style={[s.first, s.distanceContainer, { backgroundColor: distance === 25001 ? color1 : color2 }]}
+                onPress={() => setDistance(25001)}>
+                <Text style={{ fontWeight: distance === 25001 ? "bold" : "normal", color: distance === 25001 ? color3 : color4, fontSize }}>1 ק"מ</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 5 ? color1 : color2 }]}
-                onPress={() => setDistance(5)}>
-                <Text style={{ fontWeight: distance === 5 ? "bold" : "normal", color: distance === 5 ? color3 : color4, fontSize }}>5 ק"מ</Text>
+            {((distance !== 25001) && (distance !== 25007))? <View style={s.palka} /> : <View style={s.palkaEmpty} />}
+            <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 25007 ? color1 : color2 }]}
+                onPress={() => setDistance(25007)}>
+                <Text style={{ fontWeight: distance === 25007 ? "bold" : "normal", color: distance === 25007 ? color3 : color4, fontSize }}>7 ק"מ</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 10 ? color1 : color2 }]}
-                onPress={() => setDistance(10)}>
-                <Text style={{ fontWeight: distance === 10 ? "bold" : "normal", color: distance === 10 ? color3 : color4, fontSize }}>10 ק"מ</Text>
+            {((distance !== 25007) && (distance !== 25025)) ? <View style={s.palka} /> : <View style={s.palkaEmpty} />}
+            <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 25025 ? color1 : color2 }]}
+                onPress={() => setDistance(25025)}>
+                <Text style={{ fontWeight: distance === 25025 ? "bold" : "normal", color: distance === 25025 ? color3 : color4, fontSize }}>אזור העיר</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 25 ? color1 : color2 }]}
-                onPress={() => setDistance(25)}>
-                <Text style={{ fontWeight: distance === 25 ? "bold" : "normal", color: distance === 25 ? color3 : color4, fontSize }}>אזור</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[s.distanceContainer, { backgroundColor: distance === 25000 ? color1 : color2 }]}
+            {((distance !== 25025) && (distance !== 25000)) ? <View style={s.palka} /> : <View style={s.palkaEmpty} />}
+            <TouchableOpacity style={[s.last, s.distanceContainer, { backgroundColor: distance === 25000 ? color1 : color2 }]}
                 onPress={() => setDistance(25000)}>
                 <Text style={{ fontWeight: distance === 25000 ? "bold" : "normal", color: distance === 25000 ? color3 : color4, fontSize }}>Online</Text>
             </TouchableOpacity>
@@ -38,6 +37,27 @@ const DistancePanel = ({ distance, setDistance }) => {
 export default DistancePanel
 
 const s = StyleSheet.create({
+    palka: {
+        width: 2,
+        height: '60%',
+        backgroundColor: '#BCE0FD'
+    },
+
+    palkaEmpty: {
+        width: 2,
+        height: '60%',
+        // backgroundColor: '#BCE0FD'
+    },
+
+
+    first: {
+        borderTopLeftRadius: 15,
+        borderBottomLeftRadius: 15
+    },
+    last: {
+        borderTopRightRadius: 15,
+        borderBottomRightRadius: 15
+    },
 
     outer: {
         width: '90%',
@@ -53,12 +73,12 @@ const s = StyleSheet.create({
     },
 
     distanceContainer: {
-        width: "20%",
+        width: "24.5%",
         height: "100%",
         backgroundColor: "pink",
         alignItems: "center",
         justifyContent: "center",
-        borderWidth: 1,
-        borderColor: "#243663"
+        //  borderWidth: 1,
+        //  borderColor: "#243663"
     }
 });

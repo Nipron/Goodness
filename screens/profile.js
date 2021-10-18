@@ -27,39 +27,33 @@ import PersonalInfo from '../components/personalInfo/PersonalInfo'
 import DropDownBlue from '../components/dropdowns/DropDownBlue'
 import ButtonRed from '../components/buttons/ButtonRed'
 
+import Spinner from 'react-native-loading-spinner-overlay'
+import { updateProfileThunk } from '../redux/store';
+import { userAPI } from '../src/api/api'
+
+import { useIsFocused } from '@react-navigation/native';
+
 export default function Profile() {
   const navigation = useNavigation()
-
+  // const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
+  // dispatch(updateProfileThunk())
   const data = useSelector(state => state.all)
-  
-  console.log("ПОЛЯ ЮЗЕРА - ПРОФИЛЬ")
-  console.log(Object.keys(data).length)
+
+  useFocusEffect(
+    React.useCallback(() => {
+      let loop = setInterval(() => {
+        console.log("Refresh")
+        dispatch(updateProfileThunk())
+      }, 6000)
+      return () => {
+        clearInterval(loop)
+      }
+    }, [])
+  );
 
   const works = useSelector(state => state.all.works, shallowEqual)
-  const orders = useSelector(state => state.all.orders, shallowEqual/*(old, cur) => {
-    let eq = true
-    for (let i = 0; i < old.length; i++) {
-      eq = eq && (old[i].status === cur[i].status)
-    }
-    console.log(eq)
-    return eq
-  }*/)
-
-  /*
-    const [data, setData] = useState(d)
-  
-    useFocusEffect(
-      React.useCallback(() => {
-        let isActive = true
-        if (isActive) {
-          setData(d)
-        }
-        console.log("FFF33")
-        return () => {
-          isActive = false
-        }
-      }, [d, z2])
-    )*/
+  const orders = useSelector(state => state.all.orders, shallowEqual)
 
   let worksToMe = []
   let worksToMeHistory = []
@@ -80,6 +74,9 @@ export default function Profile() {
     ).sort((a, b) => b.id - a.id)
     ordersFromMeHistory = orders.filter(job => job.status === 'approved').sort((a, b) => b.id - a.id)
   }
+
+
+
 
   /* console.log(worksToMe.length)
    console.log(worksToMeHistory.length)

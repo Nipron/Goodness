@@ -7,18 +7,18 @@ import AvatarPlain from '../../Images/AvatarPlain.jpg'
 import Stars from '../../Images/Stars.svg'
 import Repair from '../../Images/Repair.svg'
 import RedX from '../../Images/RedX.svg'
-import PinkX from '../../Images/PinkX.svg'
+import PinkX from '../../Images/PinkX2.svg'
 import Thumb from '../../Images/Thumb.svg'
-import ThumbGrey from '../../Images/ThumbGrey.svg'
+import ThumbGrey from '../../Images/ThumbGrey2.svg'
 import Date from '../../Images/Date.svg'
 import Time from '../../Images/Time.svg'
 import CloseIcon from '../../Images/CloseIcon'
 import CheckGreen from '../../Images/CheckGreen'
 
 import { g } from '../../styles/global'
-import { serviceAPI, userAPI } from '../../src/api/api';
+import { serviceAPI } from '../../src/api/api';
 
-import { updateAll, updateProfileThunk } from '../../redux/store';
+import { updateProfileThunk } from '../../redux/store';
 
 import { useNavigation } from '@react-navigation/native'
 
@@ -42,7 +42,7 @@ const JobsFromMeCard = ({ item, toMe }) => {
 
     const name = partner.name
     const userId = partner.id
-    const avaPath = partner.avatar.path
+    const avaPath = partner.avatar ? partner.avatar.path : ''
     const rating = partner.avgRating
     const date = moment(item.createdAt).format('L')
     const time = moment(item.createdAt).format('LT')
@@ -58,36 +58,49 @@ const JobsFromMeCard = ({ item, toMe }) => {
     const scaleRepair = 1.2
 
     const [modalOpen, setModalOpen] = useState(false)
-
     const [loading, setLoading] = useState(false)
 
     const handleCancel = async () => {
-        setLoading(true)
+     //   setLoading(true)
         try {
-            console.log("ZZZ DELETE")
+            function delay(ms) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(resolve, ms);
+                });
+            }
+
             await serviceAPI.cancelService(item.id)
-            dispatch(updateProfileThunk())
+                .then(res => delay(100))
+                .then(res => dispatch(updateProfileThunk()))
+
         } catch (e) {
             console.log(e)
         }
-        setLoading(false)
-
+      //  setLoading(false)
     }
 
     const handleCheck = () => Alert.alert('התפקיד נעשה', `אשר את השלמת העבודה`, [{ text: "Ok"/*, onPress: () => console.log('alert wrong') */ }])
 
-
     const handleRate = async () => {
         setLoading(true)
-        await serviceAPI.rateService(item.id, newRating)
-        await serviceAPI.approveService(item.id)
-        await userAPI.dashboard()
-            .then(data => {
-                dispatch(updateAll(data))
-                setModalOpen(false)
-                navigation.navigate('Profile')
-                setLoading(false)
-            })
+        try {
+            function delay(ms) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(resolve, ms);
+                });
+            }
+
+            await serviceAPI.approveService(item.id)
+            await serviceAPI.rateService(item.id, newRating)
+            //      .then(res => { return delay(600) })
+            //      .then(res => dispatch(updateProfileThunk()))
+            //  dispatch(updateProfileThunk())
+            setModalOpen(false)
+            setLoading(false)
+        } catch (e) {
+            console.log(e)
+        }
+
     }
 
     const goToPersonalInfo = () => {

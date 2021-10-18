@@ -33,7 +33,7 @@ import ButtonOrder from '../../components/buttons/ButtonYellowSearch'
 export default function SearchLayout (props) {
   const scale = 1.2
   const navigation = useNavigation()
-  const data = useSelector(state => state.all)
+  const data = useSelector(state => state.all)  
   let path
   if (data.avatar) {
     path = data.avatar.path
@@ -90,7 +90,7 @@ export default function SearchLayout (props) {
             <View style={s.logoBlock}>
               <Image
                 style={s.logo}
-                source={require('../../Images/Logo1.png')}
+                source={require('../../Images/Logo2.png')}
               />
               <Text style={g.text24_700_white}>{props.text}</Text>
             </View>
@@ -105,6 +105,7 @@ export default function SearchLayout (props) {
           chosenId={props.chosenId}
           date={props.date}
           logged={props.logged}
+          balance={data.balance}
         />
       )}
       <Footer />
@@ -127,11 +128,11 @@ const s = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'relative',
-    backgroundColor: 'white'
+  //  backgroundColor: 'red'
   },
 
   containerBlu: {
-    height: '88%',
+    height: '90.5%',
     width: '100%',
     alignItems: 'center',
     justifyContent: 'flex-start'

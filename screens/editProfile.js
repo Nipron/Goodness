@@ -56,9 +56,9 @@ import SmallLayout2 from '../components/layouts/SmallLayout2'
 import { useNavigation } from '@react-navigation/native'
 
 import { setTempImage } from '../redux/tempImageRducer'
-import { updateAll } from '../redux/store'
+import { updateProfileThunk } from '../redux/store'
 
-export default function EditProfile2 () {
+export default function EditProfile2() {
   const dispatch = useDispatch()
   const data = useSelector(state => state.all)
   const [modalOpen, setModalOpen] = useState(false)
@@ -108,14 +108,10 @@ export default function EditProfile2 () {
       //        console.log(res)
     })
 
-    await userAPI.dashboard().then(data => {
-      console.log('DASHBOARD OK')
-      dispatch(updateAll(data))
-      navigation.navigate('Profile')
-    })
-
+    dispatch(updateProfileThunk())
     setModalOpen(false)
     navigation.navigate('Profile')
+    
 
     /*  console.log("CODE CODE")
           console.log(code)*/
@@ -147,7 +143,7 @@ export default function EditProfile2 () {
     // if (!values.street) {setStreetBorder("red")} else setStreetBorder("lightgreen")
     // if (!values.house) {setHouseBorder("red")} else setHouseBorder("lightgreen")
     // if (!values.apt) {setAptBorder("red")} else setAptBorder("lightgreen")
-    
+
 
     if (
       values.name &&
@@ -187,16 +183,16 @@ export default function EditProfile2 () {
 
       await userAPI.dashboard().then(data => {
         console.log('DASHBOARD OK')
-        dispatch(updateAll(data))
-        Alert.alert("הַצלָחָה!", ".שינוים נשמרו בהצלחה", [
+        dispatch(updateProfileThunk())
+        Alert.alert("הצלחה!", "שינוים נשמרו בהצלחה", [
           {
-              text: 'אישור', onPress: () => {
-                  console.log('changed profile')
-                  navigation.navigate('Profile')
-              }
+            text: 'אישור', onPress: () => {
+              console.log('changed profile')
+              navigation.navigate('Profile')
+            }
           }
-      ])
-       
+        ])
+
       })
     } else {
       console.log('Not OK')
@@ -262,6 +258,7 @@ export default function EditProfile2 () {
                         borderColor={emailBorder}
                         autoCapitalize='none'
                         setFocus={setFocus}
+                        maxLength={30}
                       >
                         <EmailIcon />
                       </RegInput>
@@ -387,7 +384,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     width: '100%',
-    flex: 1,   
+    flex: 1,
   },
 
   formikScrollStyle: {

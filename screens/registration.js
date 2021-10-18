@@ -2,17 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { StyleSheet, Text, View, TextInput, SafeAreaView, Image, Alert, Dimensions, Pressable, ScrollView, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 
-import {
-    useFonts,
-    Assistant_200ExtraLight,
-    Assistant_300Light,
-    Assistant_400Regular,
-    Assistant_500Medium,
-    Assistant_600SemiBold,
-    Assistant_700Bold,
-    Assistant_800ExtraBold,
-} from '@expo-google-fonts/assistant';
-
 import ButtonBlue from '../src/ButtonBlue';
 import { userAPI } from '../src/api/api';
 import RegAvatar from '../components/avatars/RegAvatar';
@@ -40,14 +29,14 @@ import SmallLayout2 from '../components/layouts/SmallLayout2';
 import { useNavigation } from '@react-navigation/native'
 
 import { setTempImage } from '../redux/tempImageRducer';
-import { updateAll } from '../redux/store';
+import { updateProfileThunk } from '../redux/store'
+import { values } from 'lodash';
 
 export default function Registration2() {
 
     const dispatch = useDispatch()
 
     const [modalOpen, setModalOpen] = useState(false)
-    const [modalWrongOpen, setModalWrongOpen] = useState(true)
 
     const navigation = useNavigation()
 
@@ -65,61 +54,63 @@ export default function Registration2() {
     const [regValues, setRegValues] = useState({})
     const [code, setCode] = useState('')
 
+    useEffect(() => {
+        if (code && code.length === 5) {
+            confirm()
+        }
+        return () => {
+
+        }
+    }, [code])
+
     const [image, setImage] = useState(null);
 
-    /*  let [fontsLoaded, error] = useFonts({ Assistant_400Regular })
-  
-      if (!fontsLoaded) {
-          return <AppLoading />
-      }*/
+    /*const confirm = async () => {
 
-    const sendRegs = () => {
-        //  userAPI.getSMS(999999999999)
-        setModalOpen(true)
-        //   console.log(modalOpen)
-    }
+        try {
+            await userAPI.register(regValues, code)
+            console.log("REGISTRATION SUCCEEDED")
+            const res = await userAPI.login(regValues)
+            console.log(res)
+            await userAPI.saveToken(res.data.access_token)
+            await userAPI.sendPic(image)
+            dispatch(updateProfileThunk())
+            navigation.navigate('Profile')
+            setModalOpen(false)
+        } catch (e) {
+            console.log("CODE NO GOOD")
+            console.log(e);
+            Alert.alert('שגיאה', "קוד שגוי", [{ text: "Try again", onPress: () => {navigation.navigate('Registration') }}])
+        }
+        
+    }*/
 
-    const confirm = async () => {
-        setModalWrongOpen(false)
+    const confirm = () => {
 
-        await userAPI.register(regValues, code)
-            .then((response) => {
-                console.log("REGISTRATION SUCCEEDED")
-                //   console.log(response)
-
-            })
-            .catch(function (error) {
-                console.log("CODE NO GOOD")
-                console.log(error);
-            })
-
-        await userAPI.login(regValues)
-            .then(response => userAPI.saveToken(response.data.access_token))
-            .catch(function (error) {
-                console.log("LOGIN NO GOOD")
-                //  console.log(error);
-                //  console.log(regValues)
-                Alert.alert('Something went wrong!', "Wrong email/password", [{ text: "Try again", onPress: () => console.log('alert wrong') }])
-            })
-
-        await userAPI.sendPic(image)
+        userAPI.register(regValues, code)
             .then(res => {
-                //       console.log("SEND PIC")
-                //        console.log(res)
+                userAPI.login(regValues)
+                    .then(response => userAPI.saveToken(response.data.access_token))
+                    .then(async res => {
+                        await userAPI.sendPic(image)
+                        const messages = await messageAPI.getMessages()
+                        dispatch(setMessagesThunk(messages))
+                        dispatch(updateProfileThunk())
+                        setModalOpen(false)
+                        navigation.navigate('Profile')
+                    })
+                    .catch(function (error) {
+                        console.log("LOGIN NO GOOD")
+                        //  console.log(error);
+                        //  console.log(regValues)
+                        Alert.alert('Something went wrong!', "Wrong email/password", [{ text: "Try again", onPress: () => console.log('alert wrong') }])
+                    })
+            })
+            .catch(e => {
+                console.log("CODE NO GOOD")
+                Alert.alert('Something went wrong!', "Wrong SMS code", [{ text: "Try again", onPress: () => console.log(e) }])
             })
 
-        await userAPI.dashboard()
-            .then(data => {
-                console.log("DASHBOARD OK")
-                dispatch(updateAll(data))
-                navigation.navigate('Profile')
-            })
-
-        setModalOpen(false)
-        navigation.navigate('Profile')
-
-        /*  console.log("CODE CODE")
-          console.log(code)*/
     }
 
     const handlePhone = value => {
@@ -131,78 +122,87 @@ export default function Registration2() {
         //    console.log("HHHHHHHH")
     }
 
-    const onFormikSubmit = values => {
+    const onFormikSubmit = async values => {
         if (!values.name || (values.name.length < 3)) { setNameBorder("red") } else setNameBorder("lightgreen")
         const phoneClean = values.phone.replace(/[^\d]/g, '')
         const referralClean = values.referral.replace(/[^\d]/g, '')
-        if (!phoneClean ) { setPhoneBorder("red") } else setPhoneBorder("lightgreen")
-      //  if (!values.email) { setEmailBorder("red") } else setEmailBorder("lightgreen")
+        if (!phoneClean) { setPhoneBorder("red") } else setPhoneBorder("lightgreen")
+        //  if (!values.email) { setEmailBorder("red") } else setEmailBorder("lightgreen")
         if (!values.job || (values.job.length < 3)) { setJobBorder("red") } else setJobBorder("lightgreen")
         // if (!values.city) {setCityBorder("red")} else setCityBorder("lightgreen")
         // if (!values.street) {setStreetBorder("red")} else setStreetBorder("lightgreen")
         // if (!values.house) {setHouseBorder("red")} else setHouseBorder("lightgreen")
         // if (!values.apt) {setAptBorder("red")} else setAptBorder("lightgreen")
-        if (!values.password) { setPasswordBorder("red") } else setPasswordBorder("lightgreen")
-
 
         const reg = new RegExp(/^(?:[0-9]+[a-z]|[a-z]+[0-9])[a-z0-9]*$/i);
-
         const containsSymbolAndNuber = reg.test(values.password)
 
-        if ((values.password.length < 6) || !containsSymbolAndNuber) {
-            Alert.alert("משהו השתבש!", ".סיסמה חייבת להיות מורכבת מ-6 תווים לפחות, כולל לפחות ספרה 1 ואות 1, מקסימום 20 תווים", [
-                {
-                    text: 'אישור', onPress: () => {
-                        console.log('alert wrong')
-                    }
-                }
-            ])
-        }
+        if ((!values.password) || (values.password.length < 6) || !containsSymbolAndNuber) { setPasswordBorder("red") } else setPasswordBorder("lightgreen")
+        if (!values.confirmPassword || !(values.password === values.confirmPassword)) { setConfirmPasswordBorder("red") } else setConfirmPasswordBorder("lightgreen")
 
         if (values.name.length < 3) {
             Alert.alert("משהו השתבש!", "אורך השם צריך להיות לפחות 3 תווים", [
                 {
                     text: 'אישור', onPress: () => {
-                        console.log('alert wrong name')
+                        console.log('Name wrong')
                     }
                 }
             ])
-        }
-
-        if (values.job.length < 3) {
-            Alert.alert("משהו השתבש!", "אורך המקצוע צריך להיות לפחות 3 תווים", [
-                {
-                    text: 'אישור', onPress: () => {
-                        console.log('alert wrong name')
-                    }
-                }
-            ])
-        }
-
-        if (!values.confirmPassword || !(values.password === values.confirmPassword)) { setConfirmPasswordBorder("red") } else setConfirmPasswordBorder("lightgreen")
-
-        if ((values.password.length > 5) &&
-            containsSymbolAndNuber &&
-            (values.name.length > 2) &&
-            (values.job.length > 2) &&
-            values.name && phoneClean && values.job /*&& values.city 
-        && values.street && values.house && value.appt*/ && values.password
-            && (values.password === values.confirmPassword)) {
-            userAPI.getSMS(phoneClean, values.email)
-            dispatch(setTempImage(image))
-            setRegValues({...values, phone: phoneClean, referral: referralClean})
-            //    console.log(regValues)
-            //    console.log("OK")
-            setModalOpen(true)
         } else {
-            Alert.alert("משהו השתבש!", "אנא מלא את כל השדות הדרושים", [
-                {
-                    text: 'אישור', onPress: () => {
-                        console.log('alert wrong name')
+            if (!phoneClean || (phoneClean.length < 10)) {
+                Alert.alert("משהו השתבש!", "מספר הטלפון חייב להיות תקף ואורכו לפחות 10 ספרות", [
+                    {
+                        text: 'אישור', onPress: () => {
+                            console.log('Phone wrong')
+                        }
+                    }
+                ])
+            } else {
+                if (values.job.length < 3) {
+                    Alert.alert("משהו השתבש!", "אורך המקצוע צריך להיות לפחות 3 תווים", [
+                        {
+                            text: 'אישור', onPress: () => {
+                                console.log('Job wrong')
+                            }
+                        }
+                    ])
+                } else {
+                    if ((values.password.length < 6) || !containsSymbolAndNuber) {
+                        Alert.alert("משהו השתבש!", "סיסמה חייבת להיות מורכבת מ-6 תווים לפחות כולל לפחות ספרה 1 ואות 1, מקסימום 20 תווים", [
+                            {
+                                text: 'אישור', onPress: () => {
+                                    console.log('Password incorrect')
+                                }
+                            }
+                        ])
+                    } else {
+                        if (!values.confirmPassword || !(values.password === values.confirmPassword)) {
+                            Alert.alert("משהו השתבש!", "הסיסמה לאישור אינה תואמת", [
+                                {
+                                    text: 'אישור', onPress: () => {
+                                        console.log("Confirm password doesn't match")
+                                    }
+                                }
+                            ])
+                        } else {
+                            try {
+                                await userAPI.getSMS(phoneClean, values.email)
+                                dispatch(setTempImage(image))
+                                setRegValues({ ...values, phone: phoneClean, referral: referralClean })
+                                setModalOpen(true)
+                            } catch (e) {
+                                Alert.alert("משהו השתבש!", "חשבון עם מספר טלפון זה כבר קיים", [
+                                    {
+                                        text: 'אישור', onPress: () => {
+                                            console.log('Phone number already exists')
+                                        }
+                                    }
+                                ])
+                            }
+                        }
                     }
                 }
-            ])
-            console.log("Not OK")
+            }
         }
     }
 
@@ -281,6 +281,7 @@ export default function Registration2() {
                                                     borderColor={emailBorder}
                                                     autoCapitalize="none"
                                                     setFocus={setFocus}
+                                                    maxLength={30}
                                                 >
                                                     <EmailIcon />
                                                 </RegInput>

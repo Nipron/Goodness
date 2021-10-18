@@ -14,10 +14,6 @@ import CloseIcon from '../../Images/CloseIcon'
 import CheckGreen from '../../Images/CheckGreen'
 
 import { g } from '../../styles/global'
-import { serviceAPI, userAPI } from '../../src/api/api';
-
-import { updateAll } from '../../redux/store';
-
 import { useNavigation } from '@react-navigation/native'
 
 import { setTempUserThunk } from '../../redux/tempUserReducer';
@@ -28,12 +24,8 @@ import RatingForCardPanel from '../panels/RatingForCardPanel';
 
 const UserHistoryCard = ({ item, toMe }) => {
 
-    console.log("GGGGG")
-    console.log(item.feedback)
 
     const scaleCheckGreen = 1.6
-
-    let feddback = item.feedback
 
     const navigation = useNavigation()
     const dispatch = useDispatch()
@@ -41,11 +33,11 @@ const UserHistoryCard = ({ item, toMe }) => {
 
     const catId = item.service.category.id
     const cat = catsFlat.find(cat => cat.id === catId).title
-    const partner = toMe ? item.client : item.worker
+  //  const partner = toMe ? item.client : item.worker
 
-    const name = partner.name
-    const userId = partner.id
-    const avaPath = partner.avatar.path
+   // const name = partner.name
+  //  const userId = partner.id
+   // const avaPath = partner.avatar ? partner.avatar.path : ''
     const rating = item.feedback.rating
     const date = moment(item.feedback.createdAt).format('L')
     const time = moment(item.feedback.createdAt).format('LT')

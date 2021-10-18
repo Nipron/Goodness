@@ -20,10 +20,12 @@ export const updateAll = data => {
 }
 
 //Thunk creators
-export const updateProfileThunk = () => async dispatch => {
+export const updateProfileThunk = (res) => async dispatch => {
     const response = await userAPI.dashboard()
-    console.log("ПОЛЯ ЮЗЕРА - РЕДАКС")
-    console.log(Object.keys(response).length)
+ /*   if (res) {
+        console.log("КОЛ-ВО ЗАКАЗОВ - РЕДАКС VH", res.orders.length)
+    }
+    console.log("КОЛ-ВО ЗАКАЗОВ - РЕДАКС", response.orders.length)*/
     dispatch(updateAll(response))
 }
 

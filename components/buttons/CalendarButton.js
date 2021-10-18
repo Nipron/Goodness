@@ -32,7 +32,7 @@ const CalendarButton = ({ date, onPress }) => {
           transform: [{ scaleX: scaleDate }, { scaleY: scaleDate }]
         }}
       />
-      <Text style={[g.text16_400_blue, s.text]}>
+      <Text style={[g.text18_400_blue, s.text]}>
         {!!date ? moment(date.dateString).format('L') : 'תבחר תאריך'}
       </Text>
     </TouchableOpacity>

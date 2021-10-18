@@ -24,6 +24,7 @@ import TargetGrey from '../../Images/TargetGrey.svg'
 import PlusGrey from '../../Images/PlusGrey.svg'
 import MinusGrey from '../../Images/MinusGrey.svg'
 import PPlug from '../../Images/PPlug.svg'
+import MarkerDarkBlue from '../../Images/MarkerDarkBlue.svg'
 
 import { g } from '../../styles/global'
 
@@ -35,70 +36,121 @@ import Footer from '../footer/Footer'
 import DistancePanel from '../panels/DistancePanel'
 import ButtonYellowSelect from '../buttons/ButtonYellowSelect'
 import GooglePlacesInput from './GooglePlacesInput'
+import CheckV from '../../Images/CheckV.svg'
+import CheckCircle from '../../Images/CheckCircle.svg'
+import Search from '../../Images/Search.svg'
 
 export default function LocationMap(props) {
+
   const scaleArrow = 1.2
   const scaleTarget = 1.1
   const scalePlusMinus = 1.1
+  const scaleCheck = 2.0
+  const scaleMarker = 1.2
+  const scaleSearch = 0.8
 
-  const [coordinate, setCoordinate] = useState({
-    latitude: 32,
-    longitude: 34.8
-  })
+  const [latitude, setLatitude] = useState(32.05)
+  const [longitude, setLongitude] = useState(34.805)
+  const [latitudeDelta, setLatitudeDelta] = useState(0.5)
+  const [longitudeDelta, setLongitudeDelta] = useState(0.5)
 
-  const [latitude, setLatitude] = useState(32)
-  const [longitude, setLongitude] = useState(34.8)
+  const [latitudeMarker, setLatitudeMarker] = useState(32.0853)
+  const [longitudeMarker, setLongitudeMarker] = useState(34.7818)
 
-
+  const [tempLatitude, setTempLatitude] = useState(32.05)
+  const [tempLongitude, setTempLongitude] = useState(34.805)
 
   if (props.result.length > 0) {
-
     // console.log(props.result.length)
     //   console.log(props.result[0].coordinates.coordinates)
   }
 
-
-  useEffect(() => {
-    setCoordinate({ ...props.coordinate })
-  }, [])
-
-  //DropDow open
-
-  const [showMap, setShowMap] = useState(false)
-
   const data = useSelector(state => state.all)
 
-  const handleSearch = values => {
-    //   console.log(values)
-  }
-
-  const coordinatePress = async e => {
-    const coords = await e.nativeEvent
-    setLatitude(coords.coordinate.latitude)
-    setLongitude(coords.coordinate.longitude)
-    setCoordinate({ ...coords.coordinate })
-    //   console.log("Coor OK")
-    //   console.log({ ...coords.coordinate })
-  }
+  //console.log(props, " hhh ")
 
   const map = useRef(null)
 
-  const [x, setX] = useState(1)
+  const [zoom, setZoom] = useState(1)
 
-  const onZoomInPress = () => {
-    map.current.getCamera().then(cam => {
+  const coordinatePress = async e => {
+    Promise.all([map.current.getCamera(), e.nativeEvent])
+      .then(values => {
+       // console.log(zoom)
+        const cam = values[0]
+        const coords = values[1]
+     //   console.log(cam.zoom)
+     //   setLatitude(cam.center.latitude)
+     //   setLongitude(cam.center.longitude)
+        setLatitudeMarker(coords.coordinate.latitude)
+        setLongitudeMarker(coords.coordinate.longitude)
+        props.setCoordinate({ latitude: coords.coordinate.latitude, longitude: coords.coordinate.longitude })
+      })
+  }
+
+  const [camera, setCamera] = useState({
+    center: {
+      latitude: 32.0853,
+      longitude: 34.7818,
+   //  latitude: props.coordinate.latitude,
+   //  longitude: props.coordinate.longitude,
+    },
+    pitch: 0,
+    heading: 0,
+    altitude: 0,
+    zoom: 12
+  })
+
+
+  const onZoomInPress = async () => {
+    const cam = await map.current.getCamera()
+
+    setCamera({...cam, altitude: 0, zoom: cam.zoom + 0.5})
+
+    setLatitude(cam.center.latitude)
+    setLongitude(cam.center.longitude)
+    setLatitudeDelta(latitudeDelta / 1.5)
+    setLongitudeDelta(longitudeDelta / 1.5)
+
+    //map.current.setCamera({...cam, zoom: cam.zoom + 0.5})
+
+    /*  map.current.getCamera().then(cam => {
+        console.log(cam)
+      })*/
+    /*map.current.getCamera().then(cam => {
+      setZoom(zoom + 1)
       setX(x / 2)
       cam.zoom += 1
       map.current.animateCamera(cam)
-    })
+    })*/
   }
 
-  const onZoomOutPress = () => {
-    map.current.getCamera().then(cam => {
+  
+
+//console.log(camera.center)
+
+  //const [cam, setCam] = useState({})
+
+  const onZoomOutPress = async () => {
+    const cam = await map.current.getCamera()
+    //  map.current.setCamera({...cam, zoom: cam.zoom - 0.5})
+
+    setCamera({...cam, altitude: 0, zoom: cam.zoom - 0.5})
+
+    setLatitude(cam.center.latitude)
+    setLongitude(cam.center.longitude)
+    setLatitudeDelta(latitudeDelta * 1.5)
+    setLongitudeDelta(longitudeDelta * 1.5)
+
+    /*  map.current.getCamera().then(cam => {
+        console.log(cam)
+      })*/
+    /* map.current.getCamera().then(cam => {
+      setZoom(zoom - 1)
       setX(x * 2)
       cam.zoom -= 1
       map.current.animateCamera(cam)
-    })
+    })*/
   }
 
   const onGeoLocation = () => {
@@ -107,8 +159,9 @@ export default function LocationMap(props) {
 
   const handleBackArrowPress = () => {
     props.setShowMap(false)
-    props.setCoordinate({ ...coordinate })
+    //   props.setCoordinate({  })
   }
+
 
   return (
     <Modal transparent={true} animationType='slide' visible={props.showMap}>
@@ -126,34 +179,62 @@ export default function LocationMap(props) {
                 style={s.mapview}
                 provider={PROVIDER_GOOGLE}
                 // customMapStyle={mapStyle}
-                initialRegion={{
-                  latitude: latitude,
-                  longitude: longitude,
-                  latitudeDelta: x,
-                  longitudeDelta: x
-                }}
-              /*  region={{
-                  latitude: latitude,
-                  longitude: longitude,
-                  latitudeDelta: x,
-                  longitudeDelta: x
+               /* initialRegion={{
+                  latitude: 32,
+                  longitude: 35,
+                  latitudeDelta: 1.11,
+                  longitudeDelta: 0.74
                 }}*/
+                initialCamera={{
+                  center: {
+                    latitude: 32.0853,
+                    longitude: 34.7818,
+                 //   latitude: props.coordinate.latitude,
+                 //   longitude: props.coordinate.longitude,
+                //     latitude: latitudeMarker,
+                 //   longitude: longitudeMarker,
+                  },
+                  pitch: 0,
+                  heading: 0,
+                  altitude: 0,
+                  zoom: 12
+                }}
+                camera={camera}
+                /* region={{
+                   latitude: latitude,
+                   longitude: longitude,
+                   latitudeDelta: latitudeDelta,
+                   longitudeDelta: longitudeDelta
+                 }}*/
                 mapType='standard'
+              /*  onRegionChangeComplete={async region => {
+                  const cam = await map.current.getCamera()
+                  //setCam(cam)
+                  console.log("ZZZ      ZZZZ       ZZZ")
+                  console.log(cam.zoom)
+                  // setZoom(cam.zoom)
+                //console.log(region.latitude)
+                //  console.log(cam.center.latitude)
+                  //   console.log((region.latitude - cam.center.latitude)*100000 - 1414)
+               //   console.log(region.longitude)
+               //   console.log(cam.center.longitude)
+                  console.log("ZZZ      ZZZZ       ZZZ")
+                }}*/
               >
                 <Marker key={1} coordinate={{
-                  latitude: latitude,
-                  longitude: longitude
+                  latitude: latitudeMarker,
+                  longitude: longitudeMarker
                 }} title={'המיקום שלי'} />
                 {props.createMode && <Circle
                   center={{
-                    latitude: latitude,
-                    longitude: longitude
+                    latitude: latitudeMarker,
+                    longitude: longitudeMarker
                   }}
-                  radius={props.distance * 1000}
+                  radius={(props.distance > 24999) ? (props.distance - 25000) * 1000 : 0}
                   fillColor={'#00Df3125'}
                   strokeWidth={0}
                 />}
-                {(props.result.length > 0) &&
+                {/*(props.result.length > 0) &&
                   props.result.map(item => <Marker key={item.id}
                     coordinate={{ latitude: item.coordinates.coordinates[0], longitude: item.coordinates.coordinates[1] }}
                     title={item.name}
@@ -164,7 +245,7 @@ export default function LocationMap(props) {
                     </View>
 
                   </Marker>)
-                }
+                  */}
 
               </MapView>
               <View style={s.buttonsBlock} pointerEvents='box-none'>
@@ -182,15 +263,19 @@ export default function LocationMap(props) {
                       }}
                     />
                   </TouchableOpacity>
-                  {/*  <View style={s.searchPlaceBlock}>
-                                    <SearchPlaceInput coordinate={coordinate}/>
-                        </View>*/}
+                  <View style={s.google} pointerEvents='box-none'>
+                    <GooglePlacesInput map={map} setCamera={setCamera} setCoordinate={props.setCoordinate} setLatitude={setLatitude} setLongitude={setLongitude} setLatitudeMarker={setLatitudeMarker} setLongitudeMarker={setLongitudeMarker} />
+                    <View style={s.placesIcons} pointerEvents='none'>
+                      <MarkerDarkBlue style={[{ transform: [{ scaleX: scaleMarker }, { scaleY: scaleMarker }] }, { marginLeft: 12 }]} />
+                      <View style={s.searchIcon}>
+                        <Search style={[{ transform: [{ scaleX: scaleSearch }, { scaleY: scaleSearch }] }, { marginLeft: 0 }]} />
+                      </View>
+                    </View>
+                  </View>
                 </View>
-                {/* <View style={s.google}>
-                                <GooglePlacesInput setLatitude={setLatitude} setLongitude={setLongitude}/>
-                      </View>*/}
+
                 <View style={s.bottomButtons} pointerEvents='box-none'>
-                  <TouchableOpacity
+                  {/*<TouchableOpacity
                     style={s.geolocation}
                     onPress={onGeoLocation}
                   >
@@ -202,7 +287,7 @@ export default function LocationMap(props) {
                         ]
                       }}
                     />
-                  </TouchableOpacity>
+                  </TouchableOpacity>*/}
                   <TouchableOpacity style={s.zoomIn} onPress={onZoomInPress}>
                     <PlusGrey
                       style={{
@@ -235,6 +320,19 @@ export default function LocationMap(props) {
             </View>}
           </View>
           <View style={s.inner2}>
+            {
+              props.createMode &&
+              <TouchableOpacity style={s.atPlaceOuter} onPress={() => props.setDistance(24999)}>
+                <View style={s.checkBlock} >
+                  <CheckCircle style={{ transform: [{ scaleX: scaleCheck }, { scaleY: scaleCheck }] }} />
+                  {(props.distance === 24999) && <CheckV style={[s.v, { transform: [{ scaleX: scaleCheck }, { scaleY: scaleCheck }] }]} />}
+                </View>
+                <View style={s.checkText}>
+                  <Text style={[g.text16_600_blue, s.terms]}>השירות בכתובת מצוינת בלבד</Text>
+                </View>
+
+              </TouchableOpacity>
+            }
             <ButtonYellowSelect name={'בחר'} onPress={handleBackArrowPress} />
           </View>
           <Footer />
@@ -245,6 +343,57 @@ export default function LocationMap(props) {
 }
 
 const s = StyleSheet.create({
+
+  searchIcon: {
+    width: 32,
+    height: 32,
+    marginRight: 9,
+    borderRadius: 1000,
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowOffset: {
+      width: 1,
+      height: 1
+    },
+    shadowOpacity: 0.2,
+    // shadowColor: "blue",
+    shadowRadius: 3
+  },
+
+  placesIcons: {
+    position: "absolute",
+    // backgroundColor: "yellow",
+    width: "100%",
+    height: 50,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+
+  checkText: {
+    width: "60%",
+    //  backgroundColor: "green"
+  },
+
+  v: {
+    position: "absolute"
+  },
+
+  checkBlock: {
+    marginRight: 15,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+
+  atPlaceOuter: {
+    width: "44%",
+    height: "100%",
+    //  backgroundColor: "pink",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center"
+  },
 
   avaBlock:
   {
@@ -260,9 +409,9 @@ const s = StyleSheet.create({
   },
 
   google: {
-    top: -180,
     width: '80%',
-    height: 100,
+    height: 350,
+    //  backgroundColor: "pink"
   },
 
   outer: {
@@ -275,15 +424,16 @@ const s = StyleSheet.create({
 
   inner1: {
     width: '100%',
-    height: '84%',
+    height: '83%',
     //   backgroundColor: 'green'
   },
   inner2: {
     width: '100%',
-    height: '7%',
-    //   backgroundColor: 'yellow',
+    height: '8%',
+    //    backgroundColor: 'yellow',
+    flexDirection: "row",
     alignItems: 'center',
-    justifyContent: 'flex-end'
+    justifyContent: 'center'
   },
 
   mapBlock: {
@@ -323,7 +473,7 @@ const s = StyleSheet.create({
   topButtons: {
     width: '100%',
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     padding: 15,
     marginTop: 45

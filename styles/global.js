@@ -45,6 +45,11 @@ export const g = StyleSheet.create({
         fontFamily: "Assistant_400Regular",
         color: '#123D60',
         fontSize: 14
+    }, 
+    text14_400_white: {
+        fontFamily: "Assistant_400Regular",
+        color: '#FFFFFF',
+        fontSize: 14
     },  
     text16_600_blue: {
         fontFamily: "Assistant_600SemiBold",

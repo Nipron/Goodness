@@ -13,40 +13,25 @@ import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
 import 'moment/locale/he'
 
-import AvatarPlain from '../../Images/AvatarPlain.jpg'
-import LetterClosed from '../../Images/LetterClosed.svg'
-import LetterOpened from '../../Images/LetterOpened.svg'
 import Date from '../../Images/Date.svg'
 import Time from '../../Images/Time.svg'
-import Arrow from '../../Images/Arrow.svg'
-import PinkX from '../../Images/PinkX.svg'
 import BinRed from '../../Images/BinRed.svg'
 
 import { g } from '../../styles/global'
-import { messageAPI, serviceAPI, userAPI, commonAPI } from '../../src/api/api'
-import { updateAll } from '../../redux/store'
-import { setTempUserThunk } from '../../redux/tempUserReducer'
-
-import { setMessagesThunk } from '../../redux/messagesReducer'
+import { serviceAPI, userAPI, commonAPI } from '../../src/api/api'
 import DaysPanelSmall from '../panels/DaysPanelSmall'
+import { updateProfileThunk } from '../../redux/store'
 
 const ServiceCard = ({ serv }) => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
 
-  const [open, setOpen] = useState(false)
-
-  const scaleEnvelope = 0.8
   const scaleDate = 1.1
   const scaleTime = 1.1
-  const scaleArrow = 1.4
+  const scaleRedX = 1.4
 
   const date = moment(serv.createdAt).format('L')
   const time = moment(serv.createdAt).format('LT')
-
-  const [header, setHeader] = useState('הודעת מערכת')
-
-  const scaleRedX = 1.4
 
   const catsFlat = useSelector(state => state.categoriesFlat)
 
@@ -61,15 +46,14 @@ const ServiceCard = ({ serv }) => {
 
   useEffect(() => {
     getCat()
-    return () => {}
+    return () => { }
   }, [cat])
 
   const handleDelete = async () => {
     await serviceAPI.deleteService(serv.id)
-    await userAPI.dashboard().then(data => {
-      dispatch(updateAll(data))
-      navigation.navigate('Services')
-    })
+    dispatch(updateProfileThunk())
+    navigation.navigate('Services')
+
   }
 
   const days = [
@@ -82,12 +66,12 @@ const ServiceCard = ({ serv }) => {
     serv.weekDays.includes('sat')
   ]
 
-  console.log(serv.actionRadius)
+//  console.log(serv.actionRadius)
 
   return (
     <View>
       <View style={s.outer}>
-      <View style={s.icon}>
+        <View style={s.icon}>
           <TouchableOpacity style={s.avatarBlock} onPress={handleDelete}>
             <BinRed
               style={{
@@ -124,6 +108,9 @@ const ServiceCard = ({ serv }) => {
                 />
               </View>
             </View>
+            <View style={s.timeInfo}>
+              <Text>תאריך יצירת השירות:</Text>
+            </View>
           </View>
           <View style={s.name}>
             <Text style={g.text20_400_blue}>{cat}</Text>
@@ -134,21 +121,25 @@ const ServiceCard = ({ serv }) => {
             </View>
             <View style={s.area}>
               {
-                (serv.actionRadius / 1000 > 25) && 
+                (serv.actionRadius / 1000 === 25000) &&
                 <Text>Online</Text>
               }
               {
-                (serv.actionRadius / 1000 === 25) && 
-                <Text>אזור עיר</Text>
+                (serv.actionRadius / 1000 === 24999) &&
+                <Text>שירות בכתובת שלי</Text>
               }
               {
-                (serv.actionRadius / 1000 < 25) && 
-                <Text>ק"מ {serv.actionRadius / 1000} מרחק</Text>
-              }             
+                (serv.actionRadius / 1000 === 25) &&
+                <Text>אזור העיר</Text>
+              }
+              {
+                (serv.actionRadius / 1000 < 25) &&
+                <Text>מרחק {serv.actionRadius / 1000} ק"מ</Text>
+              }
             </View>
           </View>
         </View>
-        
+
       </View>
       <View style={s.line} />
     </View>
@@ -187,8 +178,8 @@ const s = StyleSheet.create({
     height: '25%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start'
-    //  backgroundColor: 'olive'
+    justifyContent: 'space-between',
+  //  backgroundColor: 'olive'
   },
 
   name: {
@@ -206,8 +197,8 @@ const s = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
-    // backgroundColor: 'green'
+    justifyContent: 'space-between',
+  //   backgroundColor: 'green'
   },
 
   daysPanel: {
@@ -222,7 +213,7 @@ const s = StyleSheet.create({
   area: {
     width: '50%',
     height: '100%',
-   //  backgroundColor: "maroon" ,
+    //  backgroundColor: "maroon" ,
     alignItems: 'flex-end',
     justifyContent: 'center',
     paddingRight: 10
@@ -293,7 +284,9 @@ const s = StyleSheet.create({
 
   timeInfo: {
     height: '100%',
-    //   backgroundColor: 'peachpuff',
+    width: "48%",
+    paddingRight: 8,
+  //  backgroundColor: 'peachpuff',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
     flexDirection: 'row'

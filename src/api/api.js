@@ -26,8 +26,8 @@ export const feedbackAPI = {
         }
       }
 
-      try {        
-        const response = await axios(config)       
+      try {
+        const response = await axios(config)
         return response.data
       } catch (error) {
         console.log(error)
@@ -70,8 +70,8 @@ export const messageAPI = {
         }
       }
 
-      try {        
-        const response = await axios(config)       
+      try {
+        const response = await axios(config)
         return response.data
       } catch (error) {
         console.log(error)
@@ -93,7 +93,7 @@ export const messageAPI = {
         }
       }
 
-      try {       
+      try {
         const response = await axios(config)
         return JSON.stringify(response.data)
       } catch (error) {
@@ -138,38 +138,41 @@ export const userAPI = {
           email: `${email}`
         })
       )
-      .then(function (response) {
-        console.log(response)
-      })
-      .catch(function (error) {
-        console.log(error)
-      }),
+  /* .then(function (response) {
+     console.log(response)
+   })
+   .catch(function (error) {
+     console.log(error)
+   })*/
+  ,
 
-  register: (values, code) =>
-    instance.post(
-      'auth/register',
-      JSON.stringify({
-        name: `${values.name}`,
-        email: `${values.email}`,
-        phone: `${values.phone}`,
-        job: `${values.job}`,
-        referral: `${values.referral}`,
-        password: `${values.password}`,
-        address: {
-          city: `${values.city}`,
-          street: `${values.street}`,
-          house: values.house,
-          apt: values.apt,
-          lat: 10,
-          lon: 10
-        },
-        code: `${code}`
-      })
-    ),
+  register: (values, code) => instance.post(
+    'auth/register',
+    JSON.stringify({
+      name: `${values.name}`,
+      email: `${values.email}`,
+      phone: `${values.phone}`,
+      job: `${values.job}`,
+      referral: `${values.referral}`,
+      password: `${values.password}`,
+      address: {
+        city: `${values.city}`,
+        street: `${values.street}`,
+        house: values.house,
+        apt: values.apt,
+        lat: 10,
+        lon: 10
+      },
+      code: `${code}`
+    })
+  ).then(res => {
+    console.log(res)
+    return res
+  })
+
+  ,
 
   editProfile: async values => {
-    console.log('HUI HUI')
-    console.log(values)
 
     let data = {
       name: `${values.name}`,
@@ -209,14 +212,13 @@ export const userAPI = {
     }
   },
 
-  login: values =>
-    instance.post(
-      'auth/login',
-      JSON.stringify({
-        phone: `${values.phone}`,
-        password: `${values.password}`
-      })
-    ),
+  login: values => instance.post(
+    'auth/login',
+    JSON.stringify({
+      phone: `${values.phone}`,
+      password: `${values.password}`
+    })
+  ),
 
   forgotPass: async values =>
     instance.post(
@@ -261,13 +263,8 @@ export const userAPI = {
       }
 
       try {
-        console.log('DASHBOARD OK')
         const response = await axios(config)
-        const data = JSON.stringify(response.data)
-        console.log("ПОЛЯ ЮЗЕРА - АПИХА")
-       // console.log(data.id)
-        console.log(Object.keys(JSON.parse(data)).length)
-        return JSON.parse(data)
+        return response.data
       } catch (error) {
         console.log(error)
       }
@@ -365,13 +362,7 @@ export const userAPI = {
         data: data
       }
 
-      axios(config)
-        .then(function (response) {
-          console.log('Update Ok')
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      await axios(config)
     } catch (e) {
       // read error
     }
@@ -391,13 +382,7 @@ export const serviceAPI = {
         }
       }
 
-      axios(config)
-        .then(function (response) {
-          //      console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      await axios(config)
     } catch (e) {
       console.log(e)
     }
@@ -421,13 +406,7 @@ export const serviceAPI = {
         data
       }
 
-      axios(config)
-        .then(function (response) {
-          //(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      await axios(config)
     } catch (e) {
       console.log(e)
     }
@@ -447,13 +426,7 @@ export const serviceAPI = {
         data
       }
 
-      axios(config)
-        .then(function (response) {
-          //    console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      await axios(config)
     } catch (e) {
       console.log(e)
     }
@@ -473,13 +446,7 @@ export const serviceAPI = {
         data
       }
 
-      axios(config)
-        .then(function (response) {
-          //   console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      await axios(config)
     } catch (e) {
       console.log(e)
     }
@@ -504,11 +471,8 @@ export const serviceAPI = {
         data
       }
 
-      axios(config)
-        .then(function (response) {})
-        .catch(function (error) {
-          console.log(error)
-        })
+      await axios(config)
+
     } catch (e) {
       console.log(e)
     }
@@ -601,8 +565,8 @@ export const serviceAPI = {
 
       try {
         console.log('SEARCH OK')
-        const response = await axios(config)       
-        return JSON.stringify(response.data)
+        const response = await axios(config)
+        return response.data
       } catch (error) {
         console.log(error)
       }
@@ -614,7 +578,7 @@ export const serviceAPI = {
   deleteService: async id => {
     try {
       let token = await AsyncStorage.getItem('token')
-     
+
       let config = {
         method: 'delete',
         url: `http://52.48.233.122:3001/service/${id}`,
@@ -626,7 +590,7 @@ export const serviceAPI = {
 
       try {
         console.log('DELETE OK')
-        const response = await axios(config)        
+        const response = await axios(config)
         return JSON.stringify(response.data)
       } catch (error) {
         console.log(error)

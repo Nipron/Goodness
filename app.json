@@ -4,7 +4,7 @@
     "slug": "Goodness",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./Images/Logo4.png",
+    "icon": "./Images/Logo8.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -22,7 +22,7 @@
         "googleMapsApiKey": "AIzaSyCaZe06IKSzVqycHnVeB4I1c0MgUIB0xTg"
       },
       "bundleIdentifier": "maxim.gutmanovich.goodness",
-      "buildNumber": "0.3.0"
+      "buildNumber": "0.8.2"
     },
     "android": {
       "adaptiveIcon": {

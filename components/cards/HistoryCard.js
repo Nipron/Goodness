@@ -34,10 +34,10 @@ const HistoryCard = ({ item, toMe }) => {
 
     const name = partner.name
     const userId = partner.id
-    const avaPath = partner.avatar.path
+    const avaPath = partner.avatar ? partner.avatar.path : ''
     const rating = partner.avgRating
-    const date = !!item.feedback ? moment(item.feedback.createdAt).format('L') : "22/09/2021"
-    const time = !!item.feedback ? moment(item.feedback.createdAt).format('LT') : "12:06"
+    const date = !!item.feedback ? moment(item.feedback.createdAt).format('L') : "01/01/2021"
+    const time = !!item.feedback ? moment(item.feedback.createdAt).format('LT') : "00:00"
 
     const [newRating, setNewRating] = useState(3)
 

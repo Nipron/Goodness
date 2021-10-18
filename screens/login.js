@@ -20,7 +20,7 @@ import {
 } from 'react-native'
 import AppLoading from 'expo-app-loading'
 import { useSelector, useDispatch } from 'react-redux'
-
+import { updateAll, updateProfileThunk } from '../redux/store'
 
 import { useNetInfo } from '@react-native-community/netinfo'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
@@ -31,7 +31,7 @@ import ButtonBlue from '../src/ButtonBlue'
 import LogoGroup from '../src/LogoGroup'
 import ButtonYellow from '../src/ButtonYellow'
 import { messageAPI, userAPI } from '../src/api/api'
-import LoginLayout from '../components/layouts/LoginLayout2'
+import LoginLayout from '../components/layouts/LoginLayout'
 
 import { Formik } from 'formik'
 
@@ -39,8 +39,6 @@ import RegInput from '../components/inputs/RegInput'
 import PhoneIcon from '../Images/Phone.svg'
 import LockIcon from '../Images/LockSm.svg'
 import ArrowBack from '../Images/ArrowBack.svg'
-
-import { updateAll } from '../redux/store'
 
 import CloseIcon from '../Images/CloseIcon'
 import { g } from '../styles/global'
@@ -58,12 +56,14 @@ export default function Login(props) {
   const netInfo = useNetInfo()
   const [connected, setConnected] = useState(true)
 
+  const [firstTry, setFirstTry] = useState(false)
+
   useFocusEffect(
     React.useCallback(() => {
       let isActive = true
       if (isActive) {
         setConnected(netInfo.isConnected)
-       // if (!connected) navigation.navigate('Crash')
+        // if (!connected) navigation.navigate('Crash')
       }
 
       return () => {
@@ -85,14 +85,16 @@ export default function Login(props) {
     setLoading(true)
     const phoneClean = values.phone.replace(/[^\d]/g, '')
     await userAPI
-      .login({...values, phone: phoneClean})
+      .login({ ...values, phone: phoneClean })
       .then(response => {
+        console.log("GGGGG")
         userAPI.saveToken(response.data.access_token)
       })
       .then(() =>
         Promise.all([userAPI.dashboard(), messageAPI.getMessages()])
           .then(values => {
-            dispatch(updateAll(values[0]))
+            //  console.log(Object.keys(values[0]))
+            dispatch(updateProfileThunk())
             dispatch(setMessagesThunk(values[1]))
             navigation.navigate('Profile')
             setLoading(false)
@@ -100,12 +102,26 @@ export default function Login(props) {
       ).catch(function (error) {
         console.log('LOGIN NO GOOD')
         console.log(error)
-                Alert.alert("שְׁגִיאָה", connected ? "טעות במספר טלפון או סיסמה, נא לתקן" : "איו חיבור לאינטרנט, נא לנסות מאוחר יותר", [
-          { text: 'נסה שוב', onPress: () => {
-            console.log('alert wrong')
-            setLoading(false)
-          }}
-        ])
+        if (firstTry) {
+          Alert.alert("שגיאה", connected ? "טעות במספר טלפון או סיסמה, נא לתקן" : "מייל או סיסמא שגויים. אנא הרשמו", [
+            {
+              text: 'נסה שוב', onPress: () => {
+                setLoading(false)
+                setFirstTry(false)
+                navigation.navigate('Registration')
+              }
+            }
+          ])
+        } else {
+          Alert.alert("שגיאה", connected ? "טעות במספר טלפון או סיסמה, נא לתקן" : "איו חיבור לאינטרנט, נא לנסות מאוחר יותר", [
+            {
+              text: 'נסה שוב', onPress: () => {
+                setLoading(false)
+                setFirstTry(true)
+              }
+            }
+          ])
+        }
       })
   }
 
@@ -113,22 +129,30 @@ export default function Login(props) {
   const [modalCode, setModalCode] = useState(false)
   const [code, setCode] = useState(null)
 
+  useEffect(() => {
+    if (code && code.length === 5) {
+      sendCode()
+    }
+    return () => {
+      
+    }
+  }, [code])
+
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [confPass, setConfPass] = useState('')
-  
+
   const sendForNewPass = async () => {
     setLoading(true)
     const phoneClean = phone.replace(/[^\d]/g, '')
-    console.log(phoneClean)
     if (!!phoneClean && !!password && password === confPass) {
       try {
-        
+
         await userAPI
           .forgotPass({
             phone: phoneClean
           })
-          .then(res => {          
+          .then(res => {
             setPasswordBorderModal('')
             setModalPass(false)
             setModalCode(true)
@@ -138,23 +162,27 @@ export default function Login(props) {
             console.log(res.status)
           }*/)
       } catch (e) {
-      Alert.alert("אַזהָרָה", "מספר טלפון שגוי" , [
-        { text: 'נסה שוב', onPress: () => {
-          console.log('alert wrong')
-          navigation.navigate("Registration")
-          setModalPass(false)
-          setLoading(false)
-        } }
-      ])
+        Alert.alert("אַזהָרָה", "מספר טלפון שגוי", [
+          {
+            text: 'נסה שוב', onPress: () => {
+              console.log('alert wrong')
+              navigation.navigate("Registration")
+              setModalPass(false)
+              setLoading(false)
+            }
+          }
+        ])
         setLoading(false)
-       // console.log(e)
+        // console.log(e)
       }
     } else {
       Alert.alert("משהו השתבש!", connected ? "טעות במספר טלפון או סיסמה, נא לתקן" : "טעות במספר טלפון או סיסמה, נא לתקן. ", [
-        { text: 'נסה שוב', onPress: () => {
-          console.log('alert wrong')
-          setLoading(false)
-        } }
+        {
+          text: 'נסה שוב', onPress: () => {
+            console.log('alert wrong')
+            setLoading(false)
+          }
+        }
       ])
       setPasswordBorderModal('red')
     }
@@ -178,25 +206,25 @@ export default function Login(props) {
       await userAPI
         .login({ phone, password })
         .then(response => userAPI.saveToken(response.data.access_token))
-        .then(() =>
-          userAPI.dashboard().then(data => {
-            dispatch(updateAll(data))
-            navigation.navigate('Profile')
-            setModalCode(false)
-            setPassword('')
-            setConfPass('')
-            setPhone('')
-            setLoading(false)
-          })
-        )
+        .then(() => {
+          dispatch(updateProfileThunk())
+          setModalCode(false)
+          setPassword('')
+          setConfPass('')
+          setPhone('')
+          setLoading(false)
+          navigation.navigate('Profile')
+        })
         .catch(function (error) {
           console.log('LOGIN NO GOOD')
           console.log(error)
           Alert.alert("משהו השתבש!", connected ? "טעות במספר טלפון או סיסמה, נא לתקן" : "טעות במספר טלפון או סיסמה, נא לתקן. ", [
-            { text: 'נסה שוב', onPress: () => {
-              console.log('alert wrong')
-              setLoading(false)
-            } }
+            {
+              text: 'נסה שוב', onPress: () => {
+                console.log('alert wrong')
+                setLoading(false)
+              }
+            }
           ])
         })
     } catch (e) {
@@ -251,8 +279,8 @@ export default function Login(props) {
                           keyboardType='phone-pad'
                           placeholder='+972 54 1234567'
                           borderColor={phoneBorder}
-                          maxLength={12}
-                          setFocus={() => {}}
+                          maxLength={20}
+                          setFocus={() => { }}
                         >
                           <PhoneIcon />
                         </RegInput>
@@ -263,7 +291,7 @@ export default function Login(props) {
                           borderColor={passwordBorderModal}
                           autoCapitalize='none'
                           secureTextEntry={true}
-                          setFocus={() => {}}
+                          setFocus={() => { }}
                         >
                           <LockIcon />
                         </RegInput>
@@ -275,7 +303,7 @@ export default function Login(props) {
                           borderColor={passwordBorderModal}
                           autoCapitalize='none'
                           secureTextEntry={true}
-                          setFocus={() => {}}
+                          setFocus={() => { }}
                         >
                           <LockIcon />
                         </RegInput>
@@ -359,7 +387,7 @@ export default function Login(props) {
                     keyboardType='phone-pad'
                     placeholder='+972 54 1234567'
                     borderColor={phoneBorder}
-                    maxLength={12}
+                    maxLength={20}
                     setFocus={() => { }}
                   >
                     <PhoneIcon />

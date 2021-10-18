@@ -94,7 +94,7 @@ export default function SmallLayout (props) {
             <View style={s.logoBlock}>
               <Image
                 style={s.logo}
-                source={require('../../Images/Logo1.png')}
+                source={require('../../Images/Logo2.png')}
               />
               <Text style={g.text24_700_white}>{props.text}</Text>
             </View>
@@ -104,7 +104,7 @@ export default function SmallLayout (props) {
 
       <View style={s.childrenBlockOuter}>{props.children}</View>
 
-      <Footer hide={props.hide} />
+      <Footer hide={props.hide} color={'red'} />
     </KeyboardAvoidingView>
   )
 }

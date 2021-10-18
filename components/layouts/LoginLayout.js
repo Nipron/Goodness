@@ -1,49 +1,82 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Pressable, Alert, Button, TouchableWithoutFeedback, ImageBackground, KeyboardAvoidingView, Keyboard } from 'react-native';
-import ButtonBlue from '../../src/ButtonBlue';
-import FooterHome from '../footer/FooterHome';
+import React, {useState} from 'react'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Pressable,
+  Alert,
+  Button,
+  TouchableWithoutFeedback,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Keyboard
+} from 'react-native'
+import ButtonBlue from '../../src/ButtonBlue'
 
 import { useNavigation } from '@react-navigation/native'
+import FooterHome from '../footer/FooterHome'
 
-export default function LoginLayout(props) {
+export default function LoginLayout2(props) {
+  const navigation = useNavigation()
 
-    const navigation = useNavigation()
+  const [checked, setChecked] = useState(false)
 
-    return (
-        <KeyboardAvoidingView style={s.containerMain} behavior="padding">
-            <View style={s.containerBlu}>
-                <ImageBackground source={require('../../Images/Background.png')}
-                    resizeMethod={'auto'} style={s.background}>
-                    {props.children}
-                </ImageBackground>
-            </View>
-            <ButtonBlue name="הרשמה" bottom={0} onPress={() => navigation.navigate('Registration')} />
-            <FooterHome />
-        </KeyboardAvoidingView>
-    );
+  return (
+    <View
+      style={s.goodnessBlock}
+
+    >
+      <View style={s.containerBlu}>
+        <ImageBackground
+          source={require('../../Images/Background.png')}
+          resizeMethod={'auto'}
+          style={s.background}
+        >
+          {props.children}
+        </ImageBackground>
+      </View>
+
+      <ButtonBlue name="הרשמה" bottom={0} onPress={() => {
+                if (checked) {
+                    navigation.navigate('Registration')
+                } else {
+                    Alert.alert('הסכמה לתנאי השימוש', 'אנא קרא את תנאי השימוש וסמן את תיבת הסימון', [{
+                        text: 'אישור', onPress: () => {}}])
+                }                
+            }
+            } />
+      <FooterHome checked={checked} setChecked={setChecked} />
+    </View>
+  )
 }
 
 const s = StyleSheet.create({
-    containerMain: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'flex-start'
-    },
+  goodnessBlock: {
+    height: Dimensions.get("window").height,
+    alignItems: 'center',
+    justifyContent: "flex-end"
+  },
 
-    containerBlu: {
-        height: "88%",
-        width: "100%",
-        alignItems: 'center',
-        justifyContent: 'flex-start'
-    },
+  containerBlu: {
+    height: Dimensions.get("window").height * 0.88,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    //     backgroundColor: "pink"
+  },
 
-    background: {
-        flex: 1,
-        width: "100%",
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottomLeftRadius: 50,
-        borderBottomRightRadius: 50,
-        overflow: 'hidden',
-    }
-});
+  background: {
+    height: Dimensions.get("window").height * 0.88,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+    overflow: 'hidden'
+  }
+})

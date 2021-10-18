@@ -20,28 +20,28 @@ const RatingPanel = ({ rating, setRating }) => {
                 <TouchableOpacity onPress={() => setRating(4)}>
                     <StarEmpty style={{ transform: [{ scaleX: scaleStar }, { scaleY: scaleStar }] }} />
                 </TouchableOpacity> :
-                <TouchableOpacity onPress={() => setRating(3)}>
+                <TouchableOpacity onPress={(rating > 4) ? () => setRating(4) : () => setRating(3)}>
                     <StarFull style={{ transform: [{ scaleX: scaleStar }, { scaleY: scaleStar }] }} />
                 </TouchableOpacity>}
             {(rating < 3) ?
                 <TouchableOpacity onPress={() => setRating(3)}>
                     <StarEmpty style={{ transform: [{ scaleX: scaleStar }, { scaleY: scaleStar }] }} />
                 </TouchableOpacity> :
-                <TouchableOpacity onPress={() => setRating(2)}>
+                <TouchableOpacity onPress={(rating > 3) ? () => setRating(3) : () => setRating(2)}>
                     <StarFull style={{ transform: [{ scaleX: scaleStar }, { scaleY: scaleStar }] }} />
                 </TouchableOpacity>}
             {(rating < 2) ?
                 <TouchableOpacity onPress={() => setRating(2)}>
                     <StarEmpty style={{ transform: [{ scaleX: scaleStar }, { scaleY: scaleStar }] }} />
                 </TouchableOpacity> :
-                <TouchableOpacity onPress={() => setRating(1)}>
+                <TouchableOpacity onPress={(rating > 2) ? () => setRating(2) : () => setRating(1)}>
                     <StarFull style={{ transform: [{ scaleX: scaleStar }, { scaleY: scaleStar }] }} />
                 </TouchableOpacity>}
             {(rating < 1) ?
                 <TouchableOpacity onPress={() => setRating(1)}>
                     <StarEmpty style={{ transform: [{ scaleX: scaleStar }, { scaleY: scaleStar }] }} />
                 </TouchableOpacity> :
-                <TouchableOpacity onPress={() => setRating(0)}>
+                <TouchableOpacity onPress={(rating > 1) ? () => setRating(1) : () => setRating(0)}>
                     <StarFull style={{ transform: [{ scaleX: scaleStar }, { scaleY: scaleStar }] }} />
                 </TouchableOpacity>}
 

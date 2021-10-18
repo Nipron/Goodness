@@ -16,9 +16,8 @@ const AsteriskInput = ({code, setCode}) => {
     const handleChange = value => {
         //setValue(value)
         setCode(value)
-        const arr = value.split('').map(int => parseInt(int))
-      //  console.log(value)
-     //   console.log(code)
+        console.log(value.length)
+        const arr = value.split('').map(int => parseInt(int))       
         setNum1(arr[0]) 
         setNum2(arr[1])    
         setNum3(arr[2])    

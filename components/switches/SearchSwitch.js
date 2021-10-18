@@ -39,11 +39,11 @@ const SearchSwitch = ({ createMode, setCreateMode, logged, closeAll }) => {
                     setCreateMode(!createMode)
                 }
                 } >
-                    <Text style={[g.text20_400_grey, s.switchText]}>חיפוש שירות</Text>
+                    <Text style={[g.text18_400_grey, s.switchText]}>חיפוש שירות</Text>
                     <SearchGrey style={[{ transform: [{ scaleX: scaleSearch }, { scaleY: scaleSearch }] }, s.searchIcon]} />
                 </TouchableOpacity >
                 <View style={s.createBlock}>
-                    <Text style={[g.text20_400_blue, s.switchText]}>הצעת שירות</Text>
+                    <Text style={[g.text18_400_blue, s.switchText]}>הצעת שירות</Text>
                     <Hands style={[{ transform: [{ scaleX: scaleHands }, { scaleY: scaleHands }] }, s.searchIcon]} />
                 </View>
             </View>

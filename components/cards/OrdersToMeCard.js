@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
 
 import AvatarPlain from '../../Images/AvatarPlain.jpg'
-import Stars from '../../Images/Stars.svg'
 import Repair from '../../Images/Repair.svg'
 import CheckGrey from '../../Images/CheckGrey.svg'
 import CheckGreen from '../../Images/CheckGreen.svg'
@@ -14,7 +13,7 @@ import Time from '../../Images/Time.svg'
 
 import { g } from '../../styles/global'
 import { serviceAPI, userAPI } from '../../src/api/api';
-import { updateAll } from '../../redux/store';
+import { updateProfileThunk } from '../../redux/store';
 import { setTempUserThunk } from '../../redux/tempUserReducer';
 import RatingForCardPanel from '../panels/RatingForCardPanel';
 
@@ -30,7 +29,7 @@ const OrdersToMeCard = ({ item, toMe }) => {
 
     const name = partner.name
     const userId = partner.id
-    const avaPath = partner.avatar.path
+    const avaPath = partner.avatar ? partner.avatar.path : ''
     const rating = partner.avgRating
     const date = moment(item.createdAt).format('L')
     const time = moment(item.createdAt).format('LT')
@@ -42,17 +41,21 @@ const OrdersToMeCard = ({ item, toMe }) => {
     const scaleRepair = 1.2
 
     const handelDone = async () => {
-        await serviceAPI.doneService(item.id)
-        await userAPI.dashboard()
-            .then(data => {
-                dispatch(updateAll(data))
-                // navigation.navigate('Profile')
-            })
+        try {
+            await serviceAPI.doneService(item.id)
+            dispatch(updateProfileThunk())
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     const goToPersonalInfo = () => {
-        dispatch(setTempUserThunk(userId));
-        navigation.navigate('UserInfo')
+        try {
+            dispatch(setTempUserThunk(userId));
+            navigation.navigate('UserInfo')
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     return (
@@ -75,7 +78,6 @@ const OrdersToMeCard = ({ item, toMe }) => {
                     <Text style={[g.text10_400_blue, s.dateStyle]}>{date}</Text>
                     <Date style={{ transform: [{ scaleX: scaleDate }, { scaleY: scaleDate }] }} />
                 </View>
-                
             </View>
             <View style={s.jobIcon}>
                 <Repair style={{ transform: [{ scaleX: scaleRepair }, { scaleY: scaleRepair }] }} />
@@ -104,25 +106,25 @@ const s = StyleSheet.create({
         justifyContent: 'space-between',
         width: "100%",
         height: 80,
-    //    backgroundColor: "ivory",
+        //    backgroundColor: "ivory",
         borderRadius: 20,
         marginVertical: 5,
-      //  overflow: 'hidden',
+        //  overflow: 'hidden',
         backgroundColor: "#FFFFFF",
         paddingVertical: 12,
         shadowOffset: {
             width: 3,
             height: 3
-          },
-          shadowOpacity: 0.1,
-          // shadowColor: "blue",
-          shadowRadius: 2
+        },
+        shadowOpacity: 0.1,
+        // shadowColor: "blue",
+        shadowRadius: 2
     },
 
     buttons: {
         height: "100%",
         width: "12%",
-     //   backgroundColor: "plum",
+        //   backgroundColor: "plum",
         paddingVertical: 12,
         paddingHorizontal: 8,
         alignItems: 'center',
@@ -132,15 +134,15 @@ const s = StyleSheet.create({
     jobInfo: {
         height: "100%",
         width: "38%",
-    //    backgroundColor: "peachpuff",
+        //    backgroundColor: "peachpuff",
         alignItems: 'flex-end',
         justifyContent: 'space-evenly',
     },
 
     jobTitle: {
         height: "30%",
-      //  width: "100%",
-     //   backgroundColor: "green",
+        //  width: "100%",
+        //   backgroundColor: "green",
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
         marginRight: 4
@@ -149,7 +151,7 @@ const s = StyleSheet.create({
     dateTime: {
         height: "30%",
         width: "100%",
-    //    backgroundColor: "navy",
+        //    backgroundColor: "navy",
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
@@ -158,7 +160,7 @@ const s = StyleSheet.create({
     time: {
         height: "30%",
         // width: "40%",
-      //  backgroundColor: "olive",
+        //  backgroundColor: "olive",
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
@@ -168,7 +170,7 @@ const s = StyleSheet.create({
     date: {
         height: "30%",
         // width: "40%",
-     //   backgroundColor: "gray",
+        //   backgroundColor: "gray",
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
@@ -184,7 +186,7 @@ const s = StyleSheet.create({
         height: "100%",
         width: "14%",
         padding: 5,
-    //    backgroundColor: "lime",
+        //    backgroundColor: "lime",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -193,14 +195,14 @@ const s = StyleSheet.create({
         height: "100%",
         //  maxWidth: "22%",
         width: "21%",
-     //   backgroundColor: "magenta",
+        //   backgroundColor: "magenta",
         justifyContent: 'center',
         alignItems: 'center',
         padding: 5,
     },
 
     nameStyle: {
-    //    backgroundColor: "yellow",
+        //    backgroundColor: "yellow",
         marginTop: 6,
         marginBottom: -6,
         textAlign: 'right'
@@ -216,7 +218,7 @@ const s = StyleSheet.create({
     avatarBlock: {
         height: "100%",
         width: "15%",
-    //    backgroundColor: "pink",
+        //    backgroundColor: "pink",
         alignItems: 'flex-start',
         justifyContent: 'center',
     },
@@ -224,7 +226,7 @@ const s = StyleSheet.create({
     avatar: {
         height: 40,
         width: 40,
-      //  backgroundColor: "azure",
+        //  backgroundColor: "azure",
         borderRadius: 20,
         overflow: 'hidden'
     },

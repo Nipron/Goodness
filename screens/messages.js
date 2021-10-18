@@ -18,8 +18,24 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { messageAPI, serviceAPI, userAPI } from '../src/api/api'
 import g from '../styles/global'
 
+import { setMessagesThunk } from '../redux/messagesReducer'
+
 export default function Messages ({ navigation }) {
   const messages = useSelector(state => state.messages)
+  const dispatch = useDispatch()
+
+  useFocusEffect(
+    React.useCallback(() => {
+      let loop = setInterval(() => {
+        console.log("Refresh Message")
+        dispatch(setMessagesThunk())
+      }, 6000)
+      return () => {
+        clearInterval(loop)
+      }
+    }, [])
+  );
+
  /* const [messages, setMessages] = useState(m)
 
   useFocusEffect(

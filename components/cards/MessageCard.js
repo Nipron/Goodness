@@ -24,7 +24,6 @@ import BinRed from '../../Images/BinRed.svg'
 
 import { g } from '../../styles/global'
 import { messageAPI, serviceAPI, userAPI, commonAPI } from '../../src/api/api'
-import { updateAll } from '../../redux/store'
 import { setTempUserThunk } from '../../redux/tempUserReducer'
 
 import { setMessagesThunk } from '../../redux/messagesReducer'
@@ -44,12 +43,17 @@ const MessageCard = ({ m }) => {
   const scaleTime = 1.1
   const scaleArrow = 1.4
 
+  const path = user.avatar ? user.avatar.path : ''
+
   const date = moment(m.createdAt).format('L')
   const time = moment(m.createdAt).format('LT')
 
   const [header, setHeader] = useState('הודעת מערכת')
 
   const scaleRedX = 1.2
+
+//  console.log(m.type)
+//  console.log(m.message.status)
 
   useEffect(() => {
     switch (m.type) {
@@ -60,7 +64,7 @@ const MessageCard = ({ m }) => {
       case 'contract_changed':
         switch (m.message.status) {
           case 'approved':
-            setHeader('הזמנתכם אושרה')
+            setHeader('העבודה שלך התקבלה')
             break
           case 'done':
             setHeader('משימתכם בוצעה בהצלחה')
@@ -89,31 +93,43 @@ const MessageCard = ({ m }) => {
 
   const handleOpen = async () => {
     if (!open) {
-      setLoading(true)
+      //  setLoading(true)
+      function delay(ms) {
+        return new Promise((resolve, reject) => {
+          setTimeout(resolve, ms);
+        });
+      }
       await messageAPI.readMessage(m.id)
-      dispatch(setMessagesThunk())
+        .then(res => { return delay(100) })
+        .then(res => dispatch(setMessagesThunk()))
       setOpen(true)
-      setLoading(false)
+      //  setLoading(false)
     }
 
   }
 
   const handleDelete = async () => {
-    setLoading(true)
+    //  setLoading(true)
+    function delay(ms) {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, ms);
+      });
+    }
     await messageAPI.deleteMessage(m.id)
-    dispatch(setMessagesThunk())
-    setLoading(false)
+      .then(res => { return delay(100) })
+      .then(res => dispatch(setMessagesThunk()))
+    //   setLoading(false)
   }
 
   const goToPersonalInfo = async () => {
-    setLoading(true)
+    //   setLoading(true)
     dispatch(setTempUserThunk(user.id))
     navigation.navigate('UserInfo')
-    setLoading(false)
+    //   setLoading(false)
   }
 
   return (
-    <View style={{alignItems: "center"}}>
+    <View style={{ alignItems: "center" }}>
       <Spinner
         visible={loading}
         textContent={'טוען...'}
@@ -153,7 +169,7 @@ const MessageCard = ({ m }) => {
             </View>
           </View>
           <View style={s.body}>
-            <TouchableOpacity onPress={handleDelete} style={{ marginLeft: 20}}>
+            <TouchableOpacity onPress={handleDelete} style={{ marginLeft: 20 }}>
               <BinRed
                 style={{
                   transform: [{ scaleX: scaleRedX }, { scaleY: scaleRedX }]
@@ -165,8 +181,8 @@ const MessageCard = ({ m }) => {
               <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
                 <ImageBackground
                   source={
-                    user.avatar.path
-                      ? { uri: `http://52.48.233.122:3001/${user.avatar.path}` }
+                    path
+                      ? { uri: `http://52.48.233.122:3001/${path}` }
                       : AvatarPlain
                   }
                   resizeMethod={'auto'}
@@ -195,7 +211,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    
+
   },
 
   info: {
@@ -210,23 +226,23 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  //     backgroundColor: 'olive'
+    //     backgroundColor: 'olive'
   },
 
   body: {
     width: '100%',
     height: '65%',
-   // paddingLeft: 20,
+    // paddingLeft: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  //    backgroundColor: 'orange'
+    //    backgroundColor: 'orange'
   },
 
   icon: {
     height: '100%',
     width: '20%',
-//     backgroundColor: 'pink',
+    //     backgroundColor: 'pink',
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -271,7 +287,7 @@ const s = StyleSheet.create({
   timeInfo: {
     height: '100%',
     width: "50%",
-   //    backgroundColor: 'peachpuff',
+    //    backgroundColor: 'peachpuff',
     alignItems: 'center',
     justifyContent: 'flex-end',
     flexDirection: 'row',
@@ -300,8 +316,8 @@ const s = StyleSheet.create({
 
   from: {
     height: '100%',
-        width: "50%",
-  //     backgroundColor: 'gray',
+    width: "50%",
+    //     backgroundColor: 'gray',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',

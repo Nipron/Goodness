@@ -6,6 +6,7 @@ import { serviceAPI } from '../../src/api/api'
 
 import { useNavigation } from '@react-navigation/native'
 import { updateProfileThunk } from '../../redux/store'
+import { userAPI } from '../../src/api/api'
 
 import Spinner from 'react-native-loading-spinner-overlay'
 
@@ -14,16 +15,33 @@ const ButtonYellowSearch = props => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
 
-  const onPress = async () => {
+  const onPress = async () => {    
     if (props.logged) {
+      if (props.balance === 0) {
+        Alert.alert('אין לך מספיק לבבות', 'נסה ליצור שירותים חדשים או הזמין חברים חדשים', [{
+          text: 'אישור',
+          onPress: () => {          } 
+        }])
+      }
       setLoading(true)
+      try { 
 
+        function delay(ms) {
+          return new Promise((resolve, reject) => {
+            setTimeout(resolve, ms);
+          });
+        }
+        
+     /*   const response = */ await serviceAPI.orderService(props.chosenId, props.date)
+      //  .then(res => { return delay(600)})
+     //   .then(res => userAPI.dashboard())          
+ 
+       // const response = await userAPI.dashboard()
 
-      try {
-        await serviceAPI.orderService(props.chosenId, props.date)
+      //  console.log("КОЛ-ВО ЗАКАЗОВ - BUTTON", response.orders.length)     
         dispatch(updateProfileThunk())
   
-        Alert.alert('מזל טוב !', 'המשימה נוספה בהצלחה', [{
+        Alert.alert('מזל טוב!', 'שירות הוזמן בהצלחה', [{
           text: 'אישור',
           onPress: () => {
             setLoading(false)
@@ -32,10 +50,7 @@ const ButtonYellowSearch = props => {
         }])
       } catch (e) {
         console.log(e)
-      }
-
-   
-
+      }  
     } else {
       Alert.alert('אנא הירשם', 'הפניה לרישום', [{
         text: 'אישור',

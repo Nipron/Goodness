@@ -11,7 +11,7 @@ import g from '../../styles/global'
 
 const StatusPanel = ({ status }) => {
 
-  console.log(status)
+//  console.log(status)
 
   return (
     <View style={s.status2}>
@@ -20,7 +20,7 @@ const StatusPanel = ({ status }) => {
           source={require('../../Images/MedalPlatinum.png')}
           style={s.imageBack}
         />
-        <Text style={g.text12_600_blue}>פְּלָטִינָה</Text>
+        <Text style={g.text12_600_blue}>פלטינה</Text>
         {status !== 'platinum' && <View style={s.plug}/>}
       </View>
       <View style={s.roll2}>
@@ -44,7 +44,7 @@ const StatusPanel = ({ status }) => {
           source={require('../../Images/MedalBronze.png')}
           style={s.imageBack}
         />
-        <Text style={g.text12_600_blue}>בְּרוֹנזָה</Text>
+        <Text style={g.text12_600_blue}>ארד</Text>
        {/*status !== 'bronze' && <View style={s.plug}/>*/}
       </View>
     </View>

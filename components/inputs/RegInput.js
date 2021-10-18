@@ -35,7 +35,7 @@ const [focus, setFocus] = useState(false)
         secureTextEntry={props.secureTextEntry}
         onFocus={() => props.setFocus(true)}
         onBlur={() => props.setFocus(false)}
-        maxLength={20}
+        maxLength={props.maxLength || 20}
       ></TextInput>
       <View style={s.icon}>
         <View style={s.svg}>{props.children}</View>

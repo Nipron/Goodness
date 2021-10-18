@@ -27,13 +27,9 @@ import MarkerBlue from '../Images/MarkerBlue.svg'
 import ButtonBlue from '../src/ButtonBlue'
 import { serviceAPI, userAPI } from '../src/api/api'
 
-import CloseIcon from '../Images/CloseIcon'
-import SSearch from '../Images/sSearch.svg'
 import { g } from '../styles/global'
-import { mapStyle } from '../styles/mapStyles'
-import AsteriskInput from '../components/inputs/AsteriskInput'
 
-import { updateAll } from '../redux/store'
+import { updateProfileThunk } from '../redux/store'
 
 import { Formik } from 'formik'
 import RegInput from '../components/inputs/RegInput'
@@ -74,9 +70,13 @@ export default function Create() {
   const scale = 1.4
 
   //Categories lists
+
+  const sortedCats = cats.sort((a, b) => a.id - b.id)
+
   const [cats1, setCats1] = useState(
-    cats.map(cat => ({ label: cat.title, value: cat.title }))
+    sortedCats.map(cat => ({ label: cat.title, value: cat.title }))
   )
+
   const [cats2, setCats2] = useState([])
   const [cats3, setCats3] = useState([])
   const [cats4, setCats4] = useState([
@@ -93,13 +93,6 @@ export default function Create() {
   const [cat4, setCat4] = useState('')
   const [catForSearch, setCatForSearch] = useState(null)
 
-  const [allowScroll, setAllowScroll] = useState(false)
-
-  useEffect(() => {
-    //  console.log("Hello from UseState")
-    //   console.log(coordinate)
-  }, [coordinate])
-
   //DropDow open
   const [createMode, setCreateMode] = useState(false)
   const [cat1open, setCat1open] = useState(false)
@@ -114,20 +107,21 @@ export default function Create() {
 
   const [distance, setDistance] = useState(25000)
   const [distanceText, setDistanceText] = useState('')
+  const [searchDistance, setSearchDistance] = useState(25000)
 
   useEffect(() => {
     switch (distance) {
-      case 1:
+      case 25001:
         setDistanceText('מרחק 1 ק"מ')
         return
-      case 5:
-        setDistanceText('מרחק 5 ק"מ')
+      case 25007:
+        setDistanceText('מרחק 7 ק"מ')
         return
-      case 10:
-        setDistanceText('מרחק 10 ק"מ')
-        return
-      case 25:
+      case 25025:
         setDistanceText('אזור העיר')
+        return
+      case 24999:
+        setDistanceText('בכתובת שלי')
         return
       case 25000:
         setDistanceText('Online')
@@ -137,8 +131,8 @@ export default function Create() {
   }, [distance])
 
   const [coordinate, setCoordinate] = useState({
-    latitude: 32.018,
-    longitude: 34.83
+    latitude: 32.0853,
+    longitude: 34.7818
   })
 
   const dispatch = useDispatch()
@@ -168,26 +162,31 @@ export default function Create() {
   }, [])
 
   const catValueChange1 = cat => {
-    setScrollTop(true)
 
-    setCat1(cat)
-    setCat2('')
-    setCats2([])
-    setCat3('')
-    setCats3([])
-    setReadyToSearch(false)
+    if (cat) {
+      setScrollTop(true)
 
-    let i = cats.map(el => el.title).indexOf(cat)
-    if (cats[i].children.length) {
-      let cats2 = cats[i].children.map(cat => ({
-        label: cat.title,
-        value: cat.title
-      }))
-      setCats2(cats2)
-    } else {
-      let id = cats[i].id
-      setCatForSearch(id)
-      //  console.log(`Cat for serach : ${id}`)
+      setCat1(cat)
+      setCat2('')
+      setCats2([])
+      setCat3('')
+      setCats3([])
+      setReadyToSearch(false)
+
+      let i = cats.map(el => el.title).indexOf(cat)
+      if (cats[i].children.length) {
+        let cats2 = cats[i].children.map(cat => ({
+          label: cat.title,
+          value: cat.title,
+          id: cat.id
+        }))
+        let sortedCats2 = cats2.sort((a, b) => a.id - b.id)
+        setCats2(sortedCats2)
+      } else {
+        let id = cats[i].id
+        setCatForSearch(id)
+        //  console.log(`Cat for serach : ${id}`)
+      }
     }
   }
 
@@ -206,9 +205,11 @@ export default function Create() {
       if (!!cat2 && cats[u].children[w].children.length) {
         let cats3 = cats[u].children[w].children.map(cat => ({
           label: cat.title,
-          value: cat.title
+          value: cat.title,
+          id: cat.id
         }))
-        setCats3(cats3)
+        let sortedCats3 = cats3.sort((a, b) => a.id - b.id)
+        setCats3(sortedCats3)
       } else {
         let id = cats[u].children[w].id
         setCatForSearch(id)
@@ -276,6 +277,7 @@ export default function Create() {
           setAllowScroll(readyToSearch)
       }, [readyToSearch])*/
 
+
   const [loading, setLoading] = useState(false)
 
   const handleCreate = async () => {
@@ -291,9 +293,8 @@ export default function Create() {
       weekDays: [...days]
     })
 
-    const data = await userAPI.dashboard()
-    dispatch(updateAll(data))
-    Alert.alert('.מזל טוב!', 'יצרת בהצלחה שירות חדש', [
+    dispatch(updateProfileThunk())
+    Alert.alert('מזל טוב!', 'צרת בהצלחה שירות חדש', [
       {
         text: 'אישור', onPress: () => {
           setLoading(false)
@@ -305,7 +306,13 @@ export default function Create() {
 
   const handleSearch = async () => {
 
-    console.log('SEARCH')
+    let distBetween = (coor) => {
+      const leg1 = coordinate.latitude - coor[0]
+      const leg2 = coordinate.longitude - coor[1]
+      return Math.hypot(leg1, leg2)
+    }
+
+  //  console.log('SEARCH')
     let data
     if (logged) {
       try {
@@ -314,23 +321,65 @@ export default function Create() {
           coordinate: coordinate,
           date: date.dateString
         })
-        const unsortedResult = JSON.parse(data)
-        const result = unsortedResult.sort((a, b) => b.id - a.id)
-        setResult(result)       
+        let filteredData
+        if (data) {
+          if (searchDistance === 24999) {
+            //  filteredData = data.filter(item => (distBetween(item.coordinates.coordinates) <= 0.4545 && distBetween(item.coordinates.coordinates) >= -0.4545))
+            // filteredData = data.filter(item => item.actionRadius === 24999000)
+            filteredData = data
+          }
+          if (searchDistance === 0) {
+            filteredData = data.filter(item => {
+             // console.log("DDD", item.actionRadius)
+             // console.log("FFF", distBetween(item.coordinates.coordinates) * 110)
+             // console.log("RRRRR", (item.actionRadius - 25000000) / 110000)
+              return (
+                (
+                  (item.actionRadius !== 24999000)
+                  && (distBetween(item.coordinates.coordinates) <= (item.actionRadius - 25000000) / 110000)
+                )
+                || (item.actionRadius === 25000000)
+              )
+            })
+          }
+
+          if (searchDistance === 25000) {
+            filteredData = data.filter(item => item.actionRadius === 25000000)
+          }
+
+          const sortedData = filteredData ? filteredData.sort((a, b) => distBetween(a.coordinates.coordinates) - distBetween(b.coordinates.coordinates)) : []
+          setResult(sortedData)
+
+          if (filteredData.length === 0) {
+            Alert.alert('לא נמצא דבר', 'לא נמצא שירות המבוקש, נא לשנות פרמטרים של החיפוש', [
+              {
+                text: 'אישור', onPress: () => {
+                }
+              }
+            ])
+          }
+        }
       } catch (e) {
         console.log(e)
       }
     } else {
       try {
-        serviceAPI
-          .searchServicePublic({
-            categoryId: catForSearch,
-            coordinate: coordinate,
-            date: date.dateString
-          })
-          .then(res => {
-            setResult(JSON.parse(res))
-          })
+        data = serviceAPI.searchServicePublic({
+          categoryId: catForSearch,
+          coordinate: coordinate,
+          date: date.dateString
+        })
+        const result = data.sort((a, b) => b.id - a.id)
+        setResult(result)
+
+        if (data.length === 0) {
+          Alert.alert('לא נמצא דבר', 'לא נמצא שירות המבוקש, נא לשנות פרמטרים של החיפוש', [
+            {
+              text: 'אישור', onPress: () => {
+              }
+            }
+          ])
+        }
 
       } catch (e) {
         console.log(e)
@@ -338,14 +387,7 @@ export default function Create() {
     }
     // console.log("gggg")
     // console.log(data)
-    if (data.length === 2) {
-      Alert.alert('לא נמצא דבר', 'לא נמצא שירות המבוקש, נא לשנות פרמטרים של החיפוש', [
-        {
-          text: 'אישור', onPress: () => {
-          }
-        }
-      ])
-    }
+
 
 
   }
@@ -368,15 +410,22 @@ export default function Create() {
   }, [createMode])
 
   const closeAll = () => {
+
     setCats2([])
     setCats3([])
     setCat1open(false)
     setCat2open(false)
     setCat3open(false)
+    setCat1('')
+    //  setCat2('')
+    //  setCat3('')
   }
 
   //<TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
   //</TouchableWithoutFeedback>
+
+ // console.log(distance)
+
   return (
     <View style={s.mainContainer}>
 
@@ -411,9 +460,20 @@ export default function Create() {
         logged={logged}
         text={createMode ? 'הצעת שירות' : 'חיפוש שירות'}
       >
-        <View style={s.description}>
-          <Text style={[g.text17_400_white, { color: "#7A839B", textAlign: "center" }]}>{createMode ? `בבקשה תציעו שירות שאתם מעוניינים לתת. תבחרו מקום ומרחק מקסימלי ממקומכם בו תוכלו לספק את השירות. כמו כן ניתן לבחור ימי שבוע להספקת השירות.` : `נא בחרו שירות שאתם מעוניינים לקבל. כמו כן תבחרו מקום לקבלת השירות.`}</Text>
-        </View>
+
+        {
+          createMode ?
+            <View style={s.description}>
+              <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>בבקשה תציעו שירות שאתם מעוניינים לתת.</Text>
+              <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>תבחרו מקום ומרחק מקסימלי ממקומכם</Text>
+              <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>בו תוכלו לספק את השירות.</Text>
+              <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>כמו כן ניתן לבחור ימי שבוע להספקת השירות.</Text>
+            </View> :
+            <View style={s.description}>
+              <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>נא בחרו שירות שאתם מעוניינים לקבל.</Text>
+              <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>כמו כן תבחרו מקום לקבלת השירות.</Text>
+            </View>
+        }
         <View style={s.outer}>
           <SearchSwitch
             createMode={createMode}
@@ -442,7 +502,7 @@ export default function Create() {
                   style={s.picker}
                   placeholder='אנא בחר קטגוריה'
                   // containerStyle={s.container}
-                  textStyle={[g.text16_400_blue, s.text]}
+                  textStyle={[g.text18_400_blue, s.text]}
                   open={cat1open}
                   value={cat1}
                   items={cats1}
@@ -463,7 +523,7 @@ export default function Create() {
                     style={s.picker}
                     placeholder='אנא בחר תת קטגוריה'
                     // containerStyle={s.container}
-                    textStyle={[g.text16_400_blue, s.text]}
+                    textStyle={[g.text18_400_blue, s.text]}
                     open={cat2open}
                     value={cat2}
                     items={cats2}
@@ -485,7 +545,7 @@ export default function Create() {
                     style={s.picker}
                     placeholder='אנא בחר תת קטגוריה'
                     // containerStyle={s.container}
-                    textStyle={[g.text16_400_blue, s.text]}
+                    textStyle={[g.text18_400_blue, s.text]}
                     open={cat3open}
                     value={cat3}
                     items={cats3}
@@ -513,17 +573,31 @@ export default function Create() {
                 >
                   <Text
                     style={[
-                      g.text16_400_blue,
+                      g.text18_400_blue,
                       { marginLeft: 8, marginRight: 8 }
                     ]}
-                  >
-                    מקום קבלת השירות
-                  </Text>
+                  >המיקום שלי</Text>
                   <MarkerBlue
                     style={{
                       transform: [{ scaleX: scale }, { scaleY: scale }]
                     }}
                   />
+                </TouchableOpacity>
+              </View>
+            )}
+            {!createMode && (
+              <View style={s.newCal}>
+                <TouchableOpacity style={[s.searchDist, { backgroundColor: searchDistance === 24999 ? "#3993D6" : "white" }]} onPress={() => setSearchDistance(24999)}>
+                  <Text style={(searchDistance === 24999) ? g.text18_400_white : g.text18_400_blue}>בכל הארץ</Text>
+                </TouchableOpacity>
+                {(searchDistance === 25000) ? <View style={s.palka} /> : <View style={s.palkaEmpty} />}
+                <TouchableOpacity style={[s.searchDist, { width: "35%", backgroundColor: searchDistance === 0 ? "#3993D6" : "white" }]} onPress={() => setSearchDistance(0)}>
+                  <Text style={(searchDistance === 0) ? g.text18_400_white : g.text18_400_blue}>בכתובת מוגדרת</Text>
+                </TouchableOpacity>
+                {(searchDistance === 24999) ? <View style={s.palka} /> : <View style={s.palkaEmpty} />}
+
+                <TouchableOpacity style={[s.searchDist, { backgroundColor: searchDistance === 25000 ? "#3993D6" : "white" }]} onPress={() => setSearchDistance(25000)}>
+                  <Text style={(searchDistance === 25000) ? g.text18_400_white : g.text18_400_blue}>Online</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -535,10 +609,10 @@ export default function Create() {
                   style={s.online}
                   onPress={() => {
                     setShowMap(true)
-                    setDistance(1)
+                    // setDistance(25000)
                   }}
                 >
-                  <Text style={g.text16_400_blue}>{distanceText}</Text>
+                  <Text style={g.text18_400_blue}>{distanceText}</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -566,7 +640,7 @@ export default function Create() {
                 style={s.createButtonBlock}
                 onPress={handleCreate}
               >
-                <Text style={g.text24_700_white}>לִיצוֹר</Text>
+                <Text style={g.text24_700_white}>ליצור</Text>
               </TouchableOpacity>
             )}
             {!createMode && readyToSearch && date && (
@@ -588,6 +662,7 @@ export default function Create() {
                       date={date}
                       chosenId={chosenId}
                       setChosenId={setChosenId}
+                      coordinate={coordinate}
                     />
                   ))
                 )}
@@ -603,13 +678,19 @@ export default function Create() {
 
 const s = StyleSheet.create({
 
+  searchDist: {
+    width: "32%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center"
+  },
 
 
   description: {
     position: "absolute",
     bottom: 70,
     zIndex: 0,
-    width: "70%",
+    width: "80%",
     alignItems: "center"
   },
 
@@ -617,6 +698,12 @@ const s = StyleSheet.create({
     width: 2,
     height: '40%',
     backgroundColor: '#BCE0FD'
+  },
+
+  palkaEmpty: {
+    width: 2,
+    height: '40%',
+    // backgroundColor: '#BCE0FD'
   },
 
   newSearch: {
@@ -716,7 +803,7 @@ const s = StyleSheet.create({
     backgroundColor: '#3993D6',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 60,
+    height: 52,
     borderRadius: 1000,
     borderColor: "white",
     borderWidth: 1,
@@ -735,7 +822,7 @@ const s = StyleSheet.create({
     backgroundColor: '#3993D6',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 60,
+    height: 52,
     borderRadius: 1000,
     marginBottom: 12,
     borderColor: "white",
@@ -865,7 +952,7 @@ const s = StyleSheet.create({
   pickersBlock: {
     width: '100%',
     // height: "10%",
-   //    backgroundColor: "yellow",
+    //    backgroundColor: "yellow",
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10
@@ -901,7 +988,7 @@ const s = StyleSheet.create({
   picker3: {
     width: '100%',
     height: 52,
-   //    backgroundColor: "peachpuff",
+    //    backgroundColor: "peachpuff",
     zIndex: 8,
     marginBottom: 12
   },

@@ -9,6 +9,7 @@ import Arrow from '../../Images/Arrow.svg'
 import OrdersToMeCard from '../cards/OrdersToMeCard';
 import JobsFromMeCard from '../cards/JobsFromMeCard';
 import HistoryCard from '../cards/HistoryCard';
+import { useFocusEffect } from '@react-navigation/native';
 
 const DropDownBlue = ({ name, list, toMe, type }) => {
 
@@ -17,10 +18,14 @@ const DropDownBlue = ({ name, list, toMe, type }) => {
 
   const [open, setOpen] = useState(false)
 
+ /* useFocusEffect(() => 
+    setOpen(false)
+  )*/
+
   useEffect(() => {
     if (list.length === 0) setOpen(false)
     return () => {
-      
+     // setOpen(false)
     }
   }, [list])
 

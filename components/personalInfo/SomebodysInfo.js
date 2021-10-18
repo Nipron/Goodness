@@ -76,7 +76,8 @@ const SomebodysInfo = ({ id }) => {
           onPress={() => {
             Linking.openURL(`tel:${user.phone}`)
           }}
-          style={[s.phoneNumber, g.text18_600_blue]}
+          style={[g.text18_600_blue, s.phoneNumber]}
+          
         >
           {`+${user.phone}`}
         </Text>
@@ -84,12 +85,12 @@ const SomebodysInfo = ({ id }) => {
         <Phone style={{ transform: [{ scaleX: scale }, { scaleY: scale }] }} />
       </View>
       <View style={s.addressBlock}>
-        <Text style={g.text18_400_grey}>{`${user.job} `}</Text>
+        <Text style={g.text18_400_grey}>{` ${user.address.city} `}</Text>
         <Text style={g.text18_600_blue}> כתובת: </Text>
       </View>
 
       <View style={s.professionBlock}>
-        <Text style={g.text18_400_grey}>{`${user.address.city} `}</Text>
+        <Text style={g.text18_400_grey}>{` ${user.job} `}</Text>
         <Text style={g.text18_600_blue}> תחום עיסוק: </Text>
       </View>
 
@@ -103,6 +104,7 @@ const SomebodysInfo = ({ id }) => {
 export default SomebodysInfo
 
 const s = StyleSheet.create({
+
   personalInfoBlock: {
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -122,16 +124,34 @@ const s = StyleSheet.create({
   },
 
   phone: {
-    width: '90%',
-    height: 24,
-    //   backgroundColor: "lightgreen",
+   // width: '90%',
+   // height: 36,
+ //      backgroundColor: "dodgerblue",
+  //     padding: 6,
+  //     paddingHorizontal: 10,
+   //    borderRadius: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+ /*   shadowOffset: {
+      width: 2,
+      height: 2
+    },
+    shadowOpacity: 0.2,
+    // shadowColor: "blue",
+    shadowRadius: 4,
+    borderWidth: 2,
+    borderColor: "white"*/
   },
 
   phoneNumber: {
-    marginRight: 10
+    marginRight: 10,
+    // fontSize: 22,
+    // color: 'red',
+    // backgroundColor: 'white',
+    fontWeight: 'bold',
+    textDecorationLine: "underline"
+    
   },
 
   professionBlock: {

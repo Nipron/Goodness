@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Pressable, Alert, Button, TouchableWithoutFeedback, ImageBackground, KeyboardAvoidingView, Keyboard } from 'react-native';
 import ButtonBlue from '../../src/ButtonBlue';
 import FooterHome from '../footer/FooterHome';
@@ -9,6 +9,8 @@ export default function HomeLayout(props) {
 
     const navigation = useNavigation()
 
+    const [checked, setChecked] = useState(false)
+
     return (
         <KeyboardAvoidingView style={s.containerMain} behavior="padding">
             <View style={s.containerBlu}>
@@ -17,8 +19,16 @@ export default function HomeLayout(props) {
                     {props.children}
                 </ImageBackground>
             </View>
-            <ButtonBlue name="הרשמה" bottom={0} onPress={() => navigation.navigate('Registration')} />
-            <FooterHome />
+            <ButtonBlue name="הרשמה" bottom={0} onPress={() => {
+                if (checked) {
+                    navigation.navigate('Registration')
+                } else {
+                    Alert.alert('אנא הסכים לתנאי השימוש', 'אנא קרא את תנאי השימוש וסמן את תיבת הסימון', [{
+                        text: 'אישור', onPress: () => {}}])
+                }                
+            }
+            } />
+            <FooterHome checked={checked} setChecked={setChecked} />
         </KeyboardAvoidingView>
     );
 }

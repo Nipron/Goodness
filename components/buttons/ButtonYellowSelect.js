@@ -13,7 +13,7 @@ const ButtonYellowSelect = props => {
 const s = StyleSheet.create({
     button: {
         height: 52,
-        width: "60%",
+        width: "48%",
         borderRadius: 26,
         alignItems: 'center',
         justifyContent: 'center',
