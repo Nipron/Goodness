@@ -12,6 +12,7 @@ import Create from '../screens/create'
 import EditProfile from '../screens/editProfile'
 import UserInfo from '../screens/userInfo'
 import Services from '../screens/services'
+import Test from '../screens/test'
 
 import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
@@ -21,12 +22,17 @@ const Stack = createStackNavigator()
 export default function Navigate () {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false, gestureEnabled: false/*, animationEnabled: false */}}>
+     {/* <Stack.Screen
+          name='Test'
+          component={Test}
+          option={{ title: 'Test' }}
+     />*/}
         <Stack.Screen
           name='Crash'
           component={Crash}
           option={{ title: 'Crash' }}
-        />
+        />        
         <Stack.Screen
           name='Home'
           component={Home}
@@ -41,17 +47,8 @@ export default function Navigate () {
           name='Registration'
           component={Registration}
           option={{ title: 'reg' }}
-        />
-        <Stack.Screen
-          name='Profile'
-          component={Profile}
-          option={{ title: 'LOg in' }}
-        />
-        <Stack.Screen
-          name='Terms'
-          component={Terms}
-          option={{ title: 'Terms' }}
-        />
+        />      
+        
         <Stack.Screen
           name='About'
           component={About}
@@ -61,6 +58,11 @@ export default function Navigate () {
           name='Messages'
           component={Messages}
           option={{ title: 'Messages' }}
+        />        
+        <Stack.Screen
+          name='Create'
+          component={Create}
+          option={{ title: 'Create' }}
         />
         <Stack.Screen
           name='Services'
@@ -68,9 +70,9 @@ export default function Navigate () {
           option={{ title: 'Services' }}
         />
         <Stack.Screen
-          name='Create'
-          component={Create}
-          option={{ title: 'Create' }}
+          name='Profile'
+          component={Profile}
+          option={{ title: 'LOg in' }}
         />
         <Stack.Screen
           name='EditProfile'
@@ -81,6 +83,11 @@ export default function Navigate () {
           name='UserInfo'
           component={UserInfo}
           option={{ title: 'User Info' }}
+        />
+        <Stack.Screen
+          name='Terms'
+          component={Terms}
+          option={{ title: 'Terms' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

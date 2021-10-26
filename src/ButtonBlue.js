@@ -8,7 +8,7 @@ import {
 
 const ButtonBlue = props => {
     return (
-        <TouchableOpacity style={[s.button, {marginBottom: props.bottom}]}  onPress={props.onPress}>
+        <TouchableOpacity style={[s.button, {marginBottom: props.bottom}, {backgroundColor: props.unread ? "grey" : "#3993D6"}]}  onPress={props.onPress}>
             <Text style={s.text}>{props.name}</Text>
         </TouchableOpacity>
     );

@@ -8,7 +8,7 @@ const GooglePlacesInput = ({ map, setCamera, setLatitude, setLongitude, setLatit
             fetchDetails={true}
             minLength={3}
             multiLine
-            numberOfLines={5}
+            numberOfLines={4}
             onPress={async (data, details = null) => {
                 
                 const cam = await map.current.getCamera()

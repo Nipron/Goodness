@@ -96,6 +96,10 @@ export default function Login(props) {
             //  console.log(Object.keys(values[0]))
             dispatch(updateProfileThunk())
             dispatch(setMessagesThunk(values[1]))
+          /*  navigation.navigate('About')
+            navigation.navigate('Messages')
+            navigation.navigate('Create')
+            navigation.navigate('Services')*/
             navigation.navigate('Profile')
             setLoading(false)
           })
@@ -134,7 +138,7 @@ export default function Login(props) {
       sendCode()
     }
     return () => {
-      
+
     }
   }, [code])
 
@@ -213,6 +217,10 @@ export default function Login(props) {
           setConfPass('')
           setPhone('')
           setLoading(false)
+        /*  navigation.navigate('About')
+          navigation.navigate('Messages')
+          navigation.navigate('Create')
+          navigation.navigate('Services')*/
           navigation.navigate('Profile')
         })
         .catch(function (error) {
@@ -527,7 +535,7 @@ const s = StyleSheet.create({
   },
 
   notAvoidBlock: {
-    //   backgroundColor: 'blue',
+    //     backgroundColor: 'pink',
     width: '90%',
     height: Dimensions.get('window').height * 0.125
   }

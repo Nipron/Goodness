@@ -24,7 +24,13 @@ export default function Services({ navigation }) {
 
   const services = useSelector(state => state.all.services)
 
-  const sortedServices = services ? services.sort((a, b) => {
+  if (services) {
+    console.log(services.length)
+  } 
+
+  const filteredServices = services ? services.filter(item => item.isActive) : []
+
+  const sortedServices = filteredServices ? filteredServices.sort((a, b) => {
     return new Date(b.createdAt) - new Date(a.createdAt)
   }) : []
 

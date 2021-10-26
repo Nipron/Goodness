@@ -37,6 +37,8 @@ const ServiceCard = ({ serv }) => {
 
   const [cat, setCat] = useState('d')
 
+ // console.log(serv)
+
   const getCat = async () => {
     await commonAPI.getServiceCategory(serv.id).then(res => {
       let cat = catsFlat.find(cat => cat.id === res.data.category.id).title
@@ -129,12 +131,12 @@ const ServiceCard = ({ serv }) => {
                 <Text>שירות בכתובת שלי</Text>
               }
               {
-                (serv.actionRadius / 1000 === 25) &&
+                (serv.actionRadius / 1000 === 25025) &&
                 <Text>אזור העיר</Text>
               }
               {
-                (serv.actionRadius / 1000 < 25) &&
-                <Text>מרחק {serv.actionRadius / 1000} ק"מ</Text>
+                (serv.actionRadius / 1000 < 25025) && (serv.actionRadius / 1000 > 25000) &&
+                <Text>מרחק {serv.actionRadius / 1000 - 25000} ק"מ</Text>
               }
             </View>
           </View>

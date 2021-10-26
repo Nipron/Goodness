@@ -42,12 +42,12 @@ export default function LoginLayout2(props) {
       </View>
 
       <ButtonBlue name="הרשמה" bottom={0} onPress={() => {
-                if (checked) {
+             /*   if (checked) {*/
                     navigation.navigate('Registration')
-                } else {
+              /*  } else {
                     Alert.alert('הסכמה לתנאי השימוש', 'אנא קרא את תנאי השימוש וסמן את תיבת הסימון', [{
                         text: 'אישור', onPress: () => {}}])
-                }                
+                }     */           
             }
             } />
       <FooterHome checked={checked} setChecked={setChecked} />

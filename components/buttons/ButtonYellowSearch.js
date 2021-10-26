@@ -39,7 +39,7 @@ const ButtonYellowSearch = props => {
        // const response = await userAPI.dashboard()
 
       //  console.log("КОЛ-ВО ЗАКАЗОВ - BUTTON", response.orders.length)     
-        dispatch(updateProfileThunk())
+        dispatch(())
   
         Alert.alert('מזל טוב!', 'שירות הוזמן בהצלחה', [{
           text: 'אישור',

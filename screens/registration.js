@@ -30,15 +30,19 @@ import { useNavigation } from '@react-navigation/native'
 
 import { setTempImage } from '../redux/tempImageRducer';
 import { updateProfileThunk } from '../redux/store'
+import { setMessagesThunk } from '../redux/messagesReducer'
+
 import { values } from 'lodash';
+
+import CheckV from '../Images/CheckV.svg'
+import CheckCircle from '../Images/CheckCircle.svg'
 
 export default function Registration2() {
 
     const dispatch = useDispatch()
+    const navigation = useNavigation()
 
     const [modalOpen, setModalOpen] = useState(false)
-
-    const navigation = useNavigation()
 
     const [nameBorder, setNameBorder] = useState("")
     const [phoneBorder, setPhoneBorder] = useState("")
@@ -56,6 +60,7 @@ export default function Registration2() {
 
     useEffect(() => {
         if (code && code.length === 5) {
+            console.log(code)
             confirm()
         }
         return () => {
@@ -63,53 +68,40 @@ export default function Registration2() {
         }
     }, [code])
 
+    const [read, setRead] = useState(false)
+
     const [image, setImage] = useState(null);
 
-    /*const confirm = async () => {
+    const confirm = async () => {
 
         try {
             await userAPI.register(regValues, code)
-            console.log("REGISTRATION SUCCEEDED")
-            const res = await userAPI.login(regValues)
-            console.log(res)
-            await userAPI.saveToken(res.data.access_token)
-            await userAPI.sendPic(image)
-            dispatch(updateProfileThunk())
-            navigation.navigate('Profile')
-            setModalOpen(false)
+
+            try {
+                const token = await userAPI.login(regValues)
+
+                try {
+                    await userAPI.saveToken(token.data.access_token)
+                    await userAPI.sendPic(image)
+                    dispatch(updateProfileThunk())
+                    dispatch(setMessagesThunk())
+                    setModalOpen(false)
+                    navigation.navigate('Profile')
+                } catch (e) {
+                    console.log("LOGIN TROUBLE")
+                    console.log(e)
+                }
+
+            } catch (e) {
+                console.log("TOKEN NO GOOD")
+                console.log(e)
+
+            }
+
         } catch (e) {
             console.log("CODE NO GOOD")
-            console.log(e);
-            Alert.alert('שגיאה', "קוד שגוי", [{ text: "Try again", onPress: () => {navigation.navigate('Registration') }}])
+            Alert.alert('Something went wrong!', "Wrong SMS code", [{ text: "Try again", onPress: () => console.log(e) }])
         }
-        
-    }*/
-
-    const confirm = () => {
-
-        userAPI.register(regValues, code)
-            .then(res => {
-                userAPI.login(regValues)
-                    .then(response => userAPI.saveToken(response.data.access_token))
-                    .then(async res => {
-                        await userAPI.sendPic(image)
-                        const messages = await messageAPI.getMessages()
-                        dispatch(setMessagesThunk(messages))
-                        dispatch(updateProfileThunk())
-                        setModalOpen(false)
-                        navigation.navigate('Profile')
-                    })
-                    .catch(function (error) {
-                        console.log("LOGIN NO GOOD")
-                        //  console.log(error);
-                        //  console.log(regValues)
-                        Alert.alert('Something went wrong!', "Wrong email/password", [{ text: "Try again", onPress: () => console.log('alert wrong') }])
-                    })
-            })
-            .catch(e => {
-                console.log("CODE NO GOOD")
-                Alert.alert('Something went wrong!', "Wrong SMS code", [{ text: "Try again", onPress: () => console.log(e) }])
-            })
 
     }
 
@@ -159,7 +151,7 @@ export default function Registration2() {
                 ])
             } else {
                 if (values.job.length < 3) {
-                    Alert.alert("משהו השתבש!", "אורך המקצוע צריך להיות לפחות 3 תווים", [
+                    Alert.alert("משהו השתבש!", `אורך שדה "עיסוק" צריך להיות לפחות 3 תווים`, [
                         {
                             text: 'אישור', onPress: () => {
                                 console.log('Job wrong')
@@ -185,19 +177,53 @@ export default function Registration2() {
                                 }
                             ])
                         } else {
-                            try {
-                                await userAPI.getSMS(phoneClean, values.email)
-                                dispatch(setTempImage(image))
-                                setRegValues({ ...values, phone: phoneClean, referral: referralClean })
-                                setModalOpen(true)
-                            } catch (e) {
-                                Alert.alert("משהו השתבש!", "חשבון עם מספר טלפון זה כבר קיים", [
+
+                            if (!read) {
+                                Alert.alert("משהו השתבש!", "אנא קרא ואשר את תנאי השימוש", [
                                     {
                                         text: 'אישור', onPress: () => {
-                                            console.log('Phone number already exists')
+                                            console.log("Confirm password doesn't match")
                                         }
                                     }
                                 ])
+                            } else {
+
+                                try {
+                                  //  console.log(phoneClean)
+                                    const response = await userAPI.isUser(phoneClean)
+                                  //  console.log(response.data.exists)
+                                    if (response.data.exists) {
+                                        Alert.alert(`משהו השתבש!`, `מספר ${phoneClean}+ כבר רשום.`, [
+                                            {
+                                                text: 'אישור', onPress: () => {
+                                                    console.log("USER EXISTS")
+                                                }
+                                            }
+                                        ])
+
+                                    } else {
+                                        console.log("NEW USER")
+
+                                        try {
+                                            await userAPI.getSMS(phoneClean, values.email)
+                                            dispatch(setTempImage(image))
+                                            setRegValues({ ...values, phone: phoneClean, referral: referralClean })
+                                            setModalOpen(true)
+                                        } catch (e) {
+                                            Alert.alert("משהו השתבש!", "חשבון עם מספר טלפון זה כבר קיים", [
+                                                {
+                                                    text: 'אישור', onPress: () => {
+                                                        console.log('Phone number already exists')
+                                                    }
+                                                }
+                                            ])
+                                        }
+                                    }
+
+                                } catch (e) {
+                                    console.log("ENDPOINT isUser TROUBLE")
+                                }
+
                             }
                         }
                     }
@@ -210,8 +236,7 @@ export default function Registration2() {
 
     return (
         <SmallLayout2 text="הרשמה" hide={true} focus={focus}>
-            <SafeAreaView style={s.outer}>
-
+            <View style={s.registrationBlock}>
                 <Modal
                     transparent={true}
                     animationType="slide"
@@ -239,174 +264,221 @@ export default function Registration2() {
                     </TouchableWithoutFeedback>
                 </Modal>
 
-                <View style={s.registrationBlock}>
-                    <CameraAvatar image={image} setImage={setImage} />
-                    <View style={s.plug} />
-                    <Formik
-                        initialValues={{ name: '', phone: '', email: '', job: '', city: '', street: '', house: '', apt: '', password: '', confirmPassword: '', referral: '' }}
-                        onSubmit={onFormikSubmit}>
-                        {
-                            (props) => (
-                                <KeyboardAvoidingView style={s.goodnessBlock} behavior={Platform.OS === "ios" ? "padding" : "height"} >
-                                    <ScrollView style={s.formikBlock} contentContainerStyle={s.formikScrollStyle}>
-                                        <View style={s.fieldsBlock}>
+                <CameraAvatar image={image} setImage={setImage} />
+                <View style={s.plug} />
+                <Formik
+                    initialValues={{ name: '', phone: '', email: '', job: '', city: '', street: '', house: '', apt: '', password: '', confirmPassword: '', referral: '' }}
+                    onSubmit={onFormikSubmit}>
+                    {
+                        (props) => (
+                            <KeyboardAvoidingView style={s.goodnessBlock} behavior={Platform.OS === "ios" ? "padding" : "height"} >
+                                <ScrollView style={s.formikBlock} contentContainerStyle={s.formikScrollStyle}>
+                                    <View style={s.fieldsBlock}>
 
-                                            <View style={s.personalBlock}>
-                                                <Text style={g.text24_700_blue}>
-                                                    פרטים אישיים
-                                                </Text>
-                                                <RegInput
-                                                    onChangeText={props.handleChange('name')}
-                                                    value={props.values.name}
-                                                    placeholder="שם מלא"
-                                                    borderColor={nameBorder}
-                                                    setFocus={setFocus}
-                                                >
-                                                    <PersonIcon />
-                                                </RegInput>
-                                                <RegInput
-                                                    onChangeText={props.handleChange('phone')}
-                                                    value={props.values.phone}
-                                                    keyboardType="phone-pad"
-                                                    placeholder="+972 54 1234567"
-                                                    borderColor={phoneBorder}
-                                                    setFocus={setFocus}
-                                                >
-                                                    <PhoneIcon />
-                                                </RegInput>
-                                                <RegInput
-                                                    onChangeText={props.handleChange('email')}
-                                                    value={props.values.email}
-                                                    placeholder="אימייל"
-                                                    borderColor={emailBorder}
-                                                    autoCapitalize="none"
-                                                    setFocus={setFocus}
-                                                    maxLength={30}
-                                                >
-                                                    <EmailIcon />
-                                                </RegInput>
-                                                <RegInput
-                                                    onChangeText={props.handleChange('job')}
-                                                    value={props.values.job}
-                                                    placeholder="עיסוק"
-                                                    borderColor={jobBorder}
-                                                    setFocus={setFocus}
-                                                >
-                                                    <JobIcon />
-                                                </RegInput>
-                                            </View>
-
-                                            <View style={s.personalBlock}>
-                                                <Text style={g.text24_700_blue}>
-                                                    כתובת מגורים
-                                                </Text>
-                                                <RegInput
-                                                    onChangeText={props.handleChange('city')}
-                                                    value={props.values.city}
-                                                    placeholder="עיר"
-                                                    borderColor={cityBorder}
-                                                    setFocus={setFocus}
-                                                >
-                                                    <PinIcon />
-                                                </RegInput>
-                                                <RegInput
-                                                    onChangeText={props.handleChange('street')}
-                                                    value={props.values.street}
-                                                    placeholder="רחוב"
-                                                    borderColor={streetBorder}
-                                                    setFocus={setFocus}
-                                                >
-                                                    <PinIcon />
-                                                </RegInput>
-                                                <View style={s.house}>
-                                                    <RegInputSmall
-                                                        onChangeText={props.handleChange('apt')}
-                                                        value={props.values.apt}
-                                                        placeholder="מס' דירה"
-                                                        keyboardType="number-pad"
-                                                        style={{ width: "47%" }}
-                                                        borderColor={aptBorder}
-                                                        setFocus={setFocus}
-                                                    >
-                                                        <HashIcon />
-                                                    </RegInputSmall>
-                                                    <RegInputSmall
-                                                        onChangeText={props.handleChange('house')}
-                                                        value={props.values.house}
-                                                        placeholder="מס' בית"
-                                                        keyboardType="number-pad"
-                                                        style={{ width: "50%" }}
-                                                        borderColor={houseBorder}
-                                                        setFocus={setFocus}
-                                                    >
-                                                        <HashIcon />
-                                                    </RegInputSmall>
-                                                </View>
-                                            </View>
-
-                                            <View style={s.personalBlock}>
-                                                <Text style={g.text24_700_blue}>
-                                                    מידע אישי
-                                                </Text>
-                                                <RegInput
-                                                    onChangeText={props.handleChange('password')}
-                                                    value={props.values.password}
-                                                    placeholder="סיסמה"
-                                                    borderColor={passwordBorder}
-                                                    autoCapitalize="none"
-                                                    secureTextEntry={true}
-                                                    setFocus={setFocus}
-                                                >
-                                                    <LockIcon />
-                                                </RegInput>
-                                                <RegInput
-                                                    onChangeText={props.handleChange('confirmPassword')}
-                                                    value={props.values.confirmPassword}
-                                                    placeholder="אימות סיסמה"
-                                                    borderColor={confirmPasswordBorder}
-                                                    autoCapitalize="none"
-                                                    secureTextEntry={true}
-                                                    setFocus={setFocus}
-                                                >
-                                                    <LockIcon />
-                                                </RegInput>
-
-                                                <View style={s.lineOuter}>
-                                                    <View style={s.line}>
-                                                    </View>
-                                                </View>
-
-                                                <RegInput
-                                                    onChangeText={props.handleChange('referral')}
-                                                    value={props.values.referral}
-                                                    keyboardType="phone-pad"
-                                                    placeholder="טלפון של המזמין לאפליקציה"
-                                                    borderColor={referralBorder}
-                                                    setFocus={setFocus}
-                                                >
-                                                    <ReferalIcon />
-
-                                                </RegInput>
-
-                                            </View>
-
-
+                                        <View style={s.personalBlock}>
+                                            <Text style={g.text24_700_blue}>
+                                                פרטים אישיים
+                                            </Text>
+                                            <RegInput
+                                                onChangeText={props.handleChange('name')}
+                                                value={props.values.name}
+                                                placeholder="שם מלא"
+                                                borderColor={nameBorder}
+                                                setFocus={setFocus}
+                                            >
+                                                <PersonIcon />
+                                            </RegInput>
+                                            <RegInput
+                                                onChangeText={props.handleChange('phone')}
+                                                value={props.values.phone}
+                                                keyboardType="phone-pad"
+                                                placeholder="+972 54 1234567"
+                                                borderColor={phoneBorder}
+                                                setFocus={setFocus}
+                                            >
+                                                <PhoneIcon />
+                                            </RegInput>
+                                            <RegInput
+                                                onChangeText={props.handleChange('email')}
+                                                value={props.values.email}
+                                                placeholder="אימייל"
+                                                borderColor={emailBorder}
+                                                autoCapitalize="none"
+                                                setFocus={setFocus}
+                                                maxLength={30}
+                                            >
+                                                <EmailIcon />
+                                            </RegInput>
+                                            <RegInput
+                                                onChangeText={props.handleChange('job')}
+                                                value={props.values.job}
+                                                placeholder="עיסוק"
+                                                borderColor={jobBorder}
+                                                setFocus={setFocus}
+                                            >
+                                                <JobIcon />
+                                            </RegInput>
                                         </View>
-                                        <ButtonBlue name="שמור" bottom={73} onPress={props.handleSubmit} />
-                                    </ScrollView>
-                                </KeyboardAvoidingView>
-                            )
-                        }
-                    </Formik>
-                </View>
 
+                                        <View style={s.personalBlock}>
+                                            <Text style={g.text24_700_blue}>
+                                                כתובת מגורים
+                                            </Text>
+                                            <RegInput
+                                                onChangeText={props.handleChange('city')}
+                                                value={props.values.city}
+                                                placeholder="עיר"
+                                                borderColor={cityBorder}
+                                                setFocus={setFocus}
+                                            >
+                                                <PinIcon />
+                                            </RegInput>
+                                            <RegInput
+                                                onChangeText={props.handleChange('street')}
+                                                value={props.values.street}
+                                                placeholder="רחוב"
+                                                borderColor={streetBorder}
+                                                setFocus={setFocus}
+                                            >
+                                                <PinIcon />
+                                            </RegInput>
+                                            <View style={s.house}>
+                                                <RegInputSmall
+                                                    onChangeText={props.handleChange('apt')}
+                                                    value={props.values.apt}
+                                                    placeholder="מס' דירה"
+                                                    // keyboardType="number-pad"
+                                                    style={{ width: "47%" }}
+                                                    borderColor={aptBorder}
+                                                    setFocus={setFocus}
+                                                >
+                                                    <HashIcon />
+                                                </RegInputSmall>
+                                                <RegInputSmall
+                                                    onChangeText={props.handleChange('house')}
+                                                    value={props.values.house}
+                                                    placeholder="מס' בית"
+                                                    // keyboardType="number-pad"
+                                                    style={{ width: "50%" }}
+                                                    borderColor={houseBorder}
+                                                    setFocus={setFocus}
+                                                >
+                                                    <HashIcon />
+                                                </RegInputSmall>
+                                            </View>
+                                        </View>
 
-            </SafeAreaView>
+                                        <View style={s.personalBlock}>
+                                            <Text style={g.text24_700_blue}>
+                                                מידע אישי
+                                            </Text>
+                                            <RegInput
+                                                onChangeText={props.handleChange('password')}
+                                                value={props.values.password}
+                                                placeholder="סיסמה"
+                                                borderColor={passwordBorder}
+                                                autoCapitalize="none"
+                                                secureTextEntry={true}
+                                                setFocus={setFocus}
+                                            >
+                                                <LockIcon />
+                                            </RegInput>
+                                            <RegInput
+                                                onChangeText={props.handleChange('confirmPassword')}
+                                                value={props.values.confirmPassword}
+                                                placeholder="אימות סיסמה"
+                                                borderColor={confirmPasswordBorder}
+                                                autoCapitalize="none"
+                                                secureTextEntry={true}
+                                                setFocus={setFocus}
+                                            >
+                                                <LockIcon />
+                                            </RegInput>
+
+                                            <View style={s.lineOuter}>
+                                                <View style={s.line}>
+                                                </View>
+                                            </View>
+
+                                            <RegInput
+                                                onChangeText={props.handleChange('referral')}
+                                                value={props.values.referral}
+                                                keyboardType="phone-pad"
+                                                placeholder="טלפון של המזמין לאפליקציה"
+                                                borderColor={referralBorder}
+                                                setFocus={setFocus}
+                                            >
+                                                <ReferalIcon />
+                                            </RegInput>
+                                        </View>
+                                    </View>
+                                    <ButtonBlue name="שמור" bottom={73} onPress={props.handleSubmit} />
+                                    <View style={s.plug2} />
+                                </ScrollView>
+
+                            </KeyboardAvoidingView>
+                        )
+                    }
+                </Formik>
+            </View>
+            <TouchableOpacity style={s.termsBlock} onPress={() => navigation.navigate('Terms')}>
+                <Text style={[g.text18_400_grey, s.terms]}>תנאי שימוש  </Text>
+                <TouchableOpacity style={s.checkBlock} onPress={() => setRead(!read)}>
+                    <CheckCircle />
+                    {read && <CheckV style={s.v} />}
+                </TouchableOpacity>
+            </TouchableOpacity>
         </SmallLayout2 >
     );
 }
 
 const s = StyleSheet.create({
+
+    v: {
+        position: "absolute"
+    },
+
+    checkBlock: {
+        marginLeft: 5,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+
+    footer: {
+        width: "100%",
+        height: "12.5%",
+        marginTop: -26,
+        paddingTop: 26,
+        //  backgroundColor: "green",
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+
+    footerInner: {
+        width: "100%",
+        height: "100%",
+        //   backgroundColor: "red",
+        alignItems: 'center',
+        justifyContent: 'flex-start'
+    },
+
+    termsBlock: {
+      //  width: "100%",
+        height: 30,
+        //   backgroundColor: "pink",
+        flexDirection: "row",
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    terms: {
+        marginRight: 2
+    },
+
+    plug2: {
+        width: "100%",
+        height: 10,
+        //   backgroundColor: "orange"
+    },
 
     bottomPlug: {
         width: "100%",
@@ -415,7 +487,8 @@ const s = StyleSheet.create({
     },
 
     outer: {
-        //  backgroundColor: "green",
+        //   backgroundColor: "green",
+        paddingBottom: 100,
         width: "100%",
         flex: 1
     },
@@ -426,8 +499,8 @@ const s = StyleSheet.create({
         justifyContent: 'flex-start',
         width: "100%",
         flex: 1,
-        //   paddingBottom: 20,
-        //   backgroundColor: "olive",
+        //  paddingBottom: 120,
+        //     backgroundColor: "olive",
         //  backgroundColor: "#EEEEEE",
     },
 
@@ -439,14 +512,18 @@ const s = StyleSheet.create({
     plug: {
         position: 'absolute',
         width: "100%",
-        height: 400,
+        marginTop: -55,
+      //  height: Dimensions.get('window').height * 0.585,
+        height: 200,
         backgroundColor: "#EFEFEF",
+       //    backgroundColor: "pink",
         borderRadius: 40,
     },
 
     goodnessBlock: {
-        //  backgroundColor: "pink",
+        //    backgroundColor: "yellow",
         width: "100%",
+        // paddingBottom: 250,
         // marginBottom: 150,
         flex: 1
     },
@@ -457,7 +534,7 @@ const s = StyleSheet.create({
         width: "100%",
         borderRadius: 40,
         height: Dimensions.get('window').height * 0.58 + 73,
-        // marginBottom: 200,
+        // marginBottom: 200,      
         //  backgroundColor: "lightblue",
         //  backgroundColor: "#FFFFFF",
     },

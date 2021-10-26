@@ -16,6 +16,7 @@ const RegInputSmall = (props) => {
                 placeholderTextColor="#CCCCCC"
                 onFocus={() => props.setFocus(true)}
                 onBlur={() => props.setFocus(false)} Í
+                autoCorrect={false}
             >
             </TextInput>
             <View style={s.icon}>

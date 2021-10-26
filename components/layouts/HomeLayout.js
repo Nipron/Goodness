@@ -20,12 +20,12 @@ export default function HomeLayout(props) {
                 </ImageBackground>
             </View>
             <ButtonBlue name="הרשמה" bottom={0} onPress={() => {
-                if (checked) {
+              /*  if (checked) {*/
                     navigation.navigate('Registration')
-                } else {
+              /*  } else {
                     Alert.alert('אנא הסכים לתנאי השימוש', 'אנא קרא את תנאי השימוש וסמן את תיבת הסימון', [{
                         text: 'אישור', onPress: () => {}}])
-                }                
+                }    */            
             }
             } />
             <FooterHome checked={checked} setChecked={setChecked} />

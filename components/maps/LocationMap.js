@@ -76,12 +76,12 @@ export default function LocationMap(props) {
   const coordinatePress = async e => {
     Promise.all([map.current.getCamera(), e.nativeEvent])
       .then(values => {
-       // console.log(zoom)
+        // console.log(zoom)
         const cam = values[0]
         const coords = values[1]
-     //   console.log(cam.zoom)
-     //   setLatitude(cam.center.latitude)
-     //   setLongitude(cam.center.longitude)
+        //   console.log(cam.zoom)
+        //   setLatitude(cam.center.latitude)
+        //   setLongitude(cam.center.longitude)
         setLatitudeMarker(coords.coordinate.latitude)
         setLongitudeMarker(coords.coordinate.longitude)
         props.setCoordinate({ latitude: coords.coordinate.latitude, longitude: coords.coordinate.longitude })
@@ -92,8 +92,8 @@ export default function LocationMap(props) {
     center: {
       latitude: 32.0853,
       longitude: 34.7818,
-   //  latitude: props.coordinate.latitude,
-   //  longitude: props.coordinate.longitude,
+      //  latitude: props.coordinate.latitude,
+      //  longitude: props.coordinate.longitude,
     },
     pitch: 0,
     heading: 0,
@@ -105,7 +105,7 @@ export default function LocationMap(props) {
   const onZoomInPress = async () => {
     const cam = await map.current.getCamera()
 
-    setCamera({...cam, altitude: 0, zoom: cam.zoom + 0.5})
+    setCamera({ ...cam, altitude: 0, zoom: cam.zoom + 0.5 })
 
     setLatitude(cam.center.latitude)
     setLongitude(cam.center.longitude)
@@ -125,9 +125,9 @@ export default function LocationMap(props) {
     })*/
   }
 
-  
 
-//console.log(camera.center)
+
+  //console.log(camera.center)
 
   //const [cam, setCam] = useState({})
 
@@ -135,7 +135,7 @@ export default function LocationMap(props) {
     const cam = await map.current.getCamera()
     //  map.current.setCamera({...cam, zoom: cam.zoom - 0.5})
 
-    setCamera({...cam, altitude: 0, zoom: cam.zoom - 0.5})
+    setCamera({ ...cam, altitude: 0, zoom: cam.zoom - 0.5 })
 
     setLatitude(cam.center.latitude)
     setLongitude(cam.center.longitude)
@@ -179,20 +179,20 @@ export default function LocationMap(props) {
                 style={s.mapview}
                 provider={PROVIDER_GOOGLE}
                 // customMapStyle={mapStyle}
-               /* initialRegion={{
-                  latitude: 32,
-                  longitude: 35,
-                  latitudeDelta: 1.11,
-                  longitudeDelta: 0.74
-                }}*/
+                /* initialRegion={{
+                   latitude: 32,
+                   longitude: 35,
+                   latitudeDelta: 1.11,
+                   longitudeDelta: 0.74
+                 }}*/
                 initialCamera={{
                   center: {
                     latitude: 32.0853,
                     longitude: 34.7818,
-                 //   latitude: props.coordinate.latitude,
-                 //   longitude: props.coordinate.longitude,
-                //     latitude: latitudeMarker,
-                 //   longitude: longitudeMarker,
+                    //   latitude: props.coordinate.latitude,
+                    //   longitude: props.coordinate.longitude,
+                    //     latitude: latitudeMarker,
+                    //   longitude: longitudeMarker,
                   },
                   pitch: 0,
                   heading: 0,
@@ -410,7 +410,7 @@ const s = StyleSheet.create({
 
   google: {
     width: '80%',
-    height: 350,
+    height: 280,
     //  backgroundColor: "pink"
   },
 
@@ -455,7 +455,7 @@ const s = StyleSheet.create({
   mapview: {
     width: '100%',
     height: '100%',
-    backgroundColor: 'olive',
+  //  backgroundColor: 'olive',
     position: 'absolute',
     top: 0,
     left: 0,
@@ -467,7 +467,7 @@ const s = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'flex-end',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
 
   topButtons: {
@@ -476,12 +476,13 @@ const s = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     padding: 15,
-    marginTop: 45
+    marginTop: 45,
+ //   backgroundColor: "pink"
   },
 
   bottomButtons: {
     //   width: "100%",
-    //   backgroundColor: "orange",
+ //   backgroundColor: "orange",
     alignItems: 'center',
     justifyContent: 'flex-end'
   },

@@ -100,6 +100,7 @@ export default function Create() {
   const [cat3open, setCat3open] = useState(false)
   const [cat4open, setCat4open] = useState(false)
   const [readyToSearch, setReadyToSearch] = useState(false)
+  const [readyToCreate, setReadyToCreate] = useState(false)
   const [chosenId, setChosenId] = useState(null)
   const [readyToConfirm, setReadyToConfirm] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
@@ -153,7 +154,7 @@ export default function Create() {
   const [result, setResult] = useState([])
 
   const navigation = useNavigation()
-  const data = useSelector(state => state.all)
+  const data = useSelector(state => state.all) 
 
   const [logged, setLogged] = useState(false)
 
@@ -364,7 +365,8 @@ export default function Create() {
       }
     } else {
       try {
-        data = serviceAPI.searchServicePublic({
+        console.log("gg")
+        data = await serviceAPI.searchServicePublic({
           categoryId: catForSearch,
           coordinate: coordinate,
           date: date.dateString
@@ -410,13 +412,21 @@ export default function Create() {
   }, [createMode])
 
   const closeAll = () => {
-
+    
+    setCatForSearch('')
     setCats2([])
     setCats3([])
     setCat1open(false)
     setCat2open(false)
     setCat3open(false)
     setCat1('')
+
+    setResult([])
+  /*  setReadyToSearch(
+      !!catForSearch &&
+      !!coordinate &&
+      days.reduce((acc, day) => acc || day, false)
+    )*/
     //  setCat2('')
     //  setCat3('')
   }
@@ -623,7 +633,7 @@ export default function Create() {
                   <Text style={g.text18_400_white}>יחידות השירות</Text>
                 </View>
                 <View style={s.toMap}>
-                  <Text style={g.text18_400_white}>תחום מתן שירות </Text>
+                  <Text style={g.text18_400_white}>תחום מתן השירות</Text>
                 </View>
               </View>
             )}

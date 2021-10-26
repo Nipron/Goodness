@@ -22,7 +22,7 @@ import Login from '../../screens/login'
 
 import { setMessagesThunk } from '../../redux/messagesReducer'
 
-const Footer = ({ hide, color }) => {
+const FooterNoHook = ({ hide, color }) => {
   const navigation = useNavigation()
   const route = useRoute()
   const data = useSelector(state => state.all)
@@ -31,19 +31,6 @@ const Footer = ({ hide, color }) => {
   const dispatch = useDispatch()
 
   hide = !data.id
-
-
-  useFocusEffect(
-    React.useCallback(() => {
-      let loop = setInterval(() => {
-        console.log("Refresh Message")
-        dispatch(setMessagesThunk())
-      }, 6000)
-      return () => {
-        clearInterval(loop)
-      }
-    }, [])
-  );
 
   const scale = 1.4
   const scaleHands = 1.4
@@ -179,7 +166,7 @@ const s = StyleSheet.create({
   }
 })
 
-export default Footer
+export default FooterNoHook
 
 
 

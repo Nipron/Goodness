@@ -11,6 +11,13 @@ const instance = axios.create({
   }
 })
 
+const in2 = axios.create({
+  baseURL: 'https://jsonplaceholder.typicode.com/todos/',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
 // http://52.48.233.122:3001/users/get-profile/14
 
 export const feedbackAPI = {
@@ -129,22 +136,22 @@ export const messageAPI = {
 }
 
 export const userAPI = {
+
+  isUser: phone => instance.get(
+    `auth/user-exists?phone=${phone}`,
+   /* JSON.stringify({
+      phone: `${phone}`,
+    })*/
+  ),
+
   getSMS: (phone, email) =>
-    instance
-      .post(
-        'sms/send',
-        JSON.stringify({
-          phone: `${phone}`,
-          email: `${email}`
-        })
-      )
-  /* .then(function (response) {
-     console.log(response)
-   })
-   .catch(function (error) {
-     console.log(error)
-   })*/
-  ,
+    instance.post(
+      'sms/send',
+      JSON.stringify({
+        phone: `${phone}`,
+        email: `${email}`
+      })
+    ),
 
   register: (values, code) => instance.post(
     'auth/register',
@@ -158,19 +165,14 @@ export const userAPI = {
       address: {
         city: `${values.city}`,
         street: `${values.street}`,
-        house: values.house,
-        apt: values.apt,
-        lat: 10,
-        lon: 10
+        house: `${values.house}`,
+        apt: `${values.apt}`,
+        lat: 0,
+        lon: 0
       },
       code: `${code}`
     })
-  ).then(res => {
-    console.log(res)
-    return res
-  })
-
-  ,
+  ),
 
   editProfile: async values => {
 
@@ -181,8 +183,8 @@ export const userAPI = {
       address: {
         city: `${values.city}`,
         street: `${values.street}`,
-        house: values.house,
-        apt: values.apt,
+        house: `${values.house}`,
+        apt: `${values.apt}`,
         lat: 0,
         lon: 0
       }
@@ -220,14 +222,13 @@ export const userAPI = {
     })
   ),
 
-  forgotPass: async values =>
-    instance.post(
-      'auth/forgot',
-      JSON.stringify({
-        phone: `${values.phone}`,
-        email: `2328221@ukr.net`
-      })
-    ),
+  forgotPass: values => instance.post(
+    'auth/forgot',
+    JSON.stringify({
+      phone: `${values.phone}`,
+      email: `2328221@ukr.net`
+    })
+  ),
 
   changePass: values =>
     instance.post(
@@ -242,7 +243,7 @@ export const userAPI = {
   saveToken: async token => {
     try {
       await AsyncStorage.setItem('token', token)
-      console.log('TOKEN OK')
+      console.log('TOKEN OK', token)
     } catch (e) {
       console.log(e)
     }
@@ -591,7 +592,7 @@ export const serviceAPI = {
       try {
         console.log('DELETE OK')
         const response = await axios(config)
-        return JSON.stringify(response.data)
+        //  return JSON.stringify(response.data)
       } catch (error) {
         console.log(error)
       }
@@ -626,8 +627,9 @@ export const serviceAPI = {
       try {
         console.log('SEARCH OK')
         const response = await axios(config)
-        console.log(response)
-        return JSON.stringify(response.data)
+        //  console.log(response)
+        //  return JSON.stringify(response.data)
+        return response.data
       } catch (error) {
         console.log(error)
       }

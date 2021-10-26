@@ -13,14 +13,14 @@ const FooterHome = (props) => {
     return (
         <View style={s.footer}>
             <View style={s.footerInner}>
-                {!props.hide &&
+                
                     <TouchableOpacity style={s.termsBlock} onPress={() => navigation.navigate('Terms')}>
                         <Text style={[g.text18_400_grey, s.terms]}>תנאי שימוש  </Text>
-                        <TouchableOpacity style={s.checkBlock} onPress={() => props.setChecked(!props.checked)}>
+                        {/*<TouchableOpacity style={s.checkBlock} onPress={() => props.setChecked(!props.checked)}>
                             <CheckCircle />
                             {props.checked && <CheckV style={s.v} />}
-                        </TouchableOpacity>
-                    </TouchableOpacity>}
+    </TouchableOpacity>*/}
+                    </TouchableOpacity>
             </View>
         </View>
     )

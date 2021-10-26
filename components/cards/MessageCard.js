@@ -52,8 +52,10 @@ const MessageCard = ({ m }) => {
 
   const scaleRedX = 1.2
 
-//  console.log(m.type)
-//  console.log(m.message.status)
+  // console.log(m)
+
+  //  console.log(m.type)
+  //  console.log(m.message.status)
 
   useEffect(() => {
     switch (m.type) {
@@ -82,7 +84,7 @@ const MessageCard = ({ m }) => {
         break
 
       case 'feedback':
-        setHeader('קיבלת משוב')
+        setHeader(`תודה על השירות שדורג ${m.message.rating} `)
         break
 
       default:
@@ -90,6 +92,8 @@ const MessageCard = ({ m }) => {
     }
     return () => { }
   }, [m])
+
+
 
   const handleOpen = async () => {
     if (!open) {
@@ -176,7 +180,10 @@ const MessageCard = ({ m }) => {
                 }}
               />
             </TouchableOpacity>
+            <View style={s.headerBox}>
             <Text style={m.isRead ? g.text20_400_grey2 : g.text20_400_blue}>{header}</Text>
+            </View>
+            
             <View style={s.icon}>
               <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
                 <ImageBackground

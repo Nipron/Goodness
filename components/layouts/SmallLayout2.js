@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import {
   Dimensions,
   StyleSheet,
@@ -22,11 +22,12 @@ import { useSelector } from 'react-redux'
 import AvatarPlain from '../../Images/AvatarPlain.jpg'
 
 import Footer from '../footer/Footer'
+import FooterNoHook from '../footer/FooterNoHook'
 import ArrowBack from '../../Images/ArrowBack.svg'
 
 import { g } from '../../styles/global'
 
-export default function SmallLayout2 (props) {
+export default function SmallLayout2(props) {
   const navigation = useNavigation()
 
   const data = useSelector(state => state.all)
@@ -40,7 +41,7 @@ export default function SmallLayout2 (props) {
         Keyboard.dismiss()
       }}
     >
-      <KeyboardAvoidingView style={s.containerMain}>
+      <KeyboardAvoidingView style={s.containerMain} behavior={'padding'}>
         <View style={s.background}>
           <ImageBackground
             source={require('../../Images/BackgroundSmall.png')}
@@ -69,8 +70,8 @@ export default function SmallLayout2 (props) {
                         source={
                           !!data.avatar
                             ? {
-                                uri: `http://52.48.233.122:3001/${data.avatar.path}`
-                              }
+                              uri: `http://52.48.233.122:3001/${data.avatar.path}`
+                            }
                             : AvatarPlain
                         }
                         style={s.avatar}
@@ -91,11 +92,17 @@ export default function SmallLayout2 (props) {
           </ImageBackground>
         </View>
 
-        <View style={[s.childrenBlockOuter, {height: Dimensions.get('window').height * 0.555 + 70 - (props.focus && 160)}]}>{props.children}</View>
-        
 
-        <Footer hide={props.hide} />
-        {props.focus && <KeyboardAvoidingView style={s.bottomPlug} />}
+        <View style={s.childrenBlockOuter}>{props.children}</View>
+
+        {/*  <View style={{backgroundColor: "peru", width: "60%", height: 100}}>
+
+                      </View>*/}
+
+
+        {!props.hide && <Footer hide={props.hide} />}
+        {props.hide && <FooterNoHook hide={props.hide} />}
+        {false && props.focus && <KeyboardAvoidingView style={s.bottomPlug} />}
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   )
@@ -106,8 +113,8 @@ const s = StyleSheet.create({
   bottomPlug: {
     width: "100%",
     height: 160,
-   // backgroundColor: "green"
-},
+    // backgroundColor: "green"
+  },
 
 
   containerMain: {
@@ -120,8 +127,8 @@ const s = StyleSheet.create({
 
   background: {
     width: '100%',
-    // height: Dimensions.get('window').height * 0.3,
-    height: '32.5%',
+    height: Dimensions.get('window').height * 0.325,
+    //  height: '32.5%',
     alignItems: 'center',
     justifyContent: 'flex-start',
     borderBottomLeftRadius: 50,
@@ -137,16 +144,16 @@ const s = StyleSheet.create({
     resizeMode: 'cover'
   },
 
-  safeContainer: {    
-    width: '100%',  
-    alignItems: "center"  
-  //  backgroundColor: 'red',    
+  safeContainer: {
+    width: '100%',
+    alignItems: "center"
+    //  backgroundColor: 'red',    
   },
 
   safeArrow: {
     width: '100%',
     height: 80,
-  //  backgroundColor: 'green',
+    //  backgroundColor: 'green',
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
@@ -176,11 +183,12 @@ const s = StyleSheet.create({
 
   childrenBlockOuter: {
     width: '88%',
-    height: Dimensions.get('window').height * 0.555 + 70,
-    marginTop: -70,
+    height: "58.5%", /*Dimensions.get('window').height * 0.555 + 70,*/
+    // marginTop: -40,
     //   backgroundColor: "magenta",
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    zIndex: 30
   },
 
   photoOuter: {

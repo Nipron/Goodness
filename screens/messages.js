@@ -24,7 +24,7 @@ export default function Messages ({ navigation }) {
   const messages = useSelector(state => state.messages)
   const dispatch = useDispatch()
 
-  useFocusEffect(
+ /* useFocusEffect(
     React.useCallback(() => {
       let loop = setInterval(() => {
         console.log("Refresh Message")
@@ -34,7 +34,7 @@ export default function Messages ({ navigation }) {
         clearInterval(loop)
       }
     }, [])
-  );
+  );*/
 
  /* const [messages, setMessages] = useState(m)
 
@@ -49,8 +49,9 @@ export default function Messages ({ navigation }) {
       }
     }, [m])
   )*/
+  const filteredMessages = messages.filter(item => /*item.type !== "feedback"*/ item)
 
-  const sortedMessages = messages.sort((a, b) => {
+  const sortedMessages = filteredMessages.sort((a, b) => {
     return new Date(b.createdAt) - new Date(a.createdAt)
   })
 

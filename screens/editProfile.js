@@ -111,7 +111,7 @@ export default function EditProfile2() {
     dispatch(updateProfileThunk())
     setModalOpen(false)
     navigation.navigate('Profile')
-    
+
 
     /*  console.log("CODE CODE")
           console.log(code)*/
@@ -203,179 +203,191 @@ export default function EditProfile2() {
 
   return (
     <SmallLayout2 text='הרשמה' hide={true} focus={focus}>
-      <SafeAreaView style={s.outer}>
-        <View style={s.registrationBlock}>
-          <CameraAvatar image={image} setImage={setImage} />
-          <View style={s.plug} />
-          <Formik
-            initialValues={{
-              name: data.name /*phone: data.phone,*/,
-              email: data.email,
-              job: data.job,
-              city: data.address.city,
-              street: data.address.street,
-              house: data.address.house,
-              apt: data.address.apt,
-              password: data.password,
-              confirmPassword: data.password /*referral: ''*/
-            }}
-            onSubmit={onFormikSubmit}
-          >
-            {props => (
-              <KeyboardAvoidingView
-                style={s.goodnessBlock}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+
+      <View style={s.registrationBlock}>
+        <CameraAvatar image={image} setImage={setImage} />
+        <View style={s.plug} />
+        <Formik
+          initialValues={{
+            name: data.name /*phone: data.phone,*/,
+            email: data.email,
+            job: data.job,
+            city: data.address.city,
+            street: data.address.street,
+            house: data.address.house,
+            apt: data.address.apt,
+            password: data.password,
+            confirmPassword: data.password /*referral: ''*/
+          }}
+          onSubmit={onFormikSubmit}
+        >
+          {props => (
+            <KeyboardAvoidingView
+              style={s.goodnessBlock}
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
+              <ScrollView
+                style={s.formikBlock}
+                contentContainerStyle={s.formikScrollStyle}
               >
-                <ScrollView
-                  style={s.formikBlock}
-                  contentContainerStyle={s.formikScrollStyle}
-                >
-                  <View style={s.fieldsBlock}>
-                    <View style={s.personalBlock}>
-                      <Text style={g.text28_700_blue}>פרטים אישיים</Text>
-                      <RegInput
-                        onChangeText={props.handleChange('name')}
-                        value={props.values.name}
-                        placeholder='שם מלא'
-                        borderColor={nameBorder}
-                        setFocus={setFocus}
-                      >
-                        <PersonIcon />
-                      </RegInput>
-                      {/*   <RegInput
-                                                    onChangeText={props.handleChange('phone')}
-                                                    value={props.values.phone}
-                                                    keyboardType="number-pad"
-                                                    placeholder="טלפון"
-                                                    borderColor={phoneBorder}
-                                                >
-                                                    <PhoneIcon />
-                                             </RegInput>*/}
-                      <RegInput
-                        onChangeText={props.handleChange('email')}
-                        value={props.values.email}
-                        placeholder='אימייל'
-                        borderColor={emailBorder}
-                        autoCapitalize='none'
-                        setFocus={setFocus}
-                        maxLength={30}
-                      >
-                        <EmailIcon />
-                      </RegInput>
-                      <RegInput
-                        onChangeText={props.handleChange('job')}
-                        value={props.values.job}
-                        placeholder='עיסוק'
-                        borderColor={jobBorder}
-                        setFocus={setFocus}
-                      >
-                        <JobIcon />
-                      </RegInput>
-                    </View>
-
-                    <View style={s.personalBlock}>
-                      <Text style={g.text28_700_blue}>כתובת מגורים</Text>
-                      <RegInput
-                        onChangeText={props.handleChange('city')}
-                        value={props.values.city}
-                        placeholder='עיר'
-                        borderColor={cityBorder}
-                        setFocus={setFocus}
-                      >
-                        <PinIcon />
-                      </RegInput>
-                      <RegInput
-                        onChangeText={props.handleChange('street')}
-                        value={props.values.street}
-                        placeholder='רחוב'
-                        borderColor={streetBorder}
-                        setFocus={setFocus}
-                      >
-                        <PinIcon />
-                      </RegInput>
-                      <View style={s.house}>
-                        <RegInputSmall
-                          onChangeText={props.handleChange('apt')}
-                          value={props.values.apt}
-                          placeholder="מס' דירה"
-                          keyboardType='number-pad'
-                          style={{ width: '47%' }}
-                          borderColor={aptBorder}
-                          setFocus={setFocus}
-                        >
-                          <HashIcon />
-                        </RegInputSmall>
-                        <RegInputSmall
-                          onChangeText={props.handleChange('house')}
-                          value={props.values.house}
-                          placeholder="מס' בית"
-                          keyboardType='number-pad'
-                          style={{ width: '50%' }}
-                          borderColor={houseBorder}
-                          setFocus={setFocus}
-                        >
-                          <HashIcon />
-                        </RegInputSmall>
-                      </View>
-                    </View>
-
-                    {/*  <View style={s.personalBlock}>
-                                                <Text style={g.text28_700_blue}>
-                                                    מידע אישי
-                                                </Text>
-                                                <RegInput
-                                                    onChangeText={props.handleChange('password')}
-                                                    value={props.values.password}
-                                                    placeholder="סיסמה"
-                                                    borderColor={passwordBorder}
-                                                    autoCapitalize="none"
-                                                >
-                                                    <LockIcon />
-                                                </RegInput>
-                                                <RegInput
-                                                    onChangeText={props.handleChange('confirmPassword')}
-                                                    value={props.values.confirmPassword}
-                                                    placeholder="אימות סיסמא"
-                                                    borderColor={confirmPasswordBorder}
-                                                    autoCapitalize="none"
-                                                >
-                                                    <LockIcon />
-                                                </RegInput>
-
-                                                <View style={s.lineOuter}>
-                                                    <View style={s.line}>
-                                                    </View>
-                                                </View>
-
-                                                <RegInput
-                                                    onChangeText={props.handleChange('referral')}
-                                                    value={props.values.referral}
-                                                    keyboardType="number-pad"
-                                                    placeholder="טלפון של המזמין לאפליקציה"
-                                                    borderColor={referralBorder}
-                                                >
-                                                    <ReferalIcon />
-                                                </RegInput>
-                                            </View>*/}
+                <View style={s.fieldsBlock}>
+                  <View style={s.personalBlock}>
+                    <Text style={g.text28_700_blue}>פרטים אישיים</Text>
+                    <RegInput
+                      onChangeText={props.handleChange('name')}
+                      value={props.values.name}
+                      placeholder='שם מלא'
+                      borderColor={nameBorder}
+                      setFocus={setFocus}
+                    >
+                      <PersonIcon />
+                    </RegInput>
+                    
+                    <RegInput
+                      onChangeText={props.handleChange('email')}
+                      value={props.values.email}
+                      placeholder='אימייל'
+                      borderColor={emailBorder}
+                      autoCapitalize='none'
+                      setFocus={setFocus}
+                      maxLength={30}
+                    >
+                      <EmailIcon />
+                    </RegInput>
+                    <RegInput
+                      onChangeText={props.handleChange('job')}
+                      value={props.values.job}
+                      placeholder='עיסוק'
+                      borderColor={jobBorder}
+                      setFocus={setFocus}
+                    >
+                      <JobIcon />
+                    </RegInput>
                   </View>
-                  <ButtonBlue
-                    name='שמור'
-                    bottom={73}
-                    onPress={props.handleSubmit}
-                  />
-                </ScrollView>
-              </KeyboardAvoidingView>
-            )}
-          </Formik>
-        </View>
-      </SafeAreaView>
+
+                  <View style={s.personalBlock}>
+                    <Text style={g.text28_700_blue}>כתובת מגורים</Text>
+                    <RegInput
+                      onChangeText={props.handleChange('city')}
+                      value={props.values.city}
+                      placeholder='עיר'
+                      borderColor={cityBorder}
+                      setFocus={setFocus}
+                    >
+                      <PinIcon />
+                    </RegInput>
+                    <RegInput
+                      onChangeText={props.handleChange('street')}
+                      value={props.values.street}
+                      placeholder='רחוב'
+                      borderColor={streetBorder}
+                      setFocus={setFocus}
+                    >
+                      <PinIcon />
+                    </RegInput>
+                    <View style={s.house}>
+                      <RegInputSmall
+                        onChangeText={props.handleChange('apt')}
+                        value={props.values.apt}
+                        placeholder="מס' דירה"
+                        //  keyboardType='number-pad'
+                        style={{ width: '47%' }}
+                        borderColor={aptBorder}
+                        setFocus={setFocus}
+                      >
+                        <HashIcon />
+                      </RegInputSmall>
+                      <RegInputSmall
+                        onChangeText={props.handleChange('house')}
+                        value={props.values.house}
+                        placeholder="מס' בית"
+                        //  keyboardType='number-pad'
+                        style={{ width: '50%' }}
+                        borderColor={houseBorder}
+                        setFocus={setFocus}
+                      >
+                        <HashIcon />
+                      </RegInputSmall>
+                    </View>
+                  </View>
+                
+                
+                </View>
+                <ButtonBlue name='שמור' bottom={73} onPress={props.handleSubmit} />
+
+                <View style={s.plug2} />
+              </ScrollView>
+            </KeyboardAvoidingView>
+          )}
+        </Formik>
+
+      </View>
+      <TouchableOpacity style={s.termsBlock} onPress={() => navigation.navigate('Terms')}>
+                <Text style={[g.text18_400_grey, s.terms]}>תנאי שימוש  </Text>                
+            </TouchableOpacity>
     </SmallLayout2>
   )
 }
 
 const s = StyleSheet.create({
+
+  v: {
+    position: "absolute"
+},
+
+checkBlock: {
+    marginLeft: 5,
+    alignItems: "center",
+    justifyContent: "center"
+},
+
+footer: {
+    width: "100%",
+    height: "12.5%",
+    marginTop: -26,
+    paddingTop: 26,
+    //  backgroundColor: "green",
+    alignItems: 'center',
+    justifyContent: 'center'
+},
+
+footerInner: {
+    width: "100%",
+    height: "100%",
+    //   backgroundColor: "red",
+    alignItems: 'center',
+    justifyContent: 'flex-start'
+},
+
+termsBlock: {
+   // width: "100%",
+    height: 30,
+    //  backgroundColor: "pink",
+    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: 'center'
+},
+terms: {
+    marginRight: 2
+},
+
+
+
+
+
+
+
+
+
+
+
+  plug2: {
+    width: "100%",
+    height: 10,
+    //     backgroundColor: "orange"
+  },
   outer: {
-    // backgroundColor: "green",
+    backgroundColor: "green",
     width: '100%',
     flex: 1
   },
@@ -385,6 +397,7 @@ const s = StyleSheet.create({
     justifyContent: 'flex-start',
     width: '100%',
     flex: 1,
+    // backgroundColor: "pink"
   },
 
   formikScrollStyle: {
@@ -392,12 +405,17 @@ const s = StyleSheet.create({
     justifyContent: 'flex-start'
   },
 
+
+
   plug: {
     position: 'absolute',
-    width: '100%',
-    height: 400,
-    backgroundColor: '#EFEFEF',
-    borderRadius: 40
+    width: "100%",
+    marginTop: -55,
+   // height: Dimensions.get('window').height * 0.585,
+    height: 200,
+    backgroundColor: "#EFEFEF",
+    //   backgroundColor: "pink",
+    borderRadius: 40,
   },
 
   goodnessBlock: {
@@ -412,9 +430,9 @@ const s = StyleSheet.create({
     marginTop: -73,
     width: '100%',
     borderRadius: 40,
-    height: Dimensions.get('window').height * 0.58 + 73
+    height: Dimensions.get('window').height * 0.58 + 73,
     // marginBottom: 200,
-    //  backgroundColor: "lightblue",
+  //    backgroundColor: "lightblue",
     //  backgroundColor: "#FFFFFF",
   },
 

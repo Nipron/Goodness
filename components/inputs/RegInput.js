@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -10,10 +10,10 @@ import { g } from '../../styles/global'
 
 const RegInput = props => {
 
-const [focus, setFocus] = useState(false)
+  const [focus, setFocus] = useState(false)
 
   return (
-    <KeyboardAvoidingView style={s.outer}>
+    <View style={s.outer}>
       <TextInput
         style={[
           s.input,
@@ -31,17 +31,18 @@ const [focus, setFocus] = useState(false)
         placeholder={props.placeholder}
         placeholderTextColor='#CCCCCC'
         autoCapitalize={props.autoCapitalize}
-        maxLength={props.maxLength ? props.maxLength :50}
+        maxLength={props.maxLength ? props.maxLength : 50}
         secureTextEntry={props.secureTextEntry}
         onFocus={() => props.setFocus(true)}
         onBlur={() => props.setFocus(false)}
         maxLength={props.maxLength || 20}
+        autoCorrect={false}
       ></TextInput>
       <View style={s.icon}>
         <View style={s.svg}>{props.children}</View>
       </View>
-      
-    </KeyboardAvoidingView>
+
+    </View>
   )
 }
 
@@ -53,7 +54,7 @@ const s = StyleSheet.create({
     width: "100%",
     height: 150,
     backgroundColor: "red"
-},
+  },
   outer: {
     width: '100%',
     position: 'relative',

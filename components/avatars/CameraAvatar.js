@@ -122,7 +122,7 @@ export default CameraAvatar
 const s = StyleSheet.create({
     photoOuter: {
         zIndex: 2,
-        marginTop: -60,
+        marginTop: -115,
         width: 120,
         height: 120,
         borderRadius: 65,
