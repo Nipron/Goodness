@@ -145,7 +145,7 @@ const JobsFromMeCard = ({ item, toMe }) => {
                     <CheckGreen style={{ transform: [{ scaleX: scaleCheckGreen }, { scaleY: scaleCheckGreen }] }} />
                 </TouchableOpacity>}
                 <TouchableOpacity onPress={() => setModalOpen(true)}>
-                    <ThumbGrey style={{ transform: [{ scaleX: scaleThumb }, { scaleY: scaleThumb }] }} />
+                    <Thumb style={{ transform: [{ scaleX: scaleThumb }, { scaleY: scaleThumb }] }} />
                 </TouchableOpacity>
             </View>
 

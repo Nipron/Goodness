@@ -65,7 +65,6 @@ export default function EditProfile2() {
   const navigation = useNavigation()
 
   const [nameBorder, setNameBorder] = useState('')
-  const [phoneBorder, setPhoneBorder] = useState('')
   const [emailBorder, setEmailBorder] = useState('')
   const [jobBorder, setJobBorder] = useState('')
   const [cityBorder, setCityBorder] = useState('')
@@ -127,32 +126,39 @@ export default function EditProfile2() {
   }
 
   const onFormikSubmit = async values => {
-    if (!values.name) {
-      setNameBorder('red')
-    } else setNameBorder('lightgreen')
-    if (!(values.phone && values.phone.length === 12)) {
-      setPhoneBorder('red')
-    } else setPhoneBorder('lightgreen')
-    if (!values.email) {
-      setEmailBorder('red')
-    } else setEmailBorder('lightgreen')
-    if (!values.job) {
-      setJobBorder('red')
-    } else setJobBorder('lightgreen')
+    if (!values.name || (values.name.length < 3)) { setNameBorder("red") } else setNameBorder("lightgreen")
+    /* if (!values.email) {
+       setEmailBorder('red')
+     } else setEmailBorder('lightgreen')*/
+    if (!values.job || (values.job.length < 3)) { setJobBorder("red") } else setJobBorder("lightgreen")
     // if (!values.city) {setCityBorder("red")} else setCityBorder("lightgreen")
     // if (!values.street) {setStreetBorder("red")} else setStreetBorder("lightgreen")
     // if (!values.house) {setHouseBorder("red")} else setHouseBorder("lightgreen")
     // if (!values.apt) {setAptBorder("red")} else setAptBorder("lightgreen")
 
 
-    if (
-      values.name &&
-      values.email &&
-      values.job /*&& values.city 
-        && values.street && values.house && value.appt && values.password
-            && (values.password === values.confirmPassword)*/
-    ) {
-      // userAPI.getSMS(values.phone)
+
+
+
+    if (values.name.length < 3) {
+      Alert.alert("משהו השתבש!", "אורך השם צריך להיות לפחות 3 תווים", [
+        {
+          text: 'אישור', onPress: () => {
+            console.log('Name wrong')
+          }
+        }
+      ])
+    } else {
+      if (values.job.length < 3) {
+        Alert.alert("משהו השתבש!", `אורך שדה "עיסוק" צריך להיות לפחות 3 תווים`, [
+          {
+            text: 'אישור', onPress: () => {
+              console.log('Job wrong')
+            }
+          }
+        ])
+      } else {
+        
       dispatch(setTempImage(image))
       setRegValues(values)
 
@@ -166,20 +172,9 @@ export default function EditProfile2() {
           console.log('CODE NO GOOD')
           console.log(error)
         })
+     
 
-      /*  await userAPI.login(regValues)
-                  .then(response => userAPI.saveToken(response.data.access_token))
-                  .catch(function (error) {
-                      console.log("LOGIN NO GOOD")
-                      //  console.log(error);
-                      //  console.log(regValues)
-                      Alert.alert('Something went wrong!', "Wrong email/password", [{ text: "Try again", onPress: () => console.log('alert wrong') }])
-                  })*/
-
-      await userAPI.sendPic(image).then(res => {
-        //       console.log("SEND PIC")
-        //        console.log(res)
-      })
+      await userAPI.sendPic(image)
 
       await userAPI.dashboard().then(data => {
         console.log('DASHBOARD OK')
@@ -192,10 +187,8 @@ export default function EditProfile2() {
             }
           }
         ])
-
       })
-    } else {
-      console.log('Not OK')
+      }
     }
   }
 
@@ -229,6 +222,7 @@ export default function EditProfile2() {
               <ScrollView
                 style={s.formikBlock}
                 contentContainerStyle={s.formikScrollStyle}
+                keyboardShouldPersistTaps="always"
               >
                 <View style={s.fieldsBlock}>
                   <View style={s.personalBlock}>
@@ -242,7 +236,7 @@ export default function EditProfile2() {
                     >
                       <PersonIcon />
                     </RegInput>
-                    
+
                     <RegInput
                       onChangeText={props.handleChange('email')}
                       value={props.values.email}
@@ -310,8 +304,8 @@ export default function EditProfile2() {
                       </RegInputSmall>
                     </View>
                   </View>
-                
-                
+
+
                 </View>
                 <ButtonBlue name='שמור' bottom={73} onPress={props.handleSubmit} />
 
@@ -323,8 +317,8 @@ export default function EditProfile2() {
 
       </View>
       <TouchableOpacity style={s.termsBlock} onPress={() => navigation.navigate('Terms')}>
-                <Text style={[g.text18_400_grey, s.terms]}>תנאי שימוש  </Text>                
-            </TouchableOpacity>
+        <Text style={[g.text18_400_grey, s.terms]}>תנאי שימוש  </Text>
+      </TouchableOpacity>
     </SmallLayout2>
   )
 }
@@ -333,15 +327,15 @@ const s = StyleSheet.create({
 
   v: {
     position: "absolute"
-},
+  },
 
-checkBlock: {
+  checkBlock: {
     marginLeft: 5,
     alignItems: "center",
     justifyContent: "center"
-},
+  },
 
-footer: {
+  footer: {
     width: "100%",
     height: "12.5%",
     marginTop: -26,
@@ -349,27 +343,27 @@ footer: {
     //  backgroundColor: "green",
     alignItems: 'center',
     justifyContent: 'center'
-},
+  },
 
-footerInner: {
+  footerInner: {
     width: "100%",
     height: "100%",
     //   backgroundColor: "red",
     alignItems: 'center',
     justifyContent: 'flex-start'
-},
+  },
 
-termsBlock: {
-   // width: "100%",
+  termsBlock: {
+    // width: "100%",
     height: 30,
     //  backgroundColor: "pink",
     flexDirection: "row",
     alignItems: 'center',
     justifyContent: 'center'
-},
-terms: {
+  },
+  terms: {
     marginRight: 2
-},
+  },
 
 
 
@@ -411,7 +405,7 @@ terms: {
     position: 'absolute',
     width: "100%",
     marginTop: -55,
-   // height: Dimensions.get('window').height * 0.585,
+    // height: Dimensions.get('window').height * 0.585,
     height: 200,
     backgroundColor: "#EFEFEF",
     //   backgroundColor: "pink",
@@ -432,7 +426,7 @@ terms: {
     borderRadius: 40,
     height: Dimensions.get('window').height * 0.58 + 73,
     // marginBottom: 200,
-  //    backgroundColor: "lightblue",
+    //    backgroundColor: "lightblue",
     //  backgroundColor: "#FFFFFF",
   },
 

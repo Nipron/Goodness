@@ -95,18 +95,18 @@ const SearchResultCard = (props) => {
                         <Date style={{ transform: [{ scaleX: scaleDate }, { scaleY: scaleDate }] }} />
                     </View>*/}
                     <View style={s.time}>
-                    {/*
-                            (props.data.actionRadius !== 25000000) &&*/}
+                    {
+                            (props.data.actionRadius !== 25000000) &&
                             <Text style={[g.text13_400_blue, s.dateStyle]}>{`${dist} km `}</Text>
-                       
+                    }
                         {/*
                             (props.data.actionRadius < 24999000) &&
                             <Text style={[g.text13_400_blue, s.dateStyle]}>בכתובת מוגדרת</Text>
                         */}                       
-                        {/*
+                        {
                             (props.data.actionRadius === 25000000) &&
                             <Text style={[g.text13_400_blue, s.dateStyle]}>Online</Text>
-                        */}
+                        }
                         <MarkerBlue style={{ transform: [{ scaleX: scaleMarker }, { scaleY: scaleMarker }] }} />
                     </View>
                 </View>

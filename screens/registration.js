@@ -117,6 +117,7 @@ export default function Registration2() {
     const onFormikSubmit = async values => {
         if (!values.name || (values.name.length < 3)) { setNameBorder("red") } else setNameBorder("lightgreen")
         const phoneClean = values.phone.replace(/[^\d]/g, '')
+        
         const referralClean = values.referral.replace(/[^\d]/g, '')
         if (!phoneClean) { setPhoneBorder("red") } else setPhoneBorder("lightgreen")
         //  if (!values.email) { setEmailBorder("red") } else setEmailBorder("lightgreen")
@@ -179,10 +180,10 @@ export default function Registration2() {
                         } else {
 
                             if (!read) {
-                                Alert.alert("משהו השתבש!", "אנא קרא ואשר את תנאי השימוש", [
+                                Alert.alert("אישור תנאי שימוש", "אנא קרא ואשר את תנאי השימוש", [
                                     {
                                         text: 'אישור', onPress: () => {
-                                            console.log("Confirm password doesn't match")
+                                            console.log("Term were not read")
                                         }
                                     }
                                 ])
@@ -272,7 +273,7 @@ export default function Registration2() {
                     {
                         (props) => (
                             <KeyboardAvoidingView style={s.goodnessBlock} behavior={Platform.OS === "ios" ? "padding" : "height"} >
-                                <ScrollView style={s.formikBlock} contentContainerStyle={s.formikScrollStyle}>
+                                <ScrollView style={s.formikBlock} contentContainerStyle={s.formikScrollStyle} keyboardShouldPersistTaps="always">
                                     <View style={s.fieldsBlock}>
 
                                         <View style={s.personalBlock}>

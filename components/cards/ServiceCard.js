@@ -54,6 +54,13 @@ const ServiceCard = ({ serv }) => {
   const handleDelete = async () => {
     await serviceAPI.deleteService(serv.id)
     dispatch(updateProfileThunk())
+    Alert.alert("השירות הוסר בהצלחה", "", [
+      {
+          text: 'אישור', onPress: () => {
+              console.log("Term were not read")
+          }
+      }
+  ])
     navigation.navigate('Services')
 
   }

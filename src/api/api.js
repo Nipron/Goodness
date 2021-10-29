@@ -153,38 +153,44 @@ export const userAPI = {
       })
     ),
 
-  register: (values, code) => instance.post(
-    'auth/register',
-    JSON.stringify({
-      name: `${values.name}`,
-      email: `${values.email}`,
-      phone: `${values.phone}`,
-      job: `${values.job}`,
-      referral: `${values.referral}`,
-      password: `${values.password}`,
-      address: {
-        city: `${values.city}`,
-        street: `${values.street}`,
-        house: `${values.house}`,
-        apt: `${values.apt}`,
-        lat: 0,
-        lon: 0
-      },
-      code: `${code}`
-    })
-  ),
+  register: (values, code) =>  {
+
+    return instance.post(
+      'auth/register',
+      JSON.stringify({
+        name: `${values.name}`,
+        email: values.email ? `${values.email}` : ' ',
+        phone: `${values.phone}`,
+        job: `${values.job}`,
+        referral: `${values.referral}`,
+        password: `${values.password}`,
+        address: {
+          city: values.city ? `${values.city}` : ' ',
+          street: values.street ?`${values.street}` : ' ',
+          house: values.house ? `${values.house}` : ' ',
+          apt: values.apt ? `${values.apt}` : ' ',
+          lat: 0,
+          lon: 0
+        },
+        code: `${code}`
+      })
+    )
+
+  },
 
   editProfile: async values => {
 
+    console.log(values)
+
     let data = {
       name: `${values.name}`,
-      email: `${values.email}`,
+      email: values.email ? `${values.email}` : ' ',
       job: `${values.job}`,
       address: {
-        city: `${values.city}`,
-        street: `${values.street}`,
-        house: `${values.house}`,
-        apt: `${values.apt}`,
+        city: values.city ? `${values.city}` : ' ',
+        street: values.street ?`${values.street}` : ' ',
+        house: values.house ? `${values.house}` : ' ',
+        apt: values.apt ? `${values.apt}` : ' ',
         lat: 0,
         lon: 0
       }
@@ -222,13 +228,18 @@ export const userAPI = {
     })
   ),
 
-  forgotPass: values => instance.post(
-    'auth/forgot',
-    JSON.stringify({
-      phone: `${values.phone}`,
-      email: `2328221@ukr.net`
-    })
-  ),
+  forgotPass: values => {
+
+    console.log("API forgot pass", values)
+
+    return instance.post(
+      'auth/forgot',
+      JSON.stringify({
+        phone: `${values.phone}`,
+        email: `2328221@ukr.net`
+      })
+    )
+  } ,
 
   changePass: values =>
     instance.post(

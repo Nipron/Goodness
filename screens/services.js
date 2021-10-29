@@ -45,6 +45,7 @@ export default function Services({ navigation }) {
           <ScrollView
             style={s.scrollBlock}
             contentContainerStyle={s.scrollBlockContent}
+            keyboardShouldPersistTaps="always"
           >
             {sortedServices.map(serv => (
               <ServiceCard serv={serv} key={serv.id} />

@@ -10,8 +10,6 @@ import { g } from '../../styles/global'
 
 const RegInput = props => {
 
-  const [focus, setFocus] = useState(false)
-
   return (
     <View style={s.outer}>
       <TextInput

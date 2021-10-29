@@ -497,6 +497,7 @@ export default function Create() {
             scrollEnabled={!!result.length}
             style={s.scrollBlock}
             contentContainerStyle={s.resultContainer}
+            keyboardShouldPersistTaps="always"
           >
             <View style={s.pickersBlock}>
               <View style={s.picker1}>

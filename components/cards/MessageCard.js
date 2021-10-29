@@ -52,7 +52,7 @@ const MessageCard = ({ m }) => {
 
   const scaleRedX = 1.2
 
-  // console.log(m)
+  console.log(m)
 
   //  console.log(m.type)
   //  console.log(m.message.status)
@@ -65,14 +65,15 @@ const MessageCard = ({ m }) => {
 
       case 'contract_changed':
         switch (m.message.status) {
-          case 'approved':
-            setHeader('העבודה שלך התקבלה')
-            break
           case 'done':
-            setHeader('משימתכם בוצעה בהצלחה')
+            setHeader('השירות בוצע, נא לדרג')
             break
+          case 'approved':
+            setHeader('מזמין השירות אישר ביצוע')
+            break
+
           case 'canceled':
-            setHeader('הזמנת משימה בוטלה')
+            setHeader('הזמנת שירות בוטלה')
             break
           default:
             break
@@ -80,7 +81,7 @@ const MessageCard = ({ m }) => {
         break
 
       case 'referral':
-        setHeader('קיבלת לב אחד בעבור הפניה')
+        setHeader('משתמש זה ציין אותך כמזמין לאפליקציה')
         break
 
       case 'feedback':
@@ -173,7 +174,7 @@ const MessageCard = ({ m }) => {
             </View>
           </View>
           <View style={s.body}>
-            <TouchableOpacity onPress={handleDelete} style={{ marginLeft: 20 }}>
+            <TouchableOpacity onPress={handleDelete} style={{  width: "10%", alignItems: "flex-end" }}>
               <BinRed
                 style={{
                   transform: [{ scaleX: scaleRedX }, { scaleY: scaleRedX }]
@@ -181,9 +182,9 @@ const MessageCard = ({ m }) => {
               />
             </TouchableOpacity>
             <View style={s.headerBox}>
-            <Text style={m.isRead ? g.text20_400_grey2 : g.text20_400_blue}>{header}</Text>
+              <Text style={[m.isRead ? g.text20_400_grey2 : g.text20_400_blue, { fontSize: m.type === "referral" ? 14 : 20 }]}>{header}</Text>
             </View>
-            
+
             <View style={s.icon}>
               <TouchableOpacity style={s.avatarBlock} onPress={goToPersonalInfo}>
                 <ImageBackground
@@ -209,6 +210,11 @@ const MessageCard = ({ m }) => {
 export default MessageCard
 
 const s = StyleSheet.create({
+  headerBox: {
+    width: "70%", 
+    alignItems: "flex-end",
+  },
+
   outer: {
     width: '100%',
     height: 70,

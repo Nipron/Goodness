@@ -59,6 +59,7 @@ export default function UserInfo () {
         <ScrollView
           style={s.regBlock}
           contentContainerStyle={s.regBlockContainer}
+          keyboardShouldPersistTaps="always"
         >
           {!!data.works &&
             data.works.map(w => {

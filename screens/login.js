@@ -82,6 +82,7 @@ export default function Login(props) {
   const [loading, setLoading] = useState(false)
 
   const onFormikSubmit = async values => {
+    console.log(values)
     setLoading(true)
     const phoneClean = values.phone.replace(/[^\d]/g, '')
     await userAPI
@@ -96,10 +97,6 @@ export default function Login(props) {
             //  console.log(Object.keys(values[0]))
             dispatch(updateProfileThunk())
             dispatch(setMessagesThunk(values[1]))
-          /*  navigation.navigate('About')
-            navigation.navigate('Messages')
-            navigation.navigate('Create')
-            navigation.navigate('Services')*/
             navigation.navigate('Profile')
             setLoading(false)
           })
@@ -138,7 +135,7 @@ export default function Login(props) {
       sendCode()
     }
     return () => {
-
+      
     }
   }, [code])
 
@@ -151,6 +148,8 @@ export default function Login(props) {
     const phoneClean = phone.replace(/[^\d]/g, '')
     if (!!phoneClean && !!password && password === confPass) {
       try {
+
+      //  console.log("FRONY", phoneClean)
 
         await userAPI
           .forgotPass({
@@ -166,7 +165,8 @@ export default function Login(props) {
             console.log(res.status)
           }*/)
       } catch (e) {
-        Alert.alert("אַזהָרָה", "מספר טלפון שגוי", [
+        console.log(e)
+        Alert.alert("Something wrong!", "מספר טלפון שגוי", [
           {
             text: 'נסה שוב', onPress: () => {
               console.log('alert wrong')
@@ -189,7 +189,7 @@ export default function Login(props) {
         }
       ])
       setPasswordBorderModal('red')
-    }
+    }0
   }
 
   const sendCode = async () => {
@@ -197,18 +197,19 @@ export default function Login(props) {
     setLoading(true)
     try {
       console.log(password)
+      console.log(phoneClean)
       await userAPI
         .changePass({
-          phone,
+          phone: phoneClean,
           code,
           password
         })
         .then(res => {
           console.log('PASSWORD CHANGED')
         })
-
+      
       await userAPI
-        .login({ phone, password })
+        .login({ phone: phoneClean, password })
         .then(response => userAPI.saveToken(response.data.access_token))
         .then(() => {
           dispatch(updateProfileThunk())
@@ -217,11 +218,8 @@ export default function Login(props) {
           setConfPass('')
           setPhone('')
           setLoading(false)
-        /*  navigation.navigate('About')
-          navigation.navigate('Messages')
-          navigation.navigate('Create')
-          navigation.navigate('Services')*/
           navigation.navigate('Profile')
+          
         })
         .catch(function (error) {
           console.log('LOGIN NO GOOD')
@@ -535,7 +533,7 @@ const s = StyleSheet.create({
   },
 
   notAvoidBlock: {
-    //     backgroundColor: 'pink',
+  //     backgroundColor: 'pink',
     width: '90%',
     height: Dimensions.get('window').height * 0.125
   }

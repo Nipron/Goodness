@@ -78,6 +78,7 @@ export default function Messages ({ navigation }) {
           <ScrollView
             style={s.scrollBlock}
             contentContainerStyle={s.scrollBlockContent}
+            keyboardShouldPersistTaps="always"
           >
             {sortedMessages.map(m => (
               <MessageCard m={m} key={m.id} />

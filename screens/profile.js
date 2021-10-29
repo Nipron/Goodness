@@ -21,7 +21,7 @@ import SmallLayout from '../components/layouts/SmallLayout'
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
-import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import { useSelector, useDispatch} from 'react-redux'
 import PersonalInfo from '../components/personalInfo/PersonalInfo'
 
 import DropDownBlue from '../components/dropdowns/DropDownBlue'
@@ -52,8 +52,8 @@ export default function Profile() {
     }, [])
   );
 
-  const works = useSelector(state => state.all.works, shallowEqual)
-  const orders = useSelector(state => state.all.orders, shallowEqual)
+  const works = useSelector(state => state.all.works/*, shallowEqual*/)
+  const orders = useSelector(state => state.all.orders/*, shallowEqual*/)
 
   let worksToMe = []
   let worksToMeHistory = []
@@ -101,6 +101,7 @@ export default function Profile() {
         <ScrollView
           style={s.regBlock}
           contentContainerStyle={s.regBlockContainer}
+          keyboardShouldPersistTaps="always"
         >
           <PersonalInfo />
 
