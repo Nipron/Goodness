@@ -179,7 +179,7 @@ export default function EditProfile2() {
       await userAPI.dashboard().then(data => {
         console.log('DASHBOARD OK')
         dispatch(updateProfileThunk())
-        Alert.alert("הצלחה!", "שינוים נשמרו בהצלחה", [
+        Alert.alert("שינוים נשמרו", "שינוים נשמרו בהצלחה", [
           {
             text: 'אישור', onPress: () => {
               console.log('changed profile')
@@ -223,6 +223,7 @@ export default function EditProfile2() {
                 style={s.formikBlock}
                 contentContainerStyle={s.formikScrollStyle}
                 keyboardShouldPersistTaps="always"
+                keyboardDismissMode='on-drag'
               >
                 <View style={s.fieldsBlock}>
                   <View style={s.personalBlock}>

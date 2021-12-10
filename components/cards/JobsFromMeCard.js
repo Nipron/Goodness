@@ -79,7 +79,7 @@ const JobsFromMeCard = ({ item, toMe }) => {
       //  setLoading(false)
     }
 
-    const handleCheck = () => Alert.alert('התפקיד נעשה', `אשר את השלמת העבודה`, [{ text: "Ok"/*, onPress: () => console.log('alert wrong') */ }])
+    const handleCheck = () => Alert.alert('השירות נמסר', `נא אשר ודרג את רמת השירות`, [{ text: "בסדר"/*, onPress: () => console.log('alert wrong') */ }])
 
     const handleRate = async () => {
         setLoading(true)

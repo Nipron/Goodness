@@ -21,6 +21,7 @@ import LogoGroup from '../src/LogoGroup'
 import ButtonYellow from '../src/ButtonYellow'
 import { commonAPI, userAPI } from '../src/api/api'
 import HomeLayout from '../components/layouts/HomeLayout'
+import Logo61 from "../Images/Logo61.svg"
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import SearchInput from '../components/inputs/SearchInput'
@@ -77,7 +78,7 @@ export default function Home(props) {
           </View>
 
           <View style={s.descriptionBlock}>
-            <Text style={s.text}>.</Text>
+            <Text style={s.text}></Text>
             <Text style={s.text}>פלטפורמה לשיתוף "מעשים טובים" בין האנשים</Text>
           </View>
 

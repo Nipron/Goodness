@@ -60,6 +60,7 @@ export default function Login(props) {
 
   useFocusEffect(
     React.useCallback(() => {
+      setFirstTryRecover(false)
       let isActive = true
       if (isActive) {
         setConnected(netInfo.isConnected)
@@ -130,12 +131,14 @@ export default function Login(props) {
   const [modalCode, setModalCode] = useState(false)
   const [code, setCode] = useState(null)
 
+  const [firstTryRecover, setFirstTryRecover] = useState(false)
+
   useEffect(() => {
     if (code && code.length === 5) {
       sendCode()
     }
     return () => {
-      
+
     }
   }, [code])
 
@@ -148,9 +151,6 @@ export default function Login(props) {
     const phoneClean = phone.replace(/[^\d]/g, '')
     if (!!phoneClean && !!password && password === confPass) {
       try {
-
-      //  console.log("FRONY", phoneClean)
-
         await userAPI
           .forgotPass({
             phone: phoneClean
@@ -166,16 +166,31 @@ export default function Login(props) {
           }*/)
       } catch (e) {
         console.log(e)
-        Alert.alert("Something wrong!", "מספר טלפון שגוי", [
-          {
-            text: 'נסה שוב', onPress: () => {
-              console.log('alert wrong')
-              navigation.navigate("Registration")
-              setModalPass(false)
-              setLoading(false)
+
+        if (firstTryRecover) {
+          Alert.alert("משהו השתבש!", "נא להירשם", [
+            {
+              text: 'הירשם', onPress: () => {
+                console.log('alert wrong')
+                navigation.navigate("Registration")
+                setModalPass(false)
+                setLoading(false)
+              }
             }
-          }
-        ])
+          ])
+        } else {
+          Alert.alert("משהו השתבש!", "מספר טלפון שגוי", [
+            {
+              text: 'נסה שוב', onPress: () => {
+                console.log('alert wrong')
+                //   navigation.navigate("Registration")
+                //   setModalPass(false)
+                setLoading(false)
+                setFirstTryRecover(true)
+              }
+            }
+          ])
+        }
         setLoading(false)
         // console.log(e)
       }
@@ -189,7 +204,7 @@ export default function Login(props) {
         }
       ])
       setPasswordBorderModal('red')
-    }0
+    } 0
   }
 
   const sendCode = async () => {
@@ -207,7 +222,7 @@ export default function Login(props) {
         .then(res => {
           console.log('PASSWORD CHANGED')
         })
-      
+
       await userAPI
         .login({ phone: phoneClean, password })
         .then(response => userAPI.saveToken(response.data.access_token))
@@ -219,7 +234,7 @@ export default function Login(props) {
           setPhone('')
           setLoading(false)
           navigation.navigate('Profile')
-          
+
         })
         .catch(function (error) {
           console.log('LOGIN NO GOOD')
@@ -271,7 +286,11 @@ export default function Login(props) {
                       <RegAvatar />
                       <TouchableOpacity
                         style={mS.closeIcon}
-                        onPress={() => setModalPass(false)}
+                        onPress={() => {
+                          setFirstTryRecover(false)
+                          setModalPass(false)
+                        }
+                        }
                       >
                         <CloseIcon />
                       </TouchableOpacity>
@@ -533,7 +552,7 @@ const s = StyleSheet.create({
   },
 
   notAvoidBlock: {
-  //     backgroundColor: 'pink',
+    //     backgroundColor: 'pink',
     width: '90%',
     height: Dimensions.get('window').height * 0.125
   }

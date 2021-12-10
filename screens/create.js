@@ -295,7 +295,7 @@ export default function Create() {
     })
 
     dispatch(updateProfileThunk())
-    Alert.alert('מזל טוב!', 'צרת בהצלחה שירות חדש', [
+    Alert.alert(`מזל טוב!`, `יצרת בהצלחה שירות חדש`, [
       {
         text: 'אישור', onPress: () => {
           setLoading(false)
@@ -473,13 +473,13 @@ export default function Create() {
 
         {
           createMode ?
-            <View style={s.description}>
+           (cat1 === '') && <View style={s.description}>
               <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>בבקשה תציעו שירות שאתם מעוניינים לתת.</Text>
               <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>תבחרו מקום ומרחק מקסימלי ממקומכם</Text>
               <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>בו תוכלו לספק את השירות.</Text>
               <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>כמו כן ניתן לבחור ימי שבוע להספקת השירות.</Text>
             </View> :
-            <View style={s.description}>
+            (cat1 === '') && <View style={s.description}>
               <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>נא בחרו שירות שאתם מעוניינים לקבל.</Text>
               <Text style={[g.text17_400_white, { color: "#AAAAAA", textAlign: "center" }]}>כמו כן תבחרו מקום לקבלת השירות.</Text>
             </View>
@@ -498,6 +498,7 @@ export default function Create() {
             style={s.scrollBlock}
             contentContainerStyle={s.resultContainer}
             keyboardShouldPersistTaps="always"
+            keyboardDismissMode='on-drag'
           >
             <View style={s.pickersBlock}>
               <View style={s.picker1}>
@@ -634,7 +635,7 @@ export default function Create() {
                   <Text style={g.text18_400_white}>יחידות השירות</Text>
                 </View>
                 <View style={s.toMap}>
-                  <Text style={g.text18_400_white}>תחום מתן השירות</Text>
+                  <Text style={g.text18_400_white}>מיקום השירות</Text>
                 </View>
               </View>
             )}

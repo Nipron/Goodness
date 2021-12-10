@@ -140,7 +140,12 @@ export const g = StyleSheet.create({
         fontFamily: "Assistant_700Bold",
         color: '#243663',
         fontSize: 24
-    },  
+    },
+    text24_700_lightblue: {
+        fontFamily: "Assistant_700Bold",
+        color: '#2699FB',
+        fontSize: 24
+    },   
     text24_400_blue: {
         fontFamily: "Assistant_400Regular",
         color: '#243663',

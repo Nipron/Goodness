@@ -21,7 +21,7 @@ import SmallLayout from '../components/layouts/SmallLayout'
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
-import { useSelector, useDispatch} from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import PersonalInfo from '../components/personalInfo/PersonalInfo'
 
 import DropDownBlue from '../components/dropdowns/DropDownBlue'
@@ -32,6 +32,9 @@ import { updateProfileThunk } from '../redux/store';
 import { userAPI } from '../src/api/api'
 
 import { useIsFocused } from '@react-navigation/native';
+import g from '../styles/global'
+
+import PersonWhite from '../Images/PersonWhite.svg'
 
 export default function Profile() {
   const navigation = useNavigation()
@@ -39,6 +42,8 @@ export default function Profile() {
   const dispatch = useDispatch()
   // dispatch(updateProfileThunk())
   const data = useSelector(state => state.all)
+
+  const scalePerson = 1.3
 
   useFocusEffect(
     React.useCallback(() => {
@@ -75,14 +80,6 @@ export default function Profile() {
     ordersFromMeHistory = orders.filter(job => job.status === 'approved').sort((a, b) => b.id - a.id)
   }
 
-
-
-
-  /* console.log(worksToMe.length)
-   console.log(worksToMeHistory.length)
-   console.log(ordersFromMe.length)
-   console.log(ordersFromMeHistory.length)*/
-
   const handleExit = async () => {
     await AsyncStorage.removeItem('token')
     navigation.navigate('Home')
@@ -102,6 +99,7 @@ export default function Profile() {
           style={s.regBlock}
           contentContainerStyle={s.regBlockContainer}
           keyboardShouldPersistTaps="always"
+          keyboardDismissMode='on-drag'
         >
           <PersonalInfo />
 
@@ -134,6 +132,21 @@ export default function Profile() {
               type={3}
             />
           </View>
+          <View style={s.refBlock}>
+            <View style={s.refCount}>
+              <Text style={g.text24_700_lightblue}>{data.refCount}</Text>
+            </View>
+            <View style={s.refText}>
+              <Text style={g.text18_400_blue}>מספר משתמשים, אשר הצטרפו בהזמנה:</Text>
+            </View>
+            <View style={s.refIcon}>
+              <View style={s.blueCircle}>
+              <PersonWhite
+              style={{ transform: [{ scaleX: scalePerson }, { scaleY: scalePerson }] }}
+            />
+              </View>
+            </View>
+          </View>
           <ButtonRed
             name='הצעת שירות / חיפוש שירות'
             onPress={() => navigation.navigate('Create')}
@@ -145,6 +158,66 @@ export default function Profile() {
 }
 
 const s = StyleSheet.create({
+
+blueCircle: {
+  width: 31,
+  height: 31,
+  borderRadius: 1000,
+  marginLeft: 4.5,
+  backgroundColor: "#2699FB",
+  alignItems: "center",
+  justifyContent: "center",
+  shadowOffset: {
+    width: 2,
+    height: 2
+  },
+  shadowOpacity: 0.3,
+  // shadowColor: "blue",
+  shadowRadius: 3
+},
+
+  refCount: {
+    height: "100%",
+    //  backgroundColor: "olive",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+
+  refText: {
+    height: "100%",
+    // backgroundColor: "pink",
+    marginHorizontal: 10,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+
+  refIcon: {
+    width: 60,
+    height: "100%",
+    backgroundColor: "#FFFFFF",
+    borderBottomLeftRadius: 1000,
+    borderTopLeftRadius: 1000,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    shadowOffset: {
+      width: 3,
+      height: 3
+    },
+    shadowOpacity: 0.3,
+    // shadowColor: "blue",
+    shadowRadius: 4
+  },
+
+  refBlock: {
+    width: "100%",
+    height: 40,
+    marginTop: 5,
+    //  backgroundColor: "green",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end"
+  },
+
   regBlock: {
     width: '100%',
     height: '100%',

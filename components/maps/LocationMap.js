@@ -312,7 +312,7 @@ export default function LocationMap(props) {
               </View>
             </View>
             {props.createMode && <View style={s.panelBlock}>
-              <Text style={s.description}>אנא בחר מרחק מרבי</Text>
+              <Text style={s.description}>נא לבחור מרחק מירבי להספקת השירות</Text>
               <DistancePanel
                 distance={props.distance}
                 setDistance={props.setDistance}
@@ -532,7 +532,8 @@ const s = StyleSheet.create({
   },
 
   description: {
-    color: '#B4B4B4'
+    fontSize: 17,
+    color: '#BBBBBB'
   },
 
   block1: {

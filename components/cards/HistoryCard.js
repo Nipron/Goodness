@@ -32,13 +32,16 @@ const HistoryCard = ({ item, toMe }) => {
     const cat = catsFlat.find(cat => cat.id === catId).title
     const partner = toMe ? item.client : item.worker
 
+  //  console.log(item, "ggggg")
+
     const name = partner.name
     const userId = partner.id
     const avaPath = partner.avatar ? partner.avatar.path : ''
-    const rating = partner.avgRating
+    const rating = /*partner.avgRating*/ item.feedback.rating
     const date = !!item.feedback ? moment(item.feedback.createdAt).format('L') : "01/01/2021"
     const time = !!item.feedback ? moment(item.feedback.createdAt).format('LT') : "00:00"
 
+    
     const [newRating, setNewRating] = useState(3)
 
     const scaleRedX = 1.6

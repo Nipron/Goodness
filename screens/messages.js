@@ -79,6 +79,7 @@ export default function Messages ({ navigation }) {
             style={s.scrollBlock}
             contentContainerStyle={s.scrollBlockContent}
             keyboardShouldPersistTaps="always"
+            keyboardDismissMode='on-drag'
           >
             {sortedMessages.map(m => (
               <MessageCard m={m} key={m.id} />

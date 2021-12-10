@@ -37,7 +37,7 @@ export default function Crash () {
         <LogoGroup />
       </View>
       <Text style={[g.text22_700_white, { textAlign: 'center', width: "75%" }]}>
-        על מנת להשתמש באפליקציה נא להתחבר לאינטרנט.
+        על מנת להשתמש באפליקציה נא להתחבר לאינטרנט
       </Text>
       <TouchableOpacity
         onPress={() => navigation.navigate('Crash')}

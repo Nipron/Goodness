@@ -273,7 +273,7 @@ export default function Registration2() {
                     {
                         (props) => (
                             <KeyboardAvoidingView style={s.goodnessBlock} behavior={Platform.OS === "ios" ? "padding" : "height"} >
-                                <ScrollView style={s.formikBlock} contentContainerStyle={s.formikScrollStyle} keyboardShouldPersistTaps="always">
+                                <ScrollView style={s.formikBlock} keyboardDismissMode='on-drag'  contentContainerStyle={s.formikScrollStyle} keyboardShouldPersistTaps="always">
                                     <View style={s.fieldsBlock}>
 
                                         <View style={s.personalBlock}>

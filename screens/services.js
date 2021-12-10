@@ -46,6 +46,7 @@ export default function Services({ navigation }) {
             style={s.scrollBlock}
             contentContainerStyle={s.scrollBlockContent}
             keyboardShouldPersistTaps="always"
+            keyboardDismissMode='on-drag'
           >
             {sortedServices.map(serv => (
               <ServiceCard serv={serv} key={serv.id} />
